@@ -1,11 +1,24 @@
 package simple;
 
-import jrtr.*;
-import javax.swing.*;
-import java.awt.event.*;
-import javax.vecmath.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.swing.JFrame;
+import javax.vecmath.Matrix4f;
+
+import jrtr.GLRenderPanel;
+import jrtr.Material;
+import jrtr.RenderContext;
+import jrtr.RenderPanel;
+import jrtr.SWRenderPanel;
+import jrtr.Shader;
+import jrtr.Shape;
+import jrtr.SimpleSceneManager;
+import jrtr.VertexData;
 
 /**
  * Implements a simple application that opens a 3D rendering window and 
@@ -34,7 +47,8 @@ public class simple
 		 * 
 		 * @param r	the render context that is associated with this render panel
 		 */
-		public void init(RenderContext r)
+		@Override
+        public void init(RenderContext r)
 		{
 			renderContext = r;
 			
@@ -140,7 +154,8 @@ public class simple
 	 */
 	public static class AnimationTask extends TimerTask
 	{
-		public void run()
+		@Override
+        public void run()
 		{
 			// Update transformation by rotating with angle "currentstep"
     		Matrix4f t = shape.getTransformation();
@@ -163,11 +178,16 @@ public class simple
 	 */
 	public static class SimpleMouseListener implements MouseListener
 	{
-    	public void mousePressed(MouseEvent e) {}
-    	public void mouseReleased(MouseEvent e) {}
-    	public void mouseEntered(MouseEvent e) {}
-    	public void mouseExited(MouseEvent e) {}
-    	public void mouseClicked(MouseEvent e) {}
+    	@Override
+        public void mousePressed(MouseEvent e) {}
+    	@Override
+        public void mouseReleased(MouseEvent e) {}
+    	@Override
+        public void mouseEntered(MouseEvent e) {}
+    	@Override
+        public void mouseExited(MouseEvent e) {}
+    	@Override
+        public void mouseClicked(MouseEvent e) {}
 	}
 	
 	/**
@@ -181,9 +201,10 @@ public class simple
 	 * 'n': shader using surface normals
 	 * 'm': use a material for shading
 	 */
-	public static class SimpleKeyListener implements KeyListener
+	public static class SimpleKeyListener extends KeyAdapter
 	{
-		public void keyPressed(KeyEvent e)
+		@Override
+        public void keyPressed(KeyEvent e)
 		{
 			switch(e.getKeyChar())
 			{
@@ -235,15 +256,6 @@ public class simple
 			// Trigger redrawing
 			renderPanel.getCanvas().repaint();
 		}
-		
-		public void keyReleased(KeyEvent e)
-		{
-		}
-
-		public void keyTyped(KeyEvent e)
-        {
-        }
-
 	}
 	
 	/**
