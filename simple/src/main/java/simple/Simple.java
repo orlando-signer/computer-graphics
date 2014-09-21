@@ -34,10 +34,12 @@ public class Simple {
     private Shape shape;
     private float currentstep, basicstep;
 
+    private final boolean isDebug;
+
     public Simple() {
+        isDebug = true;
         init();
     }
-    
 
     public static void main(String[] args) {
         new Simple();
@@ -52,7 +54,7 @@ public class Simple {
     private void init() {
         renderPanel = createRenderPanel();
         // Make the main window of this application and add the renderer to it
-        JFrame jframe = new JFrame("simple");
+        final JFrame jframe = new JFrame("simple");
         jframe.setSize(500, 500);
         jframe.setLocationRelativeTo(null); // center of screen
         jframe.getContentPane().add(renderPanel.getCanvas());// put the canvas
@@ -61,6 +63,26 @@ public class Simple {
 
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setVisible(true); // show window
+
+        // Register a timer task
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new AnimationTask(), 0, 10);
+
+        if (isDebug) {
+            // Add a task that regularly reloads the RenderPanel. Only works
+            // when started in debug mode.
+            TimerTask task = new TimerTask() {
+
+                @Override
+                public void run() {
+                    jframe.getContentPane().remove(renderPanel.getCanvas());
+                    renderPanel = createRenderPanel();
+                    jframe.getContentPane().add(renderPanel.getCanvas());
+                    jframe.validate(); // show window
+                }
+            };
+            timer.scheduleAtFixedRate(task, 2000, 2000);
+        }
     }
 
     /**
@@ -99,13 +121,20 @@ public class Simple {
                     0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0 }; // bottom face
 
             // The vertex colors
-            float c[] = { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1,
-                    0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
-                    0, 1, 0, 0, 1, 0, 0, 1 };
+            float c[] = { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, //
+                    0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, //
+                    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, //
+                    0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, //
+                    0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, //
+                    0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1 };
 
             // Texture coordinates
-            float uv[] = { 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0,
-                    1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1 };
+            float uv[] = { 0, 0, 1, 0, 1, 1, 0, 1, //
+                    0, 0, 1, 0, 1, 1, 0, 1, //
+                    0, 0, 1, 0, 1, 1, 0, 1, //
+                    0, 0, 1, 0, 1, 1, 0, 1, //
+                    0, 0, 1, 0, 1, 1, 0, 1, //
+                    0, 0, 1, 0, 1, 1, 0, 1 };
 
             // Construct a data structure that stores the vertices, their
             // attributes, and the triangle mesh connectivity
@@ -161,11 +190,8 @@ public class Simple {
                 System.out.print(e.getMessage());
             }
 
-            // Register a timer task
-            Timer timer = new Timer();
             basicstep = 0.01f;
             currentstep = basicstep;
-            timer.scheduleAtFixedRate(new AnimationTask(), 0, 10);
         }
     }
 
@@ -176,6 +202,8 @@ public class Simple {
     public class AnimationTask extends TimerTask {
         @Override
         public void run() {
+            if (shape == null)
+                return;
             // Update transformation by rotating with angle "currentstep"
             Matrix4f t = shape.getTransformation();
             Matrix4f rotX = new Matrix4f();
@@ -276,7 +304,6 @@ public class Simple {
             renderPanel.getCanvas().repaint();
         }
     }
-
 
     private RenderPanel createRenderPanel() {
         SimpleRenderPanel panel = new SimpleRenderPanel();
