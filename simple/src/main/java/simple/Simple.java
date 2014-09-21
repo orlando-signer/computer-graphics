@@ -24,7 +24,7 @@ import jrtr.VertexData;
  * Implements a simple application that opens a 3D rendering window and 
  * shows a rotating cube.
  */
-public class simple
+public class Simple
 {	
 	static RenderPanel renderPanel;
 	static RenderContext renderContext;
