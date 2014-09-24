@@ -36,6 +36,7 @@ public class Cylinder {
             vertices.add(new Point(tmpX, 0F, tmpZ));
             vertices.add(new Point(tmpX, height, tmpZ));
         }
+        // Add bottom and top
         vertices.add(new Point(0, 0, 0));
         vertices.add(new Point(0, height, 0));
 
@@ -46,12 +47,30 @@ public class Cylinder {
             indices.add((i + 2) % (segments * 2));
         }
 
+        for (int i = 0; i < segments * 2; i += 2) {
+            indices.add(i);
+            indices.add((i + 2) % (segments * 2));
+            indices.add(vertices.size() - 2);
+
+            indices.add(i + 1);
+            indices.add((i + 3) % (segments * 2));
+            indices.add(vertices.size() - 1);
+        }
+
+        System.out.println(indices);
+
         List<Color> colors = Lists.newArrayList();
         for (int i = 0; i < segments; i++) {
-            colors.add(Color.BLUE);
-            colors.add(Color.WHITE);
+            if (i % 2 == 0) {
+                colors.add(Color.BLUE);
+                colors.add(Color.BLUE);
+            } else {
+                colors.add(Color.WHITE);
+                colors.add(Color.WHITE);
+
+            }
         }
-        colors.add(Color.BLACK);
+        colors.add(Color.WHITE);
         colors.add(Color.WHITE);
 
         // // The vertex positions of the cylinder
