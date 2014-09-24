@@ -13,26 +13,24 @@ import com.google.common.primitives.Ints;
 
 public class Cylinder {
     private final int segments;
+    private final float radius;
+    private final float height;
 
-    public Cylinder(int segments) {
+    public Cylinder(int segments, float radius, float height) {
         this.segments = segments;
+        this.radius = radius;
+        this.height = height;
     }
 
     public VertexData createVertexData(RenderContext ctx) {
-        // Make a simple geometric object: a cylinder
-        float radius = 1;
-        float height = 2;
-        float x = 0;
-        float z = radius;
         double angle = (Math.PI * 2) / segments;
-
-        float tmpX = x;
+        float tmpX = 0;
         float tmpZ = radius;
 
         List<Point> vertices = Lists.newArrayList();
         for (int i = 0; i < segments; i++) {
-            tmpX = (float) Math.sin(i * angle);
-            tmpZ = (float) Math.cos(i * angle);
+            tmpX = (float) Math.sin(i * angle) * radius;
+            tmpZ = (float) Math.cos(i * angle) * radius;
             vertices.add(new Point(tmpX, 0F, tmpZ));
             vertices.add(new Point(tmpX, height, tmpZ));
         }

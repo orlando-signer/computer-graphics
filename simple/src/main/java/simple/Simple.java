@@ -103,7 +103,7 @@ public class Simple {
         public void init(RenderContext r) {
             renderContext = r;
 
-            Cylinder c = new Cylinder(6);
+            Cylinder c = new Cylinder(60, 2, 4);
             // Cube c = new Cube();
             VertexData vertexData = c.createVertexData(renderContext);
 
