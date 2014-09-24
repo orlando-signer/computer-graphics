@@ -37,7 +37,7 @@ public class Simple {
     private final boolean isDebug;
 
     public Simple() {
-        isDebug = false;
+        isDebug = true;
         init();
     }
 
@@ -103,7 +103,7 @@ public class Simple {
         public void init(RenderContext r) {
             renderContext = r;
 
-            Cylinder c = new Cylinder(5);
+            Cylinder c = new Cylinder(10);
             // Cube c = new Cube();
             VertexData vertexData = c.createVertexData(renderContext);
 

@@ -1,13 +1,14 @@
 package simple;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import jrtr.RenderContext;
 import jrtr.VertexData;
+import util.Color;
+import util.Point;
+import util.Utils;
 
 import com.google.common.collect.Lists;
-import com.google.common.primitives.Floats;
 import com.google.common.primitives.Ints;
 
 public class Cylinder {
@@ -20,52 +21,38 @@ public class Cylinder {
     public VertexData createVertexData(RenderContext ctx) {
         // Make a simple geometric object: a cylinder
         float radius = 1;
-        float height = 1;
+        float height = 2;
         float x = 0;
         float z = radius;
-        double angle = (2 * Math.PI) / segments;
+        double angle = (Math.PI * 2) / segments;
 
-        List<Float> v = new ArrayList<Float>(segments * 2 * 3 + 2 * 3);
+        float tmpX = x;
+        float tmpZ = radius;
+
+        List<Point> vertices = Lists.newArrayList();
         for (int i = 0; i < segments; i++) {
-            v.add(x);
-            v.add(0F);
-            v.add(z);
-            v.add(x);
-            v.add(height);
-            v.add(z);
-            x = (float) (Math.cos(angle) * x - Math.sin(angle) * z);
-            z = (float) (Math.sin(angle) * x + Math.cos(angle) * z);
+            tmpX = (float) Math.sin(i * angle);
+            tmpZ = (float) Math.cos(i * angle);
+            vertices.add(new Point(tmpX, 0F, tmpZ));
+            vertices.add(new Point(tmpX, height, tmpZ));
         }
-
-        v.add(0F);
-        v.add(0F);
-        v.add(0F);
-        v.add(0F);
-        v.add(height);
-        v.add(0F);
+        vertices.add(new Point(0, 0, 0));
+        vertices.add(new Point(0, height, 0));
 
         List<Integer> indices = Lists.newArrayList();
-        for (int i = 0; i < segments; i++) {
+        for (int i = 0; i < segments * 2; i++) {
             indices.add(i);
-            indices.add(i + 1);
-            indices.add(i + 2);
+            indices.add((i + 1) % (segments * 2));
+            indices.add((i + 2) % (segments * 2));
         }
 
-        List<Float> colours = Lists.newArrayList();
+        List<Color> colors = Lists.newArrayList();
         for (int i = 0; i < segments; i++) {
-            colours.add(0F);
-            colours.add(0F);
-            colours.add(1F);
-            colours.add(0F);
-            colours.add(0F);
-            colours.add(1F);
+            colors.add(Color.BLUE);
+            colors.add(Color.WHITE);
         }
-        colours.add(0F);
-        colours.add(0F);
-        colours.add(1F);
-        colours.add(0F);
-        colours.add(0F);
-        colours.add(1F);
+        colors.add(Color.BLACK);
+        colors.add(Color.WHITE);
 
         // // The vertex positions of the cylinder
         // float v[] = { -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1, // front
@@ -111,8 +98,8 @@ public class Cylinder {
         // Construct a data structure that stores the vertices, their
         // attributes, and the triangle mesh connectivity
         VertexData vertexData = ctx.makeVertexData(segments * 2 + 2);
-        vertexData.addElement(Floats.toArray(v), VertexData.Semantic.POSITION, 3);
-        vertexData.addElement(Floats.toArray(colours), VertexData.Semantic.COLOR, 3);
+        vertexData.addElement(Utils.pointsToArray(vertices), VertexData.Semantic.POSITION, 3);
+        vertexData.addElement(Utils.colorToArray(colors), VertexData.Semantic.COLOR, 3);
         // vertexData.addElement(n, VertexData.Semantic.NORMAL, 3);
         // vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
         vertexData.addIndices(Ints.toArray(indices));
