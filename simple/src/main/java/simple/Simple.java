@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import javax.swing.JFrame;
 import javax.vecmath.Matrix4f;
 
+import util.Point;
 import jrtr.GLRenderPanel;
 import jrtr.Material;
 import jrtr.RenderContext;
@@ -37,7 +38,7 @@ public class Simple {
     private final boolean isDebug;
 
     public Simple() {
-        isDebug = true;
+        isDebug = false;
         init();
     }
 
@@ -103,7 +104,7 @@ public class Simple {
         public void init(RenderContext r) {
             renderContext = r;
 
-            Cylinder c = new Cylinder(60, 2, 4);
+            Cylinder c = new Cylinder(60, 2, 4, new Point(1,1,1));
             // Cube c = new Cube();
             VertexData vertexData = c.createVertexData(renderContext);
 
