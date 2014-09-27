@@ -104,8 +104,9 @@ public class Simple {
         public void init(RenderContext r) {
             renderContext = r;
 
-            // Cylinder c = new Cylinder(60, 2, 4, new Point(1,1,1));
-            Cube c = new Cube();
+//             Cylinder c = new Cylinder(6, 2, 4);
+//            Cube c = new Cube();
+            Torus c = new Torus(5, 5, 1F, 0.5F);
             VertexData vertexData = c.createVertexData(renderContext);
 
             // Make a scene manager and add the object
