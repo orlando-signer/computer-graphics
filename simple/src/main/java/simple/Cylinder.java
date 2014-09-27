@@ -12,114 +12,104 @@ import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 
 public class Cylinder {
-	private final int segments;
-	private final float radius;
-	private final float height;
-	private final Point center;
+    private final int segments;
+    private final float radius;
+    private final float height;
+    private final Point center;
 
-	public Cylinder(int segments, float radius, float height) {
-		this(segments, radius, height, Point.ZERO);
-	}
+    public Cylinder(int segments, float radius, float height) {
+        this(segments, radius, height, Point.ZERO);
+    }
 
-	/**
-	 * @param segments
-	 * @param radius
-	 * @param height
-	 * @param center
-	 *            the position of the center of the bottom of the cylinder.
-	 */
-	public Cylinder(int segments, float radius, float height, Point center) {
-		this.segments = segments;
-		this.radius = radius;
-		this.height = height;
-		this.center = center;
-	}
+    /**
+     * @param segments
+     * @param radius
+     * @param height
+     * @param center
+     *            the position of the center of the bottom of the cylinder.
+     */
+    public Cylinder(int segments, float radius, float height, Point center) {
+        this.segments = segments;
+        this.radius = radius;
+        this.height = height;
+        this.center = center;
+    }
 
-	public VertexData createVertexData(RenderContext ctx) {
-		double angle = (Math.PI * 2) / segments;
-		float tmpX = center.getX();
-		float tmpZ = center.getZ() + radius;
+    public VertexData createVertexData(RenderContext ctx) {
+        double angle = (Math.PI * 2) / segments;
+        float tmpX = center.getX();
+        float tmpZ = center.getZ() + radius;
 
-		List<Point> vertices = Lists.newArrayList();
-		for (int i = 0; i < segments; i++) {
-			tmpX = center.getX() + (float) Math.sin(i * angle) * radius;
-			tmpZ = center.getZ() + (float) Math.cos(i * angle) * radius;
-			vertices.add(new Point(tmpX, center.getY(), tmpZ));
-			vertices.add(new Point(tmpX, center.getY() + height, tmpZ));
-		}
-		// Add bottom and top
-		vertices.add(center);
-		vertices.add(center.add(0, height, 0));
-		
-		System.out.println(vertices);
+        List<Point> vertices = Lists.newArrayList();
+        for (int i = 0; i < segments; i++) {
+            tmpX = center.getX() + (float) Math.sin(i * angle) * radius;
+            tmpZ = center.getZ() + (float) Math.cos(i * angle) * radius;
+            vertices.add(new Point(tmpX, center.getY(), tmpZ));
+            vertices.add(new Point(tmpX, center.getY() + height, tmpZ));
+        }
+        // Add bottom and top
+        vertices.add(center);
+        vertices.add(center.add(0, height, 0));
 
-		List<Integer> indices = Lists.newArrayList();
-		for (int i = 0; i < segments * 2; i++) {
-			indices.add(i);
-			indices.add((i + 1) % (segments * 2));
-			indices.add((i + 2) % (segments * 2));
-		}
+        List<Integer> indices = Lists.newArrayList();
+        for (int i = 0; i < segments * 2; i++) {
+            indices.add(i);
+            indices.add((i + 1) % (segments * 2));
+            indices.add((i + 2) % (segments * 2));
+        }
 
-		for (int i = 0; i < segments * 2; i += 2) {
-			indices.add(i);
-			indices.add((i + 2) % (segments * 2));
-			indices.add(vertices.size() - 2);
+        // indices for top and bottom
+        for (int i = 0; i < segments * 2; i += 2) {
+            indices.add(i);
+            indices.add((i + 2) % (segments * 2));
+            indices.add(vertices.size() - 2);
 
-			indices.add(i + 1);
-			indices.add((i + 3) % (segments * 2));
-			indices.add(vertices.size() - 1);
-		}
+            indices.add(i + 1);
+            indices.add((i + 3) % (segments * 2));
+            indices.add(vertices.size() - 1);
+        }
 
-		List<Color> colors = Lists.newArrayList();
-		for (int i = 0; i < segments; i++) {
-			if (i % 2 == 0) {
-				colors.add(Color.BLUE);
-				colors.add(Color.BLUE);
-			} else {
-				colors.add(Color.WHITE);
-				colors.add(Color.WHITE);
+        List<Color> colors = Lists.newArrayList();
+        for (int i = 0; i < segments; i++) {
+            if (i % 2 == 0) {
+                colors.add(Color.BLUE);
+                colors.add(Color.BLUE);
+            } else {
+                colors.add(Color.WHITE);
+                colors.add(Color.WHITE);
 
-			}
-		}
-		colors.add(Color.WHITE);
-		colors.add(Color.WHITE);
+            }
+        }
+        colors.add(Color.WHITE);
+        colors.add(Color.WHITE);
 
-		// // The vertex positions of the cylinder
-		// float v[] = { -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1, // front
-		// face
-		// -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, 1, -1, // left face
-		// 1, -1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, // back face
-		// 1, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1, // right face
-		// 1, 1, 1, 1, 1, -1, -1, 1, -1, -1, 1, 1, // top face
-		// -1, -1, 1, -1, -1, -1, 1, -1, -1, 1, -1, 1 }; // bottom face
+        // The vertex normals
+        // TODO vertex normals and texture coordinates don't matter for
+        // assignement 1
+        float n[] = { 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, // front face
+                -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, // left face
+                0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, // back face
+                1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // right face
+                0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, // top face
+                0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0 }; // bottom face
 
-		// The vertex normals
-		float n[] = { 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, // front face
-				-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, // left face
-				0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, // back face
-				1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // right face
-				0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, // top face
-				0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0 }; // bottom face
+        // Texture coordinates
+        float uv[] = { 0, 0, 1, 0, 1, 1, 0, 1, //
+                0, 0, 1, 0, 1, 1, 0, 1, //
+                0, 0, 1, 0, 1, 1, 0, 1, //
+                0, 0, 1, 0, 1, 1, 0, 1, //
+                0, 0, 1, 0, 1, 1, 0, 1, //
+                0, 0, 1, 0, 1, 1, 0, 1 };
 
-		// Texture coordinates
-		float uv[] = { 0, 0, 1, 0, 1, 1, 0, 1, //
-				0, 0, 1, 0, 1, 1, 0, 1, //
-				0, 0, 1, 0, 1, 1, 0, 1, //
-				0, 0, 1, 0, 1, 1, 0, 1, //
-				0, 0, 1, 0, 1, 1, 0, 1, //
-				0, 0, 1, 0, 1, 1, 0, 1 };
+        // Construct a data structure that stores the vertices, their
+        // attributes, and the triangle mesh connectivity
+        VertexData vertexData = ctx.makeVertexData(segments * 2 + 2);
+        vertexData.addElement(Utils.pointsToArray(vertices), VertexData.Semantic.POSITION, 3);
+        vertexData.addElement(Utils.colorToArray(colors), VertexData.Semantic.COLOR, 3);
+        // vertexData.addElement(n, VertexData.Semantic.NORMAL, 3);
+        // vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
+        vertexData.addIndices(Ints.toArray(indices));
 
-		// Construct a data structure that stores the vertices, their
-		// attributes, and the triangle mesh connectivity
-		VertexData vertexData = ctx.makeVertexData(segments * 2 + 2);
-		vertexData.addElement(Utils.pointsToArray(vertices),
-				VertexData.Semantic.POSITION, 3);
-		vertexData.addElement(Utils.colorToArray(colors),
-				VertexData.Semantic.COLOR, 3);
-		// vertexData.addElement(n, VertexData.Semantic.NORMAL, 3);
-		// vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
-		vertexData.addIndices(Ints.toArray(indices));
-
-		return vertexData;
-	}
+        return vertexData;
+    }
 }
