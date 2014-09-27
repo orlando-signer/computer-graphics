@@ -37,13 +37,13 @@ public class Simple {
 
     private final boolean isDebug;
 
-    public Simple() {
-        isDebug = false;
-        init();
+    public static void main(String[] args) {
+        Simple s = new Simple();
+        s.start();
     }
 
-    public static void main(String[] args) {
-        new Simple();
+    public Simple() {
+        isDebug = false;
     }
 
     /**
@@ -52,7 +52,7 @@ public class Simple {
      * backed for initialization automatically. It then constructs a simple 3D
      * scene, and starts a timer task to generate an animation.
      */
-    private void init() {
+    private void start() {
         renderPanel = createRenderPanel();
         // Make the main window of this application and add the renderer to it
         final JFrame jframe = new JFrame("simple");
