@@ -1,5 +1,6 @@
 package simple;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jrtr.RenderContext;
@@ -40,7 +41,8 @@ public class Cylinder {
         float tmpX = center.getX();
         float tmpZ = center.getZ() + radius;
 
-        List<Point> vertices = Lists.newArrayList();
+        int segmentsTimesTwo = segments * 2;
+        List<Point> vertices = new ArrayList<>(segmentsTimesTwo + 2);
         for (int i = 0; i < segments; i++) {
             tmpX = center.getX() + (float) Math.sin(i * angle) * radius;
             tmpZ = center.getZ() + (float) Math.cos(i * angle) * radius;
@@ -51,25 +53,25 @@ public class Cylinder {
         vertices.add(center);
         vertices.add(center.add(0, height, 0));
 
-        List<Integer> indices = Lists.newArrayList();
-        for (int i = 0; i < segments * 2; i++) {
+        List<Integer> indices = new ArrayList<>(segments * 3 * 3);
+        for (int i = 0; i < segmentsTimesTwo; i++) {
             indices.add(i);
-            indices.add((i + 1) % (segments * 2));
-            indices.add((i + 2) % (segments * 2));
+            indices.add((i + 1) % segmentsTimesTwo);
+            indices.add((i + 2) % segmentsTimesTwo);
         }
 
         // indices for top and bottom
-        for (int i = 0; i < segments * 2; i += 2) {
+        for (int i = 0; i < segmentsTimesTwo; i += 2) {
             indices.add(i);
-            indices.add((i + 2) % (segments * 2));
+            indices.add((i + 2) % segmentsTimesTwo);
             indices.add(vertices.size() - 2);
 
             indices.add(i + 1);
-            indices.add((i + 3) % (segments * 2));
+            indices.add((i + 3) % segmentsTimesTwo);
             indices.add(vertices.size() - 1);
         }
 
-        List<Color> colors = Lists.newArrayList();
+        List<Color> colors = new ArrayList<>(segmentsTimesTwo + 2);
         for (int i = 0; i < segments; i++) {
             if (i % 2 == 0) {
                 colors.add(Color.BLUE);
@@ -103,7 +105,7 @@ public class Cylinder {
 
         // Construct a data structure that stores the vertices, their
         // attributes, and the triangle mesh connectivity
-        VertexData vertexData = ctx.makeVertexData(segments * 2 + 2);
+        VertexData vertexData = ctx.makeVertexData(segmentsTimesTwo + 2);
         vertexData.addElement(Utils.pointsToArray(vertices), VertexData.Semantic.POSITION, 3);
         vertexData.addElement(Utils.colorToArray(colors), VertexData.Semantic.COLOR, 3);
         // vertexData.addElement(n, VertexData.Semantic.NORMAL, 3);
