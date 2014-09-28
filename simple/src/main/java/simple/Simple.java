@@ -43,7 +43,7 @@ public class Simple {
     }
 
     public Simple() {
-        isDebug = false;
+        isDebug = true;
     }
 
     /**
@@ -83,7 +83,8 @@ public class Simple {
                     jframe.validate(); // show window
                 }
             };
-            timer.scheduleAtFixedRate(task, 2000, 2000);
+            int reloadDely = 5000;
+            timer.scheduleAtFixedRate(task, reloadDely, reloadDely);
         }
     }
 
@@ -106,7 +107,7 @@ public class Simple {
 
 //             Cylinder c = new Cylinder(6, 2, 4);
 //            Cube c = new Cube();
-            Torus c = new Torus(5, 5, 1F, 0.5F);
+            Torus c = new Torus(3, 3, 1F, 0.5F);
             VertexData vertexData = c.createVertexData(renderContext);
 
             // Make a scene manager and add the object

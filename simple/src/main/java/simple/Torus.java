@@ -43,7 +43,8 @@ public class Torus implements Shape {
         float z = 0;
         float tmpU = 0;
         float tmpV = 0;
-        List<Point> vertices = new ArrayList<>(radiusSegments * ringRadiusSegments);
+        int verticesCount = radiusSegments * ringRadiusSegments;
+        List<Point> vertices = new ArrayList<>(verticesCount);
         for (int u = 0; u < radiusSegments; u++) {
             for (int v = 0; v < ringRadiusSegments; v++) {
                 tmpU = angle * u;
@@ -55,32 +56,44 @@ public class Torus implements Shape {
             }
 
         }
-        // Indices
-        // 0,1,5
-        System.out.println(vertices);
-        List<Integer> indices = new ArrayList<>(radiusSegments * ringRadiusSegments);
+
+        List<Integer> indices = new ArrayList<>(verticesCount);
         for (int i = 0; i < radiusSegments; i++) {
             // TODO add some modulo to go from last ring to first
             int ringIndex = (i * ringRadiusSegments);
+            System.out.println(ringIndex);
             for (int j = 0; j < ringRadiusSegments; j++) {
-                // TODO add vertex-positions from the other half of triangles
                 indices.add(ringIndex + j);
                 indices.add(ringIndex + j + 1);
-                indices.add(ringIndex + j + ringRadiusSegments);
+                indices.add((ringIndex + j + ringRadiusSegments) % verticesCount);
+
+                indices.add(ringIndex + j);
+                indices.add(ringIndex + j + 1);
+                int tmp = ringIndex + j - ringRadiusSegments + 1;
+                tmp = tmp <= 0 ? tmp + verticesCount - 1 : tmp;
+
+                indices.add(tmp);
             }
         }
-        
-        List<Color> colors= new ArrayList<>();
-        for(int i = 0;i<vertices.size();i++)
+        System.out.println(vertices.size());
+        for (int i = 0; i < indices.size(); i++) {
+            if (i % 6 == 0)
+                System.out.print("[");
+            System.out.print(indices.get(i) + ",");
+            if(i%6==2)
+                System.out.print("  ");
+            if (i % 6 == 5)
+                System.out.println("]");
+        }
+        List<Color> colors = new ArrayList<>();
+        for (int i = 0; i < vertices.size(); i++)
             colors.add(Color.RED);
 
-        VertexData vertexData = ctx.makeVertexData(radiusSegments* ringRadiusSegments);
+        VertexData vertexData = ctx.makeVertexData(verticesCount);
         vertexData.addElement(Utils.pointsToArray(vertices), VertexData.Semantic.POSITION, 3);
         vertexData.addElement(Utils.colorToArray(colors), VertexData.Semantic.COLOR, 3);
-        // vertexData.addElement(n, VertexData.Semantic.NORMAL, 3);
-        // vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
         vertexData.addIndices(Ints.toArray(indices));
-        
+
         return vertexData;
     }
 }
