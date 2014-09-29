@@ -107,7 +107,7 @@ public class Simple {
 
 //             Cylinder c = new Cylinder(6, 2, 4);
 //            Cube c = new Cube();
-            Torus c = new Torus(3, 3, 1F, 0.5F);
+            Torus c = new Torus(30, 30, 1F, 0.5F);
             VertexData vertexData = c.createVertexData(renderContext);
 
             // Make a scene manager and add the object

@@ -64,27 +64,22 @@ public class Torus implements Shape {
             System.out.println(ringIndex);
             for (int j = 0; j < ringRadiusSegments; j++) {
                 indices.add(ringIndex + j);
-                indices.add(ringIndex + j + 1);
+                indices.add((ringIndex + j + 1) % ringRadiusSegments + ringIndex);
                 indices.add((ringIndex + j + ringRadiusSegments) % verticesCount);
 
                 indices.add(ringIndex + j);
-                indices.add(ringIndex + j + 1);
+                indices.add((ringIndex + j + 1) % ringRadiusSegments + ringIndex);
                 int tmp = ringIndex + j - ringRadiusSegments + 1;
-                tmp = tmp <= 0 ? tmp + verticesCount - 1 : tmp;
+                tmp = tmp <= 0 ? tmp + verticesCount : tmp;
+                // Ugly, rethink logic for the last index point for each ring.
+                if (j == ringRadiusSegments - 1)
+                    tmp -= ringRadiusSegments;
 
                 indices.add(tmp);
             }
         }
-        System.out.println(vertices.size());
-        for (int i = 0; i < indices.size(); i++) {
-            if (i % 6 == 0)
-                System.out.print("[");
-            System.out.print(indices.get(i) + ",");
-            if(i%6==2)
-                System.out.print("  ");
-            if (i % 6 == 5)
-                System.out.println("]");
-        }
+//        printIndices(vertices, indices);
+        
         List<Color> colors = new ArrayList<>();
         for (int i = 0; i < vertices.size(); i++)
             colors.add(Color.RED);
@@ -95,5 +90,18 @@ public class Torus implements Shape {
         vertexData.addIndices(Ints.toArray(indices));
 
         return vertexData;
+    }
+
+    private void printIndices(List<Point> vertices, List<Integer> indices) {
+        System.out.println(vertices.size());
+        for (int i = 0; i < indices.size(); i++) {
+            if (i % 6 == 0)
+                System.out.print("[");
+            System.out.print(indices.get(i) + ",");
+            if (i % 6 == 2)
+                System.out.print("  ");
+            if (i % 6 == 5)
+                System.out.println("]");
+        }
     }
 }
