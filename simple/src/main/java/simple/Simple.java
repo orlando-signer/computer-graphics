@@ -9,8 +9,8 @@ import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3d;
 
-import util.Point;
 import jrtr.GLRenderPanel;
 import jrtr.Material;
 import jrtr.RenderContext;
@@ -104,10 +104,11 @@ public class Simple {
         @Override
         public void init(RenderContext r) {
             renderContext = r;
+            Vector3d v = new Vector3d(1, 1, 1);
 
-//             Cylinder c = new Cylinder(6, 2, 4);
-//            Cube c = new Cube();
-            Torus c = new Torus(30, 30, 1F, 0.5F);
+            Cylinder c = new Cylinder(6, 2, 4);
+            // Cube c = new Cube();
+            // Torus c = new Torus(30, 30, 1F, 0.5F);
             VertexData vertexData = c.createVertexData(renderContext);
 
             // Make a scene manager and add the object
@@ -118,6 +119,28 @@ public class Simple {
             // Add the scene to the renderer
             renderContext.setSceneManager(sceneManager);
 
+            initShaders();
+
+            initMaterial();
+
+            basicstep = 0.01f;
+            currentstep = basicstep;
+        }
+
+        private void initMaterial() {
+            // Make a material that can be used for shading
+            material = new Material();
+            material.shader = diffuseShader;
+            material.texture = renderContext.makeTexture();
+            try {
+                material.texture.load("../textures/plant.jpg");
+            } catch (Exception e) {
+                System.out.print("Could not load texture.\n");
+                System.out.print(e.getMessage());
+            }
+        }
+
+        private void initShaders() {
             // Load some more shaders
             normalShader = renderContext.makeShader();
             try {
@@ -134,20 +157,6 @@ public class Simple {
                 System.out.print("Problem with shader:\n");
                 System.out.print(e.getMessage());
             }
-
-            // Make a materibbl that can be used for shading
-            material = new Material();
-            material.shader = diffuseShader;
-            material.texture = renderContext.makeTexture();
-            try {
-                material.texture.load("../textures/plant.jpg");
-            } catch (Exception e) {
-                System.out.print("Could not load texture.\n");
-                System.out.print(e.getMessage());
-            }
-
-            basicstep = 0.01f;
-            currentstep = basicstep;
         }
     }
 

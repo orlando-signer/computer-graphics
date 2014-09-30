@@ -3,55 +3,42 @@ package simple;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.vecmath.Point3d;
+
 import jrtr.RenderContext;
 import jrtr.VertexData;
 import util.Color;
-import util.Point;
 import util.Utils;
 
-import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 
 public class Cylinder {
     private final int segments;
     private final float radius;
     private final float height;
-    private final Point center;
 
     public Cylinder(int segments, float radius, float height) {
-        this(segments, radius, height, Point.ZERO);
-    }
-
-    /**
-     * @param segments
-     * @param radius
-     * @param height
-     * @param center
-     *            the position of the center of the bottom of the cylinder.
-     */
-    public Cylinder(int segments, float radius, float height, Point center) {
         this.segments = segments;
         this.radius = radius;
         this.height = height;
-        this.center = center;
     }
 
     public VertexData createVertexData(RenderContext ctx) {
         double angle = (Math.PI * 2) / segments;
-        float tmpX = center.getX();
-        float tmpZ = center.getZ() + radius;
+        double tmpX = 0;
+        double tmpZ = radius;
 
         int segmentsTimesTwo = segments * 2;
-        List<Point> vertices = new ArrayList<>(segmentsTimesTwo + 2);
+        List<Point3d> vertices = new ArrayList<>(segmentsTimesTwo + 2);
         for (int i = 0; i < segments; i++) {
-            tmpX = center.getX() + (float) Math.sin(i * angle) * radius;
-            tmpZ = center.getZ() + (float) Math.cos(i * angle) * radius;
-            vertices.add(new Point(tmpX, center.getY(), tmpZ));
-            vertices.add(new Point(tmpX, center.getY() + height, tmpZ));
+            tmpX = (float) Math.sin(i * angle) * radius;
+            tmpZ = (float) Math.cos(i * angle) * radius;
+            vertices.add(new Point3d(tmpX, 0, tmpZ));
+            vertices.add(new Point3d(tmpX, height, tmpZ));
         }
         // Add bottom and top
-        vertices.add(center);
-        vertices.add(center.add(0, height, 0));
+        vertices.add(new Point3d(0, 0, 0));
+        vertices.add(new Point3d(0, height, 0));
 
         List<Integer> indices = new ArrayList<>(segments * 3 * 3);
         for (int i = 0; i < segmentsTimesTwo; i++) {

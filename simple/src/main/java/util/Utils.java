@@ -2,25 +2,28 @@ package util;
 
 import java.util.Collection;
 
+import javax.vecmath.Point3d;
+
 public class Utils {
-    public static float[] pointsToArray(Collection<Point> points) {
+    public static float[] pointsToArray(Collection<Point3d> points) {
         float[] f = new float[points.size() * 3];
         int i = 0;
-        for (Point p : points) {
-            f[i++] = p.getX();
-            f[i++] = p.getY();
-            f[i++] = p.getZ();
+
+        for (Point3d p : points) {
+            f[i++] = (float) p.x;
+            f[i++] = (float) p.y;
+            f[i++] = (float) p.z;
         }
         return f;
     }
 
-    public static float[] colorToArray(Collection<Color> points) {
-        float[] f = new float[points.size() * 3];
+    public static float[] colorToArray(Collection<Color> colors) {
+        float[] f = new float[colors.size() * 3];
         int i = 0;
-        for (Color p : points) {
-            f[i++] = p.getR();
-            f[i++] = p.getG();
-            f[i++] = p.getB();
+        for (Color c : colors) {
+            f[i++] = c.getR();
+            f[i++] = c.getG();
+            f[i++] = c.getB();
         }
         return f;
     }

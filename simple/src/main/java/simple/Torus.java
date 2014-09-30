@@ -3,10 +3,11 @@ package simple;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.vecmath.Point3d;
+
 import jrtr.RenderContext;
 import jrtr.VertexData;
 import util.Color;
-import util.Point;
 import util.Utils;
 
 import com.google.common.primitives.Ints;
@@ -16,18 +17,12 @@ public class Torus implements Shape {
     private final int radiusSegments;
     private final int ringRadiusSegments;
 
-    private final Point center;
     private final float radius;
     private final float ringRadius;
 
     public Torus(int radiusSegments, int ringRadiusSegments, float radius, float ringRadius) {
-        this(radiusSegments, ringRadiusSegments, radius, ringRadius, Point.ZERO);
-    }
-
-    public Torus(int radiusSegments, int ringRadiusSegments, float radius, float ringRadius, Point center) {
         this.radiusSegments = radiusSegments;
         this.ringRadiusSegments = ringRadiusSegments;
-        this.center = center;
         this.radius = radius;
         this.ringRadius = ringRadius;
     }
@@ -44,7 +39,7 @@ public class Torus implements Shape {
         float tmpU = 0;
         float tmpV = 0;
         int verticesCount = radiusSegments * ringRadiusSegments;
-        List<Point> vertices = new ArrayList<>(verticesCount);
+        List<Point3d> vertices = new ArrayList<>(verticesCount);
         for (int u = 0; u < radiusSegments; u++) {
             for (int v = 0; v < ringRadiusSegments; v++) {
                 tmpU = angle * u;
@@ -52,16 +47,14 @@ public class Torus implements Shape {
                 x = (float) ((radius + ringRadius * Math.cos(tmpV)) * Math.cos(tmpU));
                 y = (float) ((radius + ringRadius * Math.cos(tmpV)) * Math.sin(tmpU));
                 z = (float) (ringRadius * Math.sin(tmpV));
-                vertices.add(new Point(x, y, z));
+                vertices.add(new Point3d(x, y, z));
             }
 
         }
 
         List<Integer> indices = new ArrayList<>(verticesCount);
         for (int i = 0; i < radiusSegments; i++) {
-            // TODO add some modulo to go from last ring to first
             int ringIndex = (i * ringRadiusSegments);
-            System.out.println(ringIndex);
             for (int j = 0; j < ringRadiusSegments; j++) {
                 indices.add(ringIndex + j);
                 indices.add((ringIndex + j + 1) % ringRadiusSegments + ringIndex);
@@ -78,11 +71,15 @@ public class Torus implements Shape {
                 indices.add(tmp);
             }
         }
-//        printIndices(vertices, indices);
-        
-        List<Color> colors = new ArrayList<>();
-        for (int i = 0; i < vertices.size(); i++)
-            colors.add(Color.RED);
+        // printIndices(vertices, indices);
+
+        List<Color> colors = new ArrayList<>(vertices.size());
+        for (int i = 0; i < vertices.size(); i++) {
+            if (i % 4 == 0)
+                colors.add(Color.RED);
+            else
+                colors.add(Color.WHITE);
+        }
 
         VertexData vertexData = ctx.makeVertexData(verticesCount);
         vertexData.addElement(Utils.pointsToArray(vertices), VertexData.Semantic.POSITION, 3);
@@ -92,7 +89,7 @@ public class Torus implements Shape {
         return vertexData;
     }
 
-    private void printIndices(List<Point> vertices, List<Integer> indices) {
+    private void printIndices(List<Point3d> vertices, List<Integer> indices) {
         System.out.println(vertices.size());
         for (int i = 0; i < indices.size(); i++) {
             if (i % 6 == 0)
