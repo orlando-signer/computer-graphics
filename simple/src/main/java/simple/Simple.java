@@ -4,6 +4,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -42,7 +43,8 @@ public class Simple {
     }
 
     public Simple() {
-        isDebug = true;
+        shapes = new ArrayList<>();
+        isDebug = false;
     }
 
     /**
@@ -67,7 +69,7 @@ public class Simple {
 
         // Register a timer task
         Timer timer = new Timer();
-        // timer.scheduleAtFixedRate(new AnimationTask(), 0, 10);
+        timer.scheduleAtFixedRate(new AnimationTask(), 0, 10);
 
         if (isDebug) {
             // Add a task that regularly reloads the RenderPanel. Only works
@@ -103,11 +105,10 @@ public class Simple {
         @Override
         public void init(RenderContext r) {
             renderContext = r;
+            sceneManager = new SimpleSceneManager();
 
             Plane plane = new Plane(renderContext);
-            // Make a scene manager and add the object
-            sceneManager = new SimpleSceneManager();
-            shapes = plane.getShapes();
+            shapes.addAll(plane.getShapes());
 
             shapes.stream().forEach(s -> sceneManager.addShape(s));
 
@@ -165,15 +166,19 @@ public class Simple {
             if (shapes == null || shapes.isEmpty())
                 return;
             // Update transformation by rotating with angle "currentstep"
+            Matrix4f rotZ = new Matrix4f();
+            rotZ.rotX(currentstep);
             for (Shape shape : shapes) {
-                Matrix4f t = shape.getTransformation();
-                Matrix4f rotX = new Matrix4f();
-                rotX.rotX(currentstep);
-                Matrix4f rotY = new Matrix4f();
-                rotY.rotY(currentstep);
-                t.mul(rotX);
-                t.mul(rotY);
-                shape.setTransformation(t);
+                // Matrix4f t = shape.getTransformation();
+                // Matrix4f rotX = new Matrix4f();
+                // rotX.rotX(currentstep);
+                // Matrix4f rotY = new Matrix4f();
+                // rotY.rotY(currentstep);
+                // t.mul(rotX);
+                // t.mul(rotY);
+                // shape.setTransformation(t);
+                // shape.getTransformation().mul(rotZ);
+
             }
 
             // Trigger redrawing of the render window
@@ -257,8 +262,8 @@ public class Simple {
                         s.setMaterial(material);
                     else
                         s.setMaterial(null);
-                    renderContext.useDefaultShader();
                 });
+                renderContext.useDefaultShader();
                 break;
             }
             }
