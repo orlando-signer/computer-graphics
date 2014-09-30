@@ -4,12 +4,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3d;
 
 import jrtr.GLRenderPanel;
 import jrtr.Material;
@@ -19,7 +19,6 @@ import jrtr.SWRenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
-import jrtr.VertexData;
 
 /**
  * Implements a simple application that opens a 3D rendering window and shows a
@@ -32,7 +31,7 @@ public class Simple {
     private Shader diffuseShader;
     private Material material;
     private SimpleSceneManager sceneManager;
-    private Shape shape;
+    private List<Shape> shapes;
     private float currentstep, basicstep;
 
     private final boolean isDebug;
@@ -68,7 +67,7 @@ public class Simple {
 
         // Register a timer task
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new AnimationTask(), 0, 10);
+        // timer.scheduleAtFixedRate(new AnimationTask(), 0, 10);
 
         if (isDebug) {
             // Add a task that regularly reloads the RenderPanel. Only works
@@ -83,7 +82,7 @@ public class Simple {
                     jframe.validate(); // show window
                 }
             };
-            int reloadDely = 5000;
+            int reloadDely = 2000;
             timer.scheduleAtFixedRate(task, reloadDely, reloadDely);
         }
     }
@@ -104,17 +103,13 @@ public class Simple {
         @Override
         public void init(RenderContext r) {
             renderContext = r;
-            Vector3d v = new Vector3d(1, 1, 1);
 
-            Cylinder c = new Cylinder(6, 2, 4);
-            // Cube c = new Cube();
-            // Torus c = new Torus(30, 30, 1F, 0.5F);
-            VertexData vertexData = c.createVertexData(renderContext);
-
+            Plane plane = new Plane(renderContext);
             // Make a scene manager and add the object
             sceneManager = new SimpleSceneManager();
-            shape = new Shape(vertexData);
-            sceneManager.addShape(shape);
+            shapes = plane.getShapes();
+
+            shapes.stream().forEach(s -> sceneManager.addShape(s));
 
             // Add the scene to the renderer
             renderContext.setSceneManager(sceneManager);
@@ -167,17 +162,19 @@ public class Simple {
     public class AnimationTask extends TimerTask {
         @Override
         public void run() {
-            if (shape == null)
+            if (shapes == null || shapes.isEmpty())
                 return;
             // Update transformation by rotating with angle "currentstep"
-            Matrix4f t = shape.getTransformation();
-            Matrix4f rotX = new Matrix4f();
-            rotX.rotX(currentstep);
-            Matrix4f rotY = new Matrix4f();
-            rotY.rotY(currentstep);
-            t.mul(rotX);
-            t.mul(rotY);
-            shape.setTransformation(t);
+            for (Shape shape : shapes) {
+                Matrix4f t = shape.getTransformation();
+                Matrix4f rotX = new Matrix4f();
+                rotX.rotX(currentstep);
+                Matrix4f rotY = new Matrix4f();
+                rotY.rotY(currentstep);
+                t.mul(rotX);
+                t.mul(rotY);
+                shape.setTransformation(t);
+            }
 
             // Trigger redrawing of the render window
             renderPanel.getCanvas().repaint();
@@ -243,24 +240,25 @@ public class Simple {
             }
             case 'n': {
                 // Remove material from shape, and set "normal" shader
-                shape.setMaterial(null);
+                shapes.stream().forEach(s -> s.setMaterial(null));
                 renderContext.useShader(normalShader);
                 break;
             }
             case 'd': {
                 // Remove material from shape, and set "default" shader
-                shape.setMaterial(null);
+                shapes.stream().forEach(s -> s.setMaterial(null));
                 renderContext.useDefaultShader();
                 break;
             }
             case 'm': {
                 // Set a material for more complex shading of the shape
-                if (shape.getMaterial() == null) {
-                    shape.setMaterial(material);
-                } else {
-                    shape.setMaterial(null);
+                shapes.stream().forEach(s -> {
+                    if (s.getMaterial() == null)
+                        s.setMaterial(material);
+                    else
+                        s.setMaterial(null);
                     renderContext.useDefaultShader();
-                }
+                });
                 break;
             }
             }
