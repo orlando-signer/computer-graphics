@@ -35,6 +35,8 @@ public class Simple {
     private List<Shape> shapes;
     private float currentstep, basicstep;
 
+    private Plane plane;
+
     private final boolean isDebug;
 
     public static void main(String[] args) {
@@ -78,6 +80,7 @@ public class Simple {
 
                 @Override
                 public void run() {
+                    shapes = new ArrayList<>();
                     jframe.getContentPane().remove(renderPanel.getCanvas());
                     renderPanel = createRenderPanel();
                     jframe.getContentPane().add(renderPanel.getCanvas());
@@ -95,6 +98,7 @@ public class Simple {
      * scene and start a timer task to generate an animation.
      */
     public final class SimpleRenderPanel extends GLRenderPanel {
+
         /**
          * Initialization call-back. We initialize our renderer here.
          *
@@ -105,9 +109,16 @@ public class Simple {
         @Override
         public void init(RenderContext r) {
             renderContext = r;
-            sceneManager = new SimpleSceneManager();
 
-            Plane plane = new Plane(renderContext);
+            // Create plane and translate it
+            plane = new Plane(renderContext);
+            Matrix4f m = new Matrix4f();
+            m.setIdentity();
+            m.m13 = -3F;
+            plane.getShapes().stream().forEach(s -> s.getTransformation().mul(m, s.getTransformation()));
+
+            // Make a scene manager and add the object
+            sceneManager = new SimpleSceneManager();
             shapes.addAll(plane.getShapes());
 
             shapes.stream().forEach(s -> sceneManager.addShape(s));
@@ -166,21 +177,7 @@ public class Simple {
             if (shapes == null || shapes.isEmpty())
                 return;
             // Update transformation by rotating with angle "currentstep"
-            Matrix4f rotZ = new Matrix4f();
-            rotZ.rotX(currentstep);
-            for (Shape shape : shapes) {
-                // Matrix4f t = shape.getTransformation();
-                // Matrix4f rotX = new Matrix4f();
-                // rotX.rotX(currentstep);
-                // Matrix4f rotY = new Matrix4f();
-                // rotY.rotY(currentstep);
-                // t.mul(rotX);
-                // t.mul(rotY);
-                // shape.setTransformation(t);
-                // shape.getTransformation().mul(rotZ);
-
-            }
-
+            plane.animate();
             // Trigger redrawing of the render window
             renderPanel.getCanvas().repaint();
         }
@@ -262,8 +259,8 @@ public class Simple {
                         s.setMaterial(material);
                     else
                         s.setMaterial(null);
+                    renderContext.useDefaultShader();
                 });
-                renderContext.useDefaultShader();
                 break;
             }
             }

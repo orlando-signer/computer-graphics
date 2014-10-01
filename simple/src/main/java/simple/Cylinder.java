@@ -33,12 +33,12 @@ public class Cylinder {
         for (int i = 0; i < segments; i++) {
             tmpX = (float) Math.sin(i * angle) * radius;
             tmpZ = (float) Math.cos(i * angle) * radius;
-            vertices.add(new Point3d(tmpX, 0, tmpZ));
-            vertices.add(new Point3d(tmpX, height, tmpZ));
+            vertices.add(new Point3d(tmpX, height / -2, tmpZ));
+            vertices.add(new Point3d(tmpX, height / 2, tmpZ));
         }
         // Add bottom and top
-        vertices.add(new Point3d(0, 0, 0));
-        vertices.add(new Point3d(0, height, 0));
+        vertices.add(new Point3d(0, height / -2, 0));
+        vertices.add(new Point3d(0, height / 2, 0));
 
         List<Integer> indices = new ArrayList<>(segments * 3 * 3);
         for (int i = 0; i < segmentsTimesTwo; i++) {
