@@ -10,6 +10,10 @@ import jrtr.RenderContext;
 import jrtr.Shape;
 import jrtr.VertexData;
 
+/**
+ * @author Orlando Signer
+ *
+ */
 public class Plane {
 
     private Shape body;

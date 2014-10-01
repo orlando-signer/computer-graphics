@@ -1,5 +1,9 @@
 package util;
 
+/**
+ * @author Orlando Signer
+ *
+ */
 public class Color {
 
     public static final Color RED = new Color(1, 0, 0);

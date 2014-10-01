@@ -12,6 +12,10 @@ import util.Utils;
 
 import com.google.common.primitives.Ints;
 
+/**
+ * @author Orlando Signer
+ *
+ */
 public class Cylinder {
     private final int segments;
     private final float radius;

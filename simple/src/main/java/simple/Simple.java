@@ -23,8 +23,10 @@ import jrtr.Shape;
 import jrtr.SimpleSceneManager;
 
 /**
- * Implements a simple application that opens a 3D rendering window and shows a
- * rotating cube.
+ * @author Orlando Signer
+ *
+ *         Implements a simple application that opens a 3D rendering window and
+ *         shows a rotating cube.
  */
 public class Simple {
     private RenderPanel renderPanel;

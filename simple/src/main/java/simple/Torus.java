@@ -12,6 +12,10 @@ import util.Utils;
 
 import com.google.common.primitives.Ints;
 
+/**
+ * @author Orlando Signer
+ *
+ */
 public class Torus implements Shape {
 
     private final int radiusSegments;

@@ -3,6 +3,10 @@ package simple;
 import jrtr.RenderContext;
 import jrtr.VertexData;
 
+/**
+ * @author Orlando Signer
+ *
+ */
 public class Cube implements Shape {
 
     @Override

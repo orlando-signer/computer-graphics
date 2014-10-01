@@ -4,6 +4,10 @@ import java.util.Collection;
 
 import javax.vecmath.Point3d;
 
+/**
+ * @author Orlando Signer
+ *
+ */
 public class Utils {
     public static float[] pointsToArray(Collection<Point3d> points) {
         float[] f = new float[points.size() * 3];
