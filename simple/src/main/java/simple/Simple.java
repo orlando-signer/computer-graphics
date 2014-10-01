@@ -11,6 +11,7 @@ import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector4f;
 
 import jrtr.GLRenderPanel;
 import jrtr.Material;
@@ -33,9 +34,10 @@ public class Simple {
     private Material material;
     private SimpleSceneManager sceneManager;
     private List<Shape> shapes;
-    private float currentstep, basicstep;
+    public static float currentstep, basicstep;
 
     private Plane plane;
+    private Shape torus;
 
     private final boolean isDebug;
 
@@ -109,6 +111,7 @@ public class Simple {
         @Override
         public void init(RenderContext r) {
             renderContext = r;
+            sceneManager = new SimpleSceneManager();
 
             // Create plane and translate it
             plane = new Plane(renderContext);
@@ -116,10 +119,15 @@ public class Simple {
             m.setIdentity();
             m.m13 = -3F;
             plane.getShapes().stream().forEach(s -> s.getTransformation().mul(m, s.getTransformation()));
-
-            // Make a scene manager and add the object
-            sceneManager = new SimpleSceneManager();
             shapes.addAll(plane.getShapes());
+
+            // Create a torus
+            Torus t = new Torus(30, 30, 2.5F, 0.2F);
+            torus = new Shape(t.createVertexData(renderContext));
+            m.setIdentity();
+            m.m13 = 3F;
+            torus.getTransformation().mul(m, torus.getTransformation());
+            shapes.add(torus);
 
             shapes.stream().forEach(s -> sceneManager.addShape(s));
 
@@ -176,10 +184,30 @@ public class Simple {
         public void run() {
             if (shapes == null || shapes.isEmpty())
                 return;
-            // Update transformation by rotating with angle "currentstep"
             plane.animate();
+            animateTorus();
             // Trigger redrawing of the render window
             renderPanel.getCanvas().repaint();
+        }
+
+        private void animateTorus() {
+            Matrix4f m = torus.getTransformation();
+            Vector4f translation = new Vector4f();
+            m.getColumn(3, translation);
+            translation.negate();
+            Matrix4f transInv = new Matrix4f();
+            Matrix4f trans = new Matrix4f();
+            trans.setIdentity();
+            trans.setColumn(3, translation);
+            transInv.invert(trans);
+
+            Matrix4f rot = new Matrix4f();
+            rot.setIdentity();
+            rot.rotY(currentstep / 2);
+            transInv.mul(rot);
+
+            transInv.mul(trans);
+            m.mul(transInv, m);
         }
     }
 
