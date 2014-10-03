@@ -10,8 +10,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector4f;
 
 import jrtr.GLRenderPanel;
 import jrtr.Material;
@@ -21,7 +19,6 @@ import jrtr.SWRenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
-import jrtr.VertexData;
 
 /**
  * @author Orlando Signer
@@ -48,7 +45,7 @@ public class Simple {
 
     public Simple() {
         shapes = new ArrayList<>();
-        isDebug = false;
+        isDebug = true;
     }
 
     /**
