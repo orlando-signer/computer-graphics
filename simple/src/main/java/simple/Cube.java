@@ -1,16 +1,17 @@
 package simple;
 
 import jrtr.RenderContext;
+import jrtr.Shape;
 import jrtr.VertexData;
 
 /**
  * @author Orlando Signer
  *
  */
-public class Cube implements Shape {
+public class Cube implements Model {
 
     @Override
-    public VertexData createVertexData(RenderContext ctx) {
+    public Shape createShape(RenderContext ctx) {
         // Make a simple geometric object: a cube
 
         // The vertex positions of the cube
@@ -62,7 +63,7 @@ public class Cube implements Shape {
         vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
         vertexData.addIndices(indices);
 
-        return vertexData;
+        return new jrtr.Shape(vertexData);
     }
 
 }

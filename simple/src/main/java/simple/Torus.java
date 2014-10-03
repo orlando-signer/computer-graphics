@@ -6,6 +6,7 @@ import java.util.List;
 import javax.vecmath.Point3d;
 
 import jrtr.RenderContext;
+import jrtr.Shape;
 import jrtr.VertexData;
 import util.Color;
 import util.Utils;
@@ -16,7 +17,7 @@ import com.google.common.primitives.Ints;
  * @author Orlando Signer
  *
  */
-public class Torus implements Shape {
+public class Torus implements Model {
 
     private final int radiusSegments;
     private final int ringRadiusSegments;
@@ -32,7 +33,7 @@ public class Torus implements Shape {
     }
 
     @Override
-    public VertexData createVertexData(RenderContext ctx) {
+    public Shape createShape(RenderContext ctx) {
         // Ignoring the center, this can later be done with translation
         float angle = (float) ((Math.PI * 2) / radiusSegments);
         float ringAngle = (float) ((Math.PI * 2) / ringRadiusSegments);
@@ -90,7 +91,7 @@ public class Torus implements Shape {
         vertexData.addElement(Utils.colorToArray(colors), VertexData.Semantic.COLOR, 3);
         vertexData.addIndices(Ints.toArray(indices));
 
-        return vertexData;
+        return new Shape(vertexData);
     }
 
     private void printIndices(List<Point3d> vertices, List<Integer> indices) {

@@ -16,7 +16,7 @@ import com.google.common.primitives.Ints;
  * @author Orlando Signer
  *
  */
-public class Cylinder {
+public class Cylinder implements Model{
     private final int segments;
     private final float radius;
     private final float height;
@@ -27,7 +27,8 @@ public class Cylinder {
         this.height = height;
     }
 
-    public VertexData createVertexData(RenderContext ctx) {
+    @Override
+    public jrtr.Shape createShape(RenderContext ctx) {
         double angle = (Math.PI * 2) / segments;
         double tmpX = 0;
         double tmpZ = radius;
@@ -103,6 +104,6 @@ public class Cylinder {
         // vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
         vertexData.addIndices(Ints.toArray(indices));
 
-        return vertexData;
+        return new jrtr.Shape(vertexData);
     }
 }

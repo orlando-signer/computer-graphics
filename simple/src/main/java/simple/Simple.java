@@ -21,6 +21,7 @@ import jrtr.SWRenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
+import jrtr.VertexData;
 
 /**
  * @author Orlando Signer
@@ -37,9 +38,6 @@ public class Simple {
     private SimpleSceneManager sceneManager;
     private List<Shape> shapes;
     public static float currentstep, basicstep;
-
-    private Plane plane;
-    private Shape torus;
 
     private final boolean isDebug;
 
@@ -115,21 +113,8 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
-            // Create plane and translate it
-            plane = new Plane(renderContext);
-            Matrix4f m = new Matrix4f();
-            m.setIdentity();
-            m.m13 = -3F;
-            plane.getShapes().stream().forEach(s -> s.getTransformation().mul(m, s.getTransformation()));
-            shapes.addAll(plane.getShapes());
-
-            // Create a torus
-            Torus t = new Torus(30, 30, 2.5F, 0.2F);
-            torus = new Shape(t.createVertexData(renderContext));
-            m.setIdentity();
-            m.m13 = 3F;
-            torus.getTransformation().mul(m, torus.getTransformation());
-            shapes.add(torus);
+            House house = new House();
+            shapes.add(house.createShape(renderContext));
 
             shapes.stream().forEach(s -> sceneManager.addShape(s));
 
@@ -186,30 +171,8 @@ public class Simple {
         public void run() {
             if (shapes == null || shapes.isEmpty())
                 return;
-            plane.animate();
-            animateTorus();
             // Trigger redrawing of the render window
             renderPanel.getCanvas().repaint();
-        }
-
-        private void animateTorus() {
-            Matrix4f m = torus.getTransformation();
-            Vector4f translation = new Vector4f();
-            m.getColumn(3, translation);
-            translation.negate();
-            Matrix4f transInv = new Matrix4f();
-            Matrix4f trans = new Matrix4f();
-            trans.setIdentity();
-            trans.setColumn(3, translation);
-            transInv.invert(trans);
-
-            Matrix4f rot = new Matrix4f();
-            rot.setIdentity();
-            rot.rotY(currentstep / 2);
-            transInv.mul(rot);
-
-            transInv.mul(trans);
-            m.mul(transInv, m);
         }
     }
 

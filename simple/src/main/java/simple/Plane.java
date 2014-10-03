@@ -8,7 +8,6 @@ import javax.vecmath.Vector4f;
 
 import jrtr.RenderContext;
 import jrtr.Shape;
-import jrtr.VertexData;
 
 /**
  * @author Orlando Signer
@@ -23,23 +22,20 @@ public class Plane {
     private final List<Shape> shapes;
 
     public Plane(RenderContext ctx) {
-        VertexData b = new Cube().createVertexData(ctx);
-        body = new Shape(b);
+        body = new Cube().createShape(ctx);
         Matrix4f m = body.getTransformation();
         m.m00 = 1;
         m.m11 = 0.3F;
         m.m22 = 0.3F;
 
-        VertexData w = new Cube().createVertexData(ctx);
-        wings = new Shape(w);
+        wings = new Cube().createShape(ctx);
         Matrix4f m2 = wings.getTransformation();
         m2.m00 = 0.6F;
         m2.m11 = 0.06F;
         m2.m22 = 2.4F;
         m2.m13 = 0.3F;
 
-        VertexData p = new Cylinder(5, 0.1F, 1.5F).createVertexData(ctx);
-        propeller = new Shape(p);
+        propeller = new Cylinder(5, 0.1F, 1.5F).createShape(ctx);
         Matrix4f m3 = propeller.getTransformation();
         m3.m03 = -1.1F;
 
