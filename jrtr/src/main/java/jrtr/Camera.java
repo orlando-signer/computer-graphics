@@ -26,9 +26,15 @@ public class Camera {
      */
     public Camera() {
         cameraMatrix = new Matrix4f();
-        centerOfProjection = new Vector3f(0, 0, -50);
-        lookAtPoint = new Vector3f(0, 0, 0);
+        // first image
+        // centerOfProjection = new Vector3f(0, 0, 40);
+        // lookAtPoint = new Vector3f(0, 0, 0);
+        // upVector = new Vector3f(0, 1, 0);
+        // second image
+        centerOfProjection = new Vector3f(-10, 40, 40);
+        lookAtPoint = new Vector3f(-5, 0, 0);
         upVector = new Vector3f(0, 1, 0);
+
         updateMatrix();
     }
 
@@ -87,6 +93,6 @@ public class Camera {
         cameraMatrix.setColumn(1, y.x, y.y, y.z, 0);
         cameraMatrix.setColumn(2, z.x, z.y, z.z, 0);
         cameraMatrix.setColumn(3, centerOfProjection.x, centerOfProjection.y, centerOfProjection.z, 1);
-
+        cameraMatrix.invert();
     }
 }

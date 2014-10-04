@@ -23,11 +23,11 @@ public class Frustum {
      * 4x4 projection matrix.
      */
     public Frustum() {
-        fov = 90;
-        aspect = 0.5F;
-        near = 0F;
-        far = 50;
         projectionMatrix = new Matrix4f();
+        setFov(60);
+        aspect = 1F;
+        near = 1F;
+        far = 100F;
         update();
     }
 
@@ -45,8 +45,13 @@ public class Frustum {
         return fov;
     }
 
+    /**
+     * Set the FOV in degree.
+     *
+     * @param fov
+     */
     public void setFov(float fov) {
-        this.fov = fov;
+        this.fov = (float) (Math.PI / 180 * fov);
         update();
     }
 
@@ -85,6 +90,6 @@ public class Frustum {
         projectionMatrix.m22 = (near + far) / (near - far);
         projectionMatrix.m23 = (2 * near * far) / (near - far);
         projectionMatrix.m32 = -1;
+        projectionMatrix.m33 = 0;
     }
-
 }
