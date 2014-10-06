@@ -2,8 +2,8 @@ package simple;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -27,6 +27,8 @@ import jrtr.SimpleSceneManager;
  *         shows a rotating cube.
  */
 public class Simple {
+    private static final int FRAME_HEIGHTb = 500;
+    private static final int FRAME_WIDTH = 500;
     private RenderPanel renderPanel;
     private RenderContext renderContext;
     private Shader normalShader;
@@ -58,7 +60,7 @@ public class Simple {
         renderPanel = createRenderPanel();
         // Make the main window of this application and add the renderer to it
         final JFrame jframe = new JFrame("simple");
-        jframe.setSize(500, 500);
+        jframe.setSize(FRAME_WIDTH, FRAME_HEIGHTb);
         jframe.setLocationRelativeTo(null); // center of screen
         jframe.getContentPane().add(renderPanel.getCanvas());// put the
         // canvas into
@@ -177,25 +179,19 @@ public class Simple {
      * A mouse listener for the main window of this application. This can be
      * used to process mouse events.
      */
-    public class SimpleMouseListener implements MouseListener {
+    public class SimpleMouseListener extends MouseAdapter {
+        private int u;
+        private int v;
         @Override
         public void mousePressed(MouseEvent e) {
+            u = e.getX();
+            v = e.getY();
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
+            System.out.println(u - e.getX());
+            System.out.println(v - e.getY());
         }
     }
 
