@@ -10,6 +10,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
+import javax.vecmath.AxisAngle4f;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 
 import jrtr.GLRenderPanel;
 import jrtr.Material;
@@ -27,7 +30,7 @@ import jrtr.SimpleSceneManager;
  *         shows a rotating cube.
  */
 public class Simple {
-    private static final int FRAME_HEIGHTb = 500;
+    private static final int FRAME_HEIGHT = 500;
     private static final int FRAME_WIDTH = 500;
     private RenderPanel renderPanel;
     private RenderContext renderContext;
@@ -38,6 +41,8 @@ public class Simple {
     private List<Shape> shapes;
     public static float currentstep, basicstep;
 
+    private JFrame jFrame;
+
     private final boolean isDebug;
 
     public static void main(String[] args) {
@@ -47,7 +52,7 @@ public class Simple {
 
     public Simple() {
         shapes = new ArrayList<>();
-        isDebug = true;
+        isDebug = false;
     }
 
     /**
@@ -59,16 +64,16 @@ public class Simple {
     private void start() {
         renderPanel = createRenderPanel();
         // Make the main window of this application and add the renderer to it
-        final JFrame jframe = new JFrame("simple");
-        jframe.setSize(FRAME_WIDTH, FRAME_HEIGHTb);
-        jframe.setLocationRelativeTo(null); // center of screen
-        jframe.getContentPane().add(renderPanel.getCanvas());// put the
+        jFrame = new JFrame("simple");
+        jFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        jFrame.setLocationRelativeTo(null); // center of screen
+        jFrame.getContentPane().add(renderPanel.getCanvas());// put the
         // canvas into
         // a JFrame
         // window
 
-        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jframe.setVisible(true); // show window
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jFrame.setVisible(true); // show window
 
         // Register a timer task
         Timer timer = new Timer();
@@ -81,11 +86,7 @@ public class Simple {
 
                 @Override
                 public void run() {
-                    shapes = new ArrayList<>();
-                    jframe.getContentPane().remove(renderPanel.getCanvas());
-                    renderPanel = createRenderPanel();
-                    jframe.getContentPane().add(renderPanel.getCanvas());
-                    jframe.validate(); // show window
+                    reload();
                 }
             };
             int reloadDely = 2000;
@@ -112,6 +113,8 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
+            // Teapot teapot = new Teapot();
+            // shapes.add(teapot.createShape(renderContext));
             House house = new House();
             shapes.add(house.createShape(renderContext));
 
@@ -180,18 +183,39 @@ public class Simple {
      * used to process mouse events.
      */
     public class SimpleMouseListener extends MouseAdapter {
-        private int u;
-        private int v;
-        @Override
-        public void mousePressed(MouseEvent e) {
-            u = e.getX();
-            v = e.getY();
-        }
+        private Vector3f v0;
 
         @Override
-        public void mouseReleased(MouseEvent e) {
-            System.out.println(u - e.getX());
-            System.out.println(v - e.getY());
+        public void mouseDragged(MouseEvent e) {
+            float x = ((float) e.getX()) / (FRAME_HEIGHT / 2);
+            float y = ((float) e.getY()) / (FRAME_WIDTH / 2);
+            x = x - 1;
+            y = 1 - y;
+            float z = 1 - x * x - y * y;
+            z = (float) (z < 0 ? 0 : Math.sqrt(z));
+
+            Vector3f v1 = new Vector3f(x, y, z);
+            v1.normalize();
+
+            if (v0 == null) {
+                v0 = v1;
+                return;
+            }
+
+            Vector3f a = new Vector3f();
+            a.cross(v0, v1);
+            float angle = v0.angle(v1);
+            if (angle < 0.1)
+                return;
+            System.out.println(v0 + "/" + v1);
+
+            Matrix4f rot = new Matrix4f();
+            rot.setIdentity();
+            rot.setRotation(new AxisAngle4f(a, (float) (angle * 180 / Math.PI)));
+            System.out.println(rot);
+            shapes.stream().forEach(shape -> shape.getTransformation().mul(rot));
+            v0 = v1;
+
         }
     }
 
@@ -249,6 +273,10 @@ public class Simple {
                 });
                 break;
             }
+            case 'r': {
+                reload();
+                break;
+            }
             }
 
             // Trigger redrawing
@@ -256,10 +284,18 @@ public class Simple {
         }
     }
 
+    private void reload() {
+        shapes = new ArrayList<>();
+        jFrame.getContentPane().remove(renderPanel.getCanvas());
+        renderPanel = createRenderPanel();
+        jFrame.getContentPane().add(renderPanel.getCanvas());
+        jFrame.validate(); // show window
+    }
+
     private RenderPanel createRenderPanel() {
         SimpleRenderPanel panel = new SimpleRenderPanel();
         // Add a mouse and key listener
-        panel.getCanvas().addMouseListener(new SimpleMouseListener());
+        panel.getCanvas().addMouseMotionListener(new SimpleMouseListener());
         panel.getCanvas().addKeyListener(new SimpleKeyListener());
         panel.getCanvas().setFocusable(true);
         return panel;
