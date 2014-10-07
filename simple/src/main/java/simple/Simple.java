@@ -1,5 +1,7 @@
 package simple;
 
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -30,8 +32,8 @@ import jrtr.SimpleSceneManager;
  *         shows a rotating cube.
  */
 public class Simple {
-    private static final int FRAME_HEIGHT = 500;
-    private static final int FRAME_WIDTH = 500;
+    private int frameHeight = 500;
+    private int frameWidth = 500;
     private RenderPanel renderPanel;
     private RenderContext renderContext;
     private Shader normalShader;
@@ -65,12 +67,19 @@ public class Simple {
         renderPanel = createRenderPanel();
         // Make the main window of this application and add the renderer to it
         jFrame = new JFrame("simple");
-        jFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        jFrame.setSize(frameWidth, frameHeight);
         jFrame.setLocationRelativeTo(null); // center of screen
         jFrame.getContentPane().add(renderPanel.getCanvas());// put the
         // canvas into
         // a JFrame
         // window
+        jFrame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                frameWidth = jFrame.getWidth();
+                frameHeight = jFrame.getHeight();
+            }
+        });
 
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.setVisible(true); // show window
@@ -113,6 +122,7 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
+            // TODO teapot not working yet.
             // Teapot teapot = new Teapot();
             // shapes.add(teapot.createShape(renderContext));
             House house = new House();
@@ -187,8 +197,9 @@ public class Simple {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            float x = ((float) e.getX()) / (FRAME_HEIGHT / 2);
-            float y = ((float) e.getY()) / (FRAME_WIDTH / 2);
+            int div = Math.min(frameHeight, frameWidth);
+            float x = ((float) e.getX()) / (div / 2);
+            float y = ((float) e.getY()) / (div / 2);
             x = x - 1;
             y = 1 - y;
             float z = 1 - x * x - y * y;
@@ -207,15 +218,17 @@ public class Simple {
             float angle = v0.angle(v1);
             if (angle < 0.1)
                 return;
-            System.out.println(v0 + "/" + v1);
 
             Matrix4f rot = new Matrix4f();
             rot.setIdentity();
-            rot.setRotation(new AxisAngle4f(a, (float) (angle * 180 / Math.PI)));
-            System.out.println(rot);
+            rot.setRotation(new AxisAngle4f(a, (angle)));
             shapes.stream().forEach(shape -> shape.getTransformation().mul(rot));
             v0 = v1;
+        }
 
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            v0 = null;
         }
     }
 
@@ -295,7 +308,9 @@ public class Simple {
     private RenderPanel createRenderPanel() {
         SimpleRenderPanel panel = new SimpleRenderPanel();
         // Add a mouse and key listener
-        panel.getCanvas().addMouseMotionListener(new SimpleMouseListener());
+        SimpleMouseListener mouseListener = new SimpleMouseListener();
+        panel.getCanvas().addMouseListener(mouseListener);
+        panel.getCanvas().addMouseMotionListener(mouseListener);
         panel.getCanvas().addKeyListener(new SimpleKeyListener());
         panel.getCanvas().setFocusable(true);
         return panel;
