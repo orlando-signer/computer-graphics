@@ -24,6 +24,8 @@ import jrtr.SWRenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
+import jrtr.VertexData.Semantic;
+import jrtr.VertexData.VertexElement;
 
 /**
  * @author Orlando Signer
@@ -122,11 +124,8 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
-            // TODO teapot not working yet.
-            // Teapot teapot = new Teapot();
-            // shapes.add(teapot.createShape(renderContext));
-            House house = new House();
-            shapes.add(house.createShape(renderContext));
+            Teapot teapot = new Teapot();
+            shapes.add(teapot.createShape(renderContext));
 
             shapes.stream().forEach(s -> sceneManager.addShape(s));
 
