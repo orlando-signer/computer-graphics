@@ -243,7 +243,11 @@ public class Simple {
         @Override
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyChar()) {
-            case 's': {
+            case 'w':{
+                sceneManager.getCamera().getCameraMatrix();
+                break;
+            }
+            case 'h': {
                 // Stop animation
                 currentstep = 0;
                 break;
@@ -269,7 +273,7 @@ public class Simple {
                 renderContext.useShader(normalShader);
                 break;
             }
-            case 'd': {
+            case 'k': {
                 // Remove material from shape, and set "default" shader
                 shapes.stream().forEach(s -> s.setMaterial(null));
                 renderContext.useDefaultShader();
