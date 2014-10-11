@@ -16,7 +16,9 @@ import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
+import model.Model;
 import model.Teapot;
+import model.Terrain;
 import jrtr.GLRenderPanel;
 import jrtr.Material;
 import jrtr.RenderContext;
@@ -123,8 +125,8 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
-            Teapot teapot = new Teapot();
-            shapes.add(teapot.createShape(renderContext));
+            Model m = new Terrain(257);
+            shapes.add(m.createShape(renderContext));
 
             shapes.stream().forEach(s -> sceneManager.addShape(s));
 
@@ -241,7 +243,7 @@ public class Simple {
         @Override
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyChar()) {
-            case 'w':{
+            case 'w': {
                 sceneManager.getCamera().getCameraMatrix();
                 break;
             }
