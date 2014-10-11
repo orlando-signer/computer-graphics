@@ -1,4 +1,4 @@
-package simple;
+package model;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector4f;
 
+import simple.Simple;
 import jrtr.RenderContext;
 import jrtr.Shape;
 

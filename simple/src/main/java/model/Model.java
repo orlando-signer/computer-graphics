@@ -1,4 +1,4 @@
-package simple;
+package model;
 
 import jrtr.RenderContext;
 import jrtr.Shape;

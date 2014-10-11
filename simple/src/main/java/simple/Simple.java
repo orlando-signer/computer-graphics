@@ -16,6 +16,7 @@ import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
+import model.Teapot;
 import jrtr.GLRenderPanel;
 import jrtr.Material;
 import jrtr.RenderContext;
@@ -24,8 +25,6 @@ import jrtr.SWRenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
-import jrtr.VertexData.Semantic;
-import jrtr.VertexData.VertexElement;
 
 /**
  * @author Orlando Signer
