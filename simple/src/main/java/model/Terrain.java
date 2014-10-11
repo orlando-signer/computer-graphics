@@ -49,7 +49,7 @@ public class Terrain implements Model {
                 vertices.add(new Point3d(x, this.terrain[x][z], z));
             }
         }
-
+        
         List<Integer> indices = new ArrayList<>((size - 1) * (size - 1) * 6);
         for (int z = 0; z < size - 1; z++) {
             int index = z * size;
@@ -74,7 +74,6 @@ public class Terrain implements Model {
         // vertexData.addElement(n, VertexData.Semantic.NORMAL, 3);
         // vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
         vertexData.addIndices(Ints.toArray(indices));
-        // tmp
         return new Shape(vertexData);
     }
 

@@ -56,7 +56,7 @@ public class Plane {
         Matrix4f rotZ = new Matrix4f();
         rotZ.rotZ(0 - Simple.currentstep);
 
-        getShapes().stream().forEach(s -> s.getTransformation().mul(rotZ, s.getTransformation()));
+        getShapes().forEach(s -> s.getTransformation().mul(rotZ, s.getTransformation()));
     }
 
     private void animatePropeller() {

@@ -128,7 +128,7 @@ public class Simple {
             Model m = new Terrain(257);
             shapes.add(m.createShape(renderContext));
 
-            shapes.stream().forEach(s -> sceneManager.addShape(s));
+            shapes.forEach(s -> sceneManager.addShape(s));
 
             // Add the scene to the renderer
             renderContext.setSceneManager(sceneManager);
@@ -222,7 +222,7 @@ public class Simple {
             Matrix4f rot = new Matrix4f();
             rot.setIdentity();
             rot.setRotation(new AxisAngle4f(a, (angle)));
-            shapes.stream().forEach(shape -> shape.getTransformation().mul(rot));
+            shapes.forEach(shape -> shape.getTransformation().mul(rot));
             v0 = v1;
         }
 
@@ -269,19 +269,19 @@ public class Simple {
             }
             case 'n': {
                 // Remove material from shape, and set "normal" shader
-                shapes.stream().forEach(s -> s.setMaterial(null));
+                shapes.forEach(s -> s.setMaterial(null));
                 renderContext.useShader(normalShader);
                 break;
             }
             case 'k': {
                 // Remove material from shape, and set "default" shader
-                shapes.stream().forEach(s -> s.setMaterial(null));
+                shapes.forEach(s -> s.setMaterial(null));
                 renderContext.useDefaultShader();
                 break;
             }
             case 'm': {
                 // Set a material for more complex shading of the shape
-                shapes.stream().forEach(s -> {
+                shapes.forEach(s -> {
                     if (s.getMaterial() == null)
                         s.setMaterial(material);
                     else
