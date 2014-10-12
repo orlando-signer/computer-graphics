@@ -125,7 +125,7 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
-            Model m = new Terrain(257);
+            Model m = new Terrain(3, 1F);
             shapes.add(m.createShape(renderContext));
 
             shapes.forEach(s -> sceneManager.addShape(s));
@@ -216,7 +216,7 @@ public class Simple {
             Vector3f a = new Vector3f();
             a.cross(v0, v1);
             float angle = v0.angle(v1);
-            if (angle < 0.1)
+            if (angle < 0.05)
                 return;
 
             Matrix4f rot = new Matrix4f();

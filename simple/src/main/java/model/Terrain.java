@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.vecmath.Point3d;
+import javax.vecmath.Vector3f;
 
 import jrtr.RenderContext;
 import jrtr.Shape;
@@ -17,6 +18,7 @@ import com.google.common.primitives.Ints;
 public class Terrain implements Model {
 
     private final int size;
+    private final float scale;
     private final float[][] terrain;
     private final Random rand;
 
@@ -24,13 +26,14 @@ public class Terrain implements Model {
      * @param size
      *            should be a power of two plus one
      */
-    public Terrain(int size) {
+    public Terrain(int size, float scale) {
         this.size = size;
+        this.scale = scale;
         this.terrain = new float[size][size];
         this.rand = new Random();
-        
-        for(int i = 0;i<size;i++)
-            for(int j = 0;j<size;j++)
+
+        for (int i = 0; i < size; i++)
+            for (int j = 0; j < size; j++)
                 this.terrain[i][j] = this.rand.nextFloat();
     }
 
@@ -49,7 +52,8 @@ public class Terrain implements Model {
                 vertices.add(new Point3d(x, this.terrain[x][z], z));
             }
         }
-        
+        vertices.forEach(p -> p.scale(scale));
+
         List<Integer> indices = new ArrayList<>((size - 1) * (size - 1) * 6);
         for (int z = 0; z < size - 1; z++) {
             int index = z * size;
@@ -64,17 +68,74 @@ public class Terrain implements Model {
             }
         }
 
+        List<Point3d> normals = new ArrayList<>(size * size);
+        Vector3f a;
+        Vector3f b;
+        Vector3f tmp = new Vector3f();
+        for (int z = 0; z < size; z++) {
+            for (int x = 0; x < size; x++) {
+                float height = terrain[x][z];
+                Vector3f normal = new Vector3f();
+                if (x != 0) {
+                    if (z != 0) {
+                        a = new Vector3f(0, terrain[x][z - 1] - height, -1);
+                        b = new Vector3f(-1, terrain[x - 1][z - 1] - height, -1);
+                        tmp.cross(a, b);
+                        normal.add(tmp);
+
+                        a = new Vector3f(-1, terrain[x - 1][z] - height, 0);
+                        tmp.cross(a, b);
+                        normal.add(tmp);
+                    }
+                    if (z != size - 1) {
+                        a = new Vector3f(-1, terrain[x - 1][z] - height, 0);
+                        b = new Vector3f(0, terrain[x][z + 1] - height, 1);
+                        tmp.cross(a, b);
+                        normal.add(tmp);
+                    }
+                }
+
+                if (x != size - 1) {
+                    if (z != 0) {
+                        a = new Vector3f(0, terrain[x][z - 1] - height, -1);
+                        b = new Vector3f(1, terrain[x + 1][z] - height, 0);
+                        tmp.cross(a, b);
+                        normal.add(tmp);
+                    }
+                    if (z != size - 1) {
+                        a = new Vector3f(1, terrain[x + 1][z] - height, 0);
+                        b = new Vector3f(1, terrain[x + 1][z + 1] - height, 1);
+                        tmp.cross(a, b);
+                        normal.add(tmp);
+
+                        a = new Vector3f(0, terrain[x][z + 1] - height, 1);
+                        tmp.cross(a, b);
+                        normal.add(tmp);
+                    }
+                }
+                normal.normalize();
+                normals.add(new Point3d(normal));
+            }
+        }
+        
+        System.out.println(normals);
+
         List<Color> colors = new ArrayList<>(size * size);
-        for (int i = 0; i < size * size; i++)
-            colors.add(Color.GREEN);
+        for (int z = 0; z < size; z++) {
+            for (int x = 0; x < size; x++) {
+                if (terrain[x][z] > 0.5F)
+                    colors.add(Color.WHITE);
+                else
+                    colors.add(Color.GREEN);
+            }
+        }
 
         VertexData vertexData = ctx.makeVertexData(size * size);
         vertexData.addElement(Utils.pointsToArray(vertices), VertexData.Semantic.POSITION, 3);
         vertexData.addElement(Utils.colorToArray(colors), VertexData.Semantic.COLOR, 3);
-        // vertexData.addElement(n, VertexData.Semantic.NORMAL, 3);
+        vertexData.addElement(Utils.pointsToArray(normals), VertexData.Semantic.NORMAL, 3);
         // vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
         vertexData.addIndices(Ints.toArray(indices));
         return new Shape(vertexData);
     }
-
 }
