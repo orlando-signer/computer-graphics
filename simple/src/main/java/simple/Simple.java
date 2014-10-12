@@ -16,9 +16,6 @@ import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import model.Model;
-import model.Teapot;
-import model.Terrain;
 import jrtr.GLRenderPanel;
 import jrtr.Material;
 import jrtr.RenderContext;
@@ -27,6 +24,8 @@ import jrtr.SWRenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
+import model.Model;
+import model.Terrain;
 
 /**
  * @author Orlando Signer
@@ -125,7 +124,7 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
-            Model m = new Terrain(3, 1F);
+            Model m = new Terrain(3, 30F);
             shapes.add(m.createShape(renderContext));
 
             shapes.forEach(s -> sceneManager.addShape(s));
@@ -134,6 +133,7 @@ public class Simple {
             renderContext.setSceneManager(sceneManager);
 
             initShaders();
+            renderContext.useShader(normalShader);
 
             initMaterial();
 
@@ -158,7 +158,7 @@ public class Simple {
             // Load some more shaders
             normalShader = renderContext.makeShader();
             try {
-                normalShader.load("../jrtr/shaders/normal.vert", "../jrtr/shaders/normal.frag");
+                normalShader.load("../jrtr/shaders/normal_col.vert", "../jrtr/shaders/normal_col.frag");
             } catch (Exception e) {
                 System.out.print("Problem with shader:\n");
                 System.out.print(e.getMessage());

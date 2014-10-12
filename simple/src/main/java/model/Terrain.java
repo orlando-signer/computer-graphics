@@ -52,7 +52,7 @@ public class Terrain implements Model {
                 vertices.add(new Point3d(x, this.terrain[x][z], z));
             }
         }
-        vertices.forEach(p -> p.scale(scale));
+        vertices.forEach(p -> p.scale(scale / size));
 
         List<Integer> indices = new ArrayList<>((size - 1) * (size - 1) * 6);
         for (int z = 0; z < size - 1; z++) {
@@ -72,8 +72,8 @@ public class Terrain implements Model {
         Vector3f a;
         Vector3f b;
         Vector3f tmp = new Vector3f();
-        for (int z = 0; z < size; z++) {
-            for (int x = 0; x < size; x++) {
+        for (int x = 0; x < size; x++) {
+            for (int z = 0; z < size; z++) {
                 float height = terrain[x][z];
                 Vector3f normal = new Vector3f();
                 if (x != 0) {
@@ -81,16 +81,19 @@ public class Terrain implements Model {
                         a = new Vector3f(0, terrain[x][z - 1] - height, -1);
                         b = new Vector3f(-1, terrain[x - 1][z - 1] - height, -1);
                         tmp.cross(a, b);
+                        tmp.normalize();
                         normal.add(tmp);
 
                         a = new Vector3f(-1, terrain[x - 1][z] - height, 0);
                         tmp.cross(a, b);
+                        tmp.normalize();
                         normal.add(tmp);
                     }
                     if (z != size - 1) {
                         a = new Vector3f(-1, terrain[x - 1][z] - height, 0);
                         b = new Vector3f(0, terrain[x][z + 1] - height, 1);
                         tmp.cross(a, b);
+                        tmp.normalize();
                         normal.add(tmp);
                     }
                 }
@@ -100,16 +103,19 @@ public class Terrain implements Model {
                         a = new Vector3f(0, terrain[x][z - 1] - height, -1);
                         b = new Vector3f(1, terrain[x + 1][z] - height, 0);
                         tmp.cross(a, b);
+                        tmp.normalize();
                         normal.add(tmp);
                     }
                     if (z != size - 1) {
                         a = new Vector3f(1, terrain[x + 1][z] - height, 0);
                         b = new Vector3f(1, terrain[x + 1][z + 1] - height, 1);
                         tmp.cross(a, b);
+                        tmp.normalize();
                         normal.add(tmp);
 
                         a = new Vector3f(0, terrain[x][z + 1] - height, 1);
                         tmp.cross(a, b);
+                        tmp.normalize();
                         normal.add(tmp);
                     }
                 }
@@ -117,16 +123,14 @@ public class Terrain implements Model {
                 normals.add(new Point3d(normal));
             }
         }
-        
-        System.out.println(normals);
 
         List<Color> colors = new ArrayList<>(size * size);
         for (int z = 0; z < size; z++) {
             for (int x = 0; x < size; x++) {
-                if (terrain[x][z] > 0.5F)
-                    colors.add(Color.WHITE);
-                else
-                    colors.add(Color.GREEN);
+                // if (terrain[x][z] > 0.5F)
+                // colors.add(Color.WHITE);
+                // else
+                colors.add(Color.GREEN);
             }
         }
 
