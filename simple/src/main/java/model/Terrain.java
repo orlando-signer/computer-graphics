@@ -68,69 +68,15 @@ public class Terrain implements Model {
             }
         }
 
-        List<Point3d> normals = new ArrayList<>(size * size);
-        Vector3f a;
-        Vector3f b;
-        Vector3f tmp = new Vector3f();
-        for (int x = 0; x < size; x++) {
-            for (int z = 0; z < size; z++) {
-                float height = terrain[x][z];
-                Vector3f normal = new Vector3f();
-                if (x != 0) {
-                    if (z != 0) {
-                        a = new Vector3f(0, terrain[x][z - 1] - height, -1);
-                        b = new Vector3f(-1, terrain[x - 1][z - 1] - height, -1);
-                        tmp.cross(a, b);
-                        tmp.normalize();
-                        normal.add(tmp);
-
-                        a = new Vector3f(-1, terrain[x - 1][z] - height, 0);
-                        tmp.cross(a, b);
-                        tmp.normalize();
-                        normal.add(tmp);
-                    }
-                    if (z != size - 1) {
-                        a = new Vector3f(-1, terrain[x - 1][z] - height, 0);
-                        b = new Vector3f(0, terrain[x][z + 1] - height, 1);
-                        tmp.cross(a, b);
-                        tmp.normalize();
-                        normal.add(tmp);
-                    }
-                }
-
-                if (x != size - 1) {
-                    if (z != 0) {
-                        a = new Vector3f(0, terrain[x][z - 1] - height, -1);
-                        b = new Vector3f(1, terrain[x + 1][z] - height, 0);
-                        tmp.cross(a, b);
-                        tmp.normalize();
-                        normal.add(tmp);
-                    }
-                    if (z != size - 1) {
-                        a = new Vector3f(1, terrain[x + 1][z] - height, 0);
-                        b = new Vector3f(1, terrain[x + 1][z + 1] - height, 1);
-                        tmp.cross(a, b);
-                        tmp.normalize();
-                        normal.add(tmp);
-
-                        a = new Vector3f(0, terrain[x][z + 1] - height, 1);
-                        tmp.cross(a, b);
-                        tmp.normalize();
-                        normal.add(tmp);
-                    }
-                }
-                normal.normalize();
-                normals.add(new Point3d(normal));
-            }
-        }
+        List<Point3d> normals = calculateNormals();
 
         List<Color> colors = new ArrayList<>(size * size);
         for (int z = 0; z < size; z++) {
             for (int x = 0; x < size; x++) {
-                // if (terrain[x][z] > 0.5F)
-                // colors.add(Color.WHITE);
-                // else
-                colors.add(Color.GREEN);
+                if (terrain[x][z] > 0.5F)
+                    colors.add(Color.WHITE);
+                else
+                    colors.add(Color.GREEN);
             }
         }
 
@@ -141,5 +87,61 @@ public class Terrain implements Model {
         // vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
         vertexData.addIndices(Ints.toArray(indices));
         return new Shape(vertexData);
+    }
+
+    private List<Point3d> calculateNormals() {
+        List<Point3d> normals = new ArrayList<>(size * size);
+        Vector3f a;
+        Vector3f b;
+        Vector3f tmp = new Vector3f();
+        // TODO Pretty sure there is an easier way to do this...
+        for (int x = 0; x < size; x++) {
+            for (int z = 0; z < size; z++) {
+                float height = terrain[x][z];
+                Vector3f normal = new Vector3f();
+                if (x != 0) {
+                    if (z != 0) {
+                        a = new Vector3f(0, terrain[x][z - 1] - height, -1);
+                        b = new Vector3f(-1, terrain[x - 1][z - 1] - height, -1);
+                        crossAndNormalize(a, b, tmp, normal);
+
+                        a = new Vector3f(-1, terrain[x - 1][z] - height, 0);
+                        crossAndNormalize(a, b, tmp, normal);
+                    }
+                    if (z != size - 1) {
+                        a = new Vector3f(-1, terrain[x - 1][z] - height, 0);
+                        b = new Vector3f(0, terrain[x][z + 1] - height, 1);
+                        crossAndNormalize(a, b, tmp, normal);
+                    }
+                }
+
+                if (x != size - 1) {
+                    if (z != 0) {
+                        a = new Vector3f(0, terrain[x][z - 1] - height, -1);
+                        b = new Vector3f(1, terrain[x + 1][z] - height, 0);
+                        crossAndNormalize(a, b, tmp, normal);
+                    }
+                    if (z != size - 1) {
+                        a = new Vector3f(1, terrain[x + 1][z] - height, 0);
+                        b = new Vector3f(1, terrain[x + 1][z + 1] - height, 1);
+                        crossAndNormalize(a, b, tmp, normal);
+
+                        a = new Vector3f(0, terrain[x][z + 1] - height, 1);
+                        crossAndNormalize(a, b, tmp, normal);
+                    }
+                }
+                normal.normalize();
+                normals.add(new Point3d(normal));
+            }
+        }
+        return normals;
+    }
+
+    private void crossAndNormalize(Vector3f a, Vector3f b, Vector3f tmp, Vector3f normal) {
+        tmp.cross(b, a);
+        tmp.normalize();
+        if (tmp.y < 0)
+            tmp.negate();
+        normal.add(tmp);
     }
 }
