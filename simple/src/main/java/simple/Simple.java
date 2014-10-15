@@ -34,15 +34,15 @@ import model.Terrain;
  *         shows a rotating cube.
  */
 public class Simple {
-    private int frameHeight = 500;
-    private int frameWidth = 500;
-    private RenderPanel renderPanel;
-    private RenderContext renderContext;
-    private Shader normalShader;
+    int frameHeight = 500;
+    int frameWidth = 500;
+    RenderPanel renderPanel;
+    RenderContext renderContext;
+     Shader normalShader;
     private Shader diffuseShader;
-    private Material material;
-    private SimpleSceneManager sceneManager;
-    private List<Shape> shapes;
+    Material material;
+    SimpleSceneManager sceneManager;
+    List<Shape> shapes;
     public static float currentstep, basicstep;
 
     private JFrame jFrame;
@@ -188,127 +188,8 @@ public class Simple {
         }
     }
 
-    /**
-     * A mouse listener for the main window of this application. This can be
-     * used to process mouse events.
-     */
-    public class SimpleMouseListener extends MouseAdapter {
-        private Vector3f v0;
 
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            int div = Math.min(frameHeight, frameWidth);
-            float x = ((float) e.getX()) / (div / 2);
-            float y = ((float) e.getY()) / (div / 2);
-            x = x - 1;
-            y = 1 - y;
-            float z = 1 - x * x - y * y;
-            z = (float) (z < 0 ? 0 : Math.sqrt(z));
-
-            Vector3f v1 = new Vector3f(x, y, z);
-            v1.normalize();
-
-            if (v0 == null) {
-                v0 = v1;
-                return;
-            }
-
-            Vector3f a = new Vector3f();
-            a.cross(v0, v1);
-            float angle = v0.angle(v1);
-            if (angle < 0.05)
-                return;
-
-            Matrix4f rot = new Matrix4f();
-            rot.setIdentity();
-            rot.setRotation(new AxisAngle4f(a, (angle)));
-            shapes.forEach(shape -> shape.getTransformation().mul(rot));
-            v0 = v1;
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            v0 = null;
-        }
-    }
-
-    /**
-     * A key listener for the main window. Use this to process key events.
-     * Currently this provides the following controls: 's': stop animation 'p':
-     * play animation '+': accelerate rotation '-': slow down rotation 'd':
-     * default shader 'n': shader using surface normals 'm': use a material for
-     * shading
-     */
-    public class SimpleKeyListener extends KeyAdapter {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            switch (e.getKeyChar()) {
-            case 'w': {
-                Vector3f cop = sceneManager.getCamera().getCenterOfProjection();
-                Vector3f lap = sceneManager.getCamera().getLookAtPoint();
-                Vector3f d = new Vector3f();
-                d.sub(cop, lap);
-                d.scale(1 / d.length());
-                cop.sub(d);
-                sceneManager.getCamera().setCenterOfProjection(cop);
-
-                break;
-            }
-            case 'h': {
-                // Stop animation
-                currentstep = 0;
-                break;
-            }
-            case 'p': {
-                // Resume animation
-                currentstep = basicstep;
-                break;
-            }
-            case '+': {
-                // Accelerate roation
-                currentstep += basicstep;
-                break;
-            }
-            case '-': {
-                // Slow down rotation
-                currentstep -= basicstep;
-                break;
-            }
-            case 'n': {
-                // Remove material from shape, and set "normal" shader
-                shapes.forEach(s -> s.setMaterial(null));
-                renderContext.useShader(normalShader);
-                break;
-            }
-            case 'k': {
-                // Remove material from shape, and set "default" shader
-                shapes.forEach(s -> s.setMaterial(null));
-                renderContext.useDefaultShader();
-                break;
-            }
-            case 'm': {
-                // Set a material for more complex shading of the shape
-                shapes.forEach(s -> {
-                    if (s.getMaterial() == null)
-                        s.setMaterial(material);
-                    else
-                        s.setMaterial(null);
-                    renderContext.useDefaultShader();
-                });
-                break;
-            }
-            case 'r': {
-                reload();
-                break;
-            }
-            }
-
-            // Trigger redrawing
-            renderPanel.getCanvas().repaint();
-        }
-    }
-
-    private void reload() {
+    void reload() {
         shapes = new ArrayList<>();
         jFrame.getContentPane().remove(renderPanel.getCanvas());
         renderPanel = createRenderPanel();
@@ -319,10 +200,10 @@ public class Simple {
     private RenderPanel createRenderPanel() {
         SimpleRenderPanel panel = new SimpleRenderPanel();
         // Add a mouse and key listener
-        SimpleMouseListener mouseListener = new SimpleMouseListener();
+        SimpleMouseListener mouseListener = new SimpleMouseListener(this);
         panel.getCanvas().addMouseListener(mouseListener);
         panel.getCanvas().addMouseMotionListener(mouseListener);
-        panel.getCanvas().addKeyListener(new SimpleKeyListener());
+        panel.getCanvas().addKeyListener(new SimpleKeyListener(this));
         panel.getCanvas().setFocusable(true);
         return panel;
     }
