@@ -29,19 +29,30 @@ public class Terrain implements Model {
     public Terrain(int size, float scale) {
         this.size = size;
         this.scale = scale;
-        this.terrain = new float[size][size];
-        this.rand = new Random();
+        terrain = new float[size][size];
+        rand = new Random();
 
-        for (int i = 0; i < size; i++)
-            for (int j = 0; j < size; j++)
-                this.terrain[i][j] = this.rand.nextFloat();
+        int squareSize = size;
+        while (squareSize > 1) {
+            for (int i = 0; i < size - 1; i += squareSize) {
+                for (int j = 0; j < size - 1; j += squareSize)
+                    square(i, j, squareSize);
+            }
+            squareSize /= 2;
+        }
+
     }
 
-    private void square(int x0, int x1, int y0, int y1) {
-        float val = (terrain[x0][y0] + terrain[x0][y1] + terrain[x1][y0] + terrain[x1][y1]) / 4;
-        val += rand.nextFloat() * 2 - 1;
-        terrain[(x0 + x1) / 2][(y0 + y1) / 2] = val;
+    private void square(int x, int y, int squareSize) {
+        float a = terrain[x][y];
+        float b = terrain[x][(y + squareSize) % size];
+        float c = terrain[(x + squareSize) % size][y];
+        float d = terrain[(x + squareSize) % size][(y + squareSize) % size];
+        terrain[x + squareSize / 2][y + squareSize / 2] = (a + b + c + d) / 4 + getRandom(squareSize);
+    }
 
+    private float getRandom(int squareSize) {
+        return squareSize * (rand.nextFloat() - 1 / 2) / 5;
     }
 
     @Override
@@ -49,7 +60,7 @@ public class Terrain implements Model {
         List<Point3d> vertices = new ArrayList<>(size * size);
         for (int z = 0; z < size; z++) {
             for (int x = 0; x < size; x++) {
-                vertices.add(new Point3d(x, this.terrain[x][z], z));
+                vertices.add(new Point3d(x, terrain[x][z], z));
             }
         }
         vertices.forEach(p -> p.scale(scale / size));

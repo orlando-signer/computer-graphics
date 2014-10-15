@@ -31,7 +31,7 @@ public class Simple {
     int frameWidth = 500;
     RenderPanel renderPanel;
     RenderContext renderContext;
-     Shader normalShader;
+    Shader normalShader;
     private Shader diffuseShader;
     Material material;
     SimpleSceneManager sceneManager;
@@ -117,7 +117,7 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
-            Model m = new Terrain(3, 3F);
+            Model m = new Terrain(257, 3F);
             shapes.add(m.createShape(renderContext));
 
             shapes.forEach(s -> sceneManager.addShape(s));
@@ -180,7 +180,6 @@ public class Simple {
             renderPanel.getCanvas().repaint();
         }
     }
-
 
     void reload() {
         shapes = new ArrayList<>();
