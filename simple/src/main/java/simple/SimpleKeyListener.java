@@ -7,9 +7,9 @@ import javax.vecmath.Vector3f;
 
 /**
  * A key listener for the main window. Use this to process key events. Currently
- * this provides the following controls: 's': stop animation 'p': play animation
- * '+': accelerate rotation '-': slow down rotation 'd': default shader 'n':
- * shader using surface normals 'm': use a material for shading
+ * this provides the following controls: 's': stop animbbbation 'p': play
+ * animation '+': accelerate rotation '-': slow down rotation 'd': default
+ * shader 'n': shader using surface normals 'm': use a material for shading
  */
 class SimpleKeyListener extends KeyAdapter {
 
@@ -19,18 +19,27 @@ class SimpleKeyListener extends KeyAdapter {
         this.simple = simple;
     }
 
+    private enum Direction {
+        W, A, S, D;
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyChar()) {
         case 'w': {
-            Vector3f cop = simple.sceneManager.getCamera().getCenterOfProjection();
-            Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
-            Vector3f d = new Vector3f();
-            d.sub(cop, lap);
-            d.scale(1 / d.length());
-            cop.sub(d);
-            simple.sceneManager.getCamera().setCenterOfProjection(cop);
-
+            move(Direction.W);
+            break;
+        }
+        case 'a': {
+            move(Direction.A);
+            break;
+        }
+        case 's': {
+            move(Direction.S);
+            break;
+        }
+        case 'd': {
+            move(Direction.D);
             break;
         }
         case 'h': {
@@ -84,5 +93,24 @@ class SimpleKeyListener extends KeyAdapter {
 
         // Trigger redrawing
         simple.renderPanel.getCanvas().repaint();
+    }
+
+    private void move(Direction dir) {
+        Vector3f cop = simple.sceneManager.getCamera().getCenterOfProjection();
+        Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
+        Vector3f up = simple.sceneManager.getCamera().getUpVector();
+        Vector3f d = new Vector3f();
+        d.sub(cop, lap);
+        d.scale(1 / d.length());
+        if (dir == Direction.W)
+            cop.sub(d);
+        else if (dir == Direction.S)
+            cop.add(d);
+        else if(dir==Direction.A){
+            d.cross(cop, up);
+            d.scale(1/d.length());
+            cop.add(d);
+        }
+        simple.sceneManager.getCamera().setCenterOfProjection(cop);
     }
 }
