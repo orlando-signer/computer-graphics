@@ -27,13 +27,13 @@ public class Camera {
     public Camera() {
         cameraMatrix = new Matrix4f();
         // first image
-        // centerOfProjection = new Vector3f(0, 0, 40);
-        // lookAtPoint = new Vector3f(0, 0, 0);
-        // upVector = new Vector3f(0, 1, 0);
+         centerOfProjection = new Vector3f(0, 5, 10);
+         lookAtPoint = new Vector3f(0, 0, 0);
+         upVector = new Vector3f(0, 1, 0);
         // second image
-        centerOfProjection = new Vector3f(-10, 40, 40);
-        lookAtPoint = new Vector3f(-5, 0, 0);
-        upVector = new Vector3f(0, 1, 0);
+//        centerOfProjection = new Vector3f(-10, 40, 40);
+//        lookAtPoint = new Vector3f(-5, 0, 0);
+//        upVector = new Vector3f(0, 1, 0);
 
         updateMatrix();
     }
@@ -49,29 +49,29 @@ public class Camera {
     }
 
     public Vector3f getCenterOfProjection() {
-        return centerOfProjection;
+        return new Vector3f(centerOfProjection);
     }
 
     public void setCenterOfProjection(Vector3f centerOfProjection) {
-        this.centerOfProjection = centerOfProjection;
+        this.centerOfProjection = new Vector3f(centerOfProjection);
         updateMatrix();
     }
 
     public Vector3f getLookAtPoint() {
-        return lookAtPoint;
+        return new Vector3f(lookAtPoint);
     }
 
     public void setLookAtPoint(Vector3f lookAtPoint) {
-        this.lookAtPoint = lookAtPoint;
+        this.lookAtPoint = new Vector3f(lookAtPoint);
         updateMatrix();
     }
 
     public Vector3f getUpVector() {
-        return upVector;
+        return new Vector3f(upVector);
     }
 
     public void setUpVector(Vector3f upVector) {
-        this.upVector = upVector;
+        this.upVector = new Vector3f(upVector);
         updateMatrix();
     }
 
