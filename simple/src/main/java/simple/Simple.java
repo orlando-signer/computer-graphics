@@ -124,7 +124,7 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
-            Model m = new Terrain(3, 30F);
+            Model m = new Terrain(3, 3F);
             shapes.add(m.createShape(renderContext));
 
             shapes.forEach(s -> sceneManager.addShape(s));
@@ -244,7 +244,14 @@ public class Simple {
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyChar()) {
             case 'w': {
-                sceneManager.getCamera().getCameraMatrix();
+                Vector3f cop = sceneManager.getCamera().getCenterOfProjection();
+                Vector3f lap = sceneManager.getCamera().getLookAtPoint();
+                Vector3f d = new Vector3f();
+                d.sub(cop, lap);
+                d.scale(1 / d.length());
+                cop.sub(d);
+                sceneManager.getCamera().setCenterOfProjection(cop);
+
                 break;
             }
             case 'h': {
