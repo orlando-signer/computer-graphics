@@ -11,6 +11,7 @@ public class Color {
     public static final Color BLUE = new Color(0, 0, 1);
     public static final Color BLACK = new Color(0, 0, 0);
     public static final Color WHITE = new Color(1, 1, 1);
+    public static final Color GRAY = new Color(0.5F, 0.5F, 0.5F);
 
     private final float r;
     private final float g;

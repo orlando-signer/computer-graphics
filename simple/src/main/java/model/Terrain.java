@@ -109,15 +109,7 @@ public class Terrain implements Model {
 
         List<Point3d> normals = calculateNormals();
 
-        List<Color> colors = new ArrayList<>(size * size);
-        for (int z = 0; z < size; z++) {
-            for (int x = 0; x < size; x++) {
-                if (terrain[x][z] > 0.5F)
-                    colors.add(Color.WHITE);
-                else
-                    colors.add(Color.GREEN);
-            }
-        }
+        List<Color> colors = colorize();
 
         VertexData vertexData = ctx.makeVertexData(size * size);
         vertexData.addElement(Utils.pointsToArray(vertices), VertexData.Semantic.POSITION, 3);
@@ -126,6 +118,23 @@ public class Terrain implements Model {
         // vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
         vertexData.addIndices(Ints.toArray(indices));
         return new Shape(vertexData);
+    }
+
+    private List<Color> colorize() {
+        float maxHeight = (float) (size * 0.25);
+        float minHeight = -maxHeight;
+        List<Color> colors = new ArrayList<>(size * size);
+        for (int z = 0; z < size; z++) {
+            for (int x = 0; x < size; x++) {
+                if (terrain[x][z] < 0.2 * maxHeight)
+                    colors.add(Color.GREEN);
+                else if (terrain[x][z] < 0.5 * maxHeight)
+                    colors.add(Color.GRAY);
+                else
+                    colors.add(Color.WHITE);
+            }
+        }
+        return colors;
     }
 
     private List<Point3d> calculateNormals() {
