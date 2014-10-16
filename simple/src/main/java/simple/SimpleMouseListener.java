@@ -61,9 +61,9 @@ public class SimpleMouseListener extends MouseAdapter {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        int div = Math.min(simple.frameHeight, simple.frameWidth);
-        float x = e.getX() / 5;
-        float y = e.getY() / 5;
+        int div = Math.min(simple.frameHeight, simple.frameWidth) / 100;
+        float x = e.getX() / div;
+        float y = e.getY() / div;
 
         float moveX = prevX - x;
         float moveY = prevY - y;
@@ -74,8 +74,10 @@ public class SimpleMouseListener extends MouseAdapter {
 
         simple.sceneManager.getCamera().setLookAtPoint(lap);
 
-        System.out.println(x + "/" + y);
         prevX = x;
         prevY = y;
+
+        // Trigger redrawing
+        simple.renderPanel.getCanvas().repaint();
     }
 }

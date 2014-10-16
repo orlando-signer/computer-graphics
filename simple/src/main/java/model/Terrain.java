@@ -122,7 +122,6 @@ public class Terrain implements Model {
 
     private List<Color> colorize() {
         float maxHeight = (float) (size * 0.25);
-        float minHeight = -maxHeight;
         List<Color> colors = new ArrayList<>(size * size);
         for (int z = 0; z < size; z++) {
             for (int x = 0; x < size; x++) {

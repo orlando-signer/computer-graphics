@@ -95,14 +95,14 @@ class SimpleKeyListener extends KeyAdapter {
         Vector3f cop = simple.sceneManager.getCamera().getCenterOfProjection();
         Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
         Vector3f d = new Vector3f();
-        d.sub(cop, lap);
+        d.sub(lap, cop);
         d.scale(1 / d.length() * Simple.currentstep);
         if (forwards) {
-            cop.sub(d);
-            lap.sub(d);
-        } else {
             cop.add(d);
             lap.add(d);
+        } else {
+            cop.sub(d);
+            lap.sub(d);
         }
         simple.sceneManager.getCamera().setCenterOfProjection(cop);
         simple.sceneManager.getCamera().setLookAtPoint(lap);
@@ -113,9 +113,9 @@ class SimpleKeyListener extends KeyAdapter {
         Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
         Vector3f up = simple.sceneManager.getCamera().getUpVector();
         Vector3f d = new Vector3f();
-        d.sub(cop, lap);
-        d.cross(cop, up);
-        if (!left)
+        d.sub(lap, cop);
+        d.cross(d, up);
+        if (left)
             d.negate();
         d.scale(1 / d.length() * Simple.currentstep);
         cop.add(d);
