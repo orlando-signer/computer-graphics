@@ -8,16 +8,19 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 /**
- * A mouse listener for the main window of this application. This can be
- * used to process mouse events.
+ * A mouse listener for the main window of this application. This can be used to
+ * process mouse events.
  */
 public class SimpleMouseListener extends MouseAdapter {
-    private Vector3f v0;
     private final Simple simple;
-    
-    SimpleMouseListener(Simple simple){
-        this.simple
-        = simple;
+
+    private Vector3f v0;
+
+    private float prevX = 0;
+    private float prevY = 0;
+
+    SimpleMouseListener(Simple simple) {
+        this.simple = simple;
     }
 
     @Override
@@ -54,5 +57,25 @@ public class SimpleMouseListener extends MouseAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
         v0 = null;
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        int div = Math.min(simple.frameHeight, simple.frameWidth);
+        float x = e.getX() / 5;
+        float y = e.getY() / 5;
+
+        float moveX = prevX - x;
+        float moveY = prevY - y;
+
+        Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
+        lap.x -= moveX;
+        lap.y -= moveY;
+
+        simple.sceneManager.getCamera().setLookAtPoint(lap);
+
+        System.out.println(x + "/" + y);
+        prevX = x;
+        prevY = y;
     }
 }

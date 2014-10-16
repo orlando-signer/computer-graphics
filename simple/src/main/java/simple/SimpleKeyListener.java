@@ -19,27 +19,23 @@ class SimpleKeyListener extends KeyAdapter {
         this.simple = simple;
     }
 
-    private enum Direction {
-        W, A, S, D;
-    }
-
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyChar()) {
         case 'w': {
-            move(Direction.W);
+            moveForwards(true);
             break;
         }
         case 'a': {
-            move(Direction.A);
+            moveSideways(true);
             break;
         }
         case 's': {
-            move(Direction.S);
+            moveForwards(false);
             break;
         }
         case 'd': {
-            move(Direction.D);
+            moveSideways(false);
             break;
         }
         case 'h': {
@@ -95,22 +91,37 @@ class SimpleKeyListener extends KeyAdapter {
         simple.renderPanel.getCanvas().repaint();
     }
 
-    private void move(Direction dir) {
+    private void moveForwards(boolean forwards) {
+        Vector3f cop = simple.sceneManager.getCamera().getCenterOfProjection();
+        Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
+        Vector3f d = new Vector3f();
+        d.sub(cop, lap);
+        d.scale(1 / d.length() * Simple.currentstep);
+        if (forwards) {
+            cop.sub(d);
+            lap.sub(d);
+        } else {
+            cop.add(d);
+            lap.add(d);
+        }
+        simple.sceneManager.getCamera().setCenterOfProjection(cop);
+        simple.sceneManager.getCamera().setLookAtPoint(lap);
+    }
+
+    private void moveSideways(boolean left) {
         Vector3f cop = simple.sceneManager.getCamera().getCenterOfProjection();
         Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
         Vector3f up = simple.sceneManager.getCamera().getUpVector();
         Vector3f d = new Vector3f();
         d.sub(cop, lap);
-        d.scale(1 / d.length());
-        if (dir == Direction.W)
-            cop.sub(d);
-        else if (dir == Direction.S)
-            cop.add(d);
-        else if(dir==Direction.A){
-            d.cross(cop, up);
-            d.scale(1/d.length());
-            cop.add(d);
-        }
+        d.cross(cop, up);
+        if (!left)
+            d.negate();
+        d.scale(1 / d.length() * Simple.currentstep);
+        cop.add(d);
+        lap.add(d);
         simple.sceneManager.getCamera().setCenterOfProjection(cop);
+        simple.sceneManager.getCamera().setLookAtPoint(lap);
+
     }
 }
