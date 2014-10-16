@@ -32,27 +32,55 @@ public class Terrain implements Model {
         terrain = new float[size][size];
         rand = new Random();
 
-        int squareSize = size;
-        while (squareSize > 1) {
-            for (int i = 0; i < size - 1; i += squareSize) {
-                for (int j = 0; j < size - 1; j += squareSize)
-                    square(i, j, squareSize);
-            }
-            squareSize /= 2;
-        }
+        terrain[0][0] = 2;
+        terrain[0][size - 1] = 1.2F;
+        terrain[size - 1][0] = 1.2F;
+        terrain[size - 1][size - 1] = 1.5F;
 
+        int squareLength = size - 1;
+        while (squareLength > 1) {
+            // square step
+            for (int i = 0; i < size - 1; i += squareLength) {
+                for (int j = 0; j < size - 1; j += squareLength)
+                    square(i, j, squareLength);
+            }
+
+            // diamond step
+            for (int i = 0; i < size - 1; i += squareLength) {
+                for (int j = 0; j < size - 1; j += squareLength) {
+                    diamond(i, j + squareLength / 2, squareLength);
+                    diamond(i + squareLength / 2, j, squareLength);
+                    diamond(i + squareLength / 2, j + squareLength, squareLength);
+                    diamond(i + squareLength, j + squareLength / 2, squareLength);
+                }
+            }
+
+            squareLength /= 2;
+        }
+        // for (float[] fs : terrain) {
+        // System.out.println(Arrays.toString(fs));
+        // }
     }
 
     private void square(int x, int y, int squareSize) {
         float a = terrain[x][y];
-        float b = terrain[x][(y + squareSize) % size];
-        float c = terrain[(x + squareSize) % size][y];
-        float d = terrain[(x + squareSize) % size][(y + squareSize) % size];
+        float b = (y + squareSize <= size) ? terrain[x][y + squareSize] : 0;
+        float c = (x + squareSize <= size) ? terrain[x + squareSize][y] : 0;
+        float d = (x + squareSize <= size && y + squareSize <= size) ? terrain[x + squareSize][y + squareSize] : 0;
         terrain[x + squareSize / 2][y + squareSize / 2] = (a + b + c + d) / 4 + getRandom(squareSize);
     }
 
+    private void diamond(int x, int y, int squareSize) {
+        int s = squareSize / 2;
+        float a = (x - s) >= 0 ? terrain[x - s][y] : 0;
+        float b = (x + s < size) ? terrain[x + s][y] : 0;
+        float c = (y - s >= 0) ? terrain[x][y - s] : 0;
+        float d = (y + s < size) ? terrain[x][y + s] : 0;
+        terrain[x][y] = (a + b + c + d) / 4 + getRandom(squareSize);
+    }
+
     private float getRandom(int squareSize) {
-        return squareSize * (rand.nextFloat() - 1 / 2) / 5;
+        return (squareSize) * (rand.nextFloat() - (0.5F)) / 2;
     }
 
     @Override
