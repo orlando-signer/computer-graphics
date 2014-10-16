@@ -26,6 +26,7 @@ public class SimpleMouseListener extends MouseAdapter {
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        noMouseMove = true;
         int div = Math.min(simple.frameHeight, simple.frameWidth);
         float x = ((float) e.getX()) / (div / 2);
         float y = ((float) e.getY()) / (div / 2);
@@ -62,31 +63,27 @@ public class SimpleMouseListener extends MouseAdapter {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-        noMouseMove = true;
-    }
-
-    @Override
     public void mouseMoved(MouseEvent e) {
+        System.out.println();
         if (noMouseMove)
             return;
-        // int div = Math.min(simple.frameHeight, simple.frameWidth) / 100;
-        // float x = e.getX() / div;
-        // float y = e.getY() / div;
-        //
-        // float moveX = prevX - x;
-        // float moveY = prevY - y;
-        //
-        // Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
-        // lap.x -= moveX;
-        // lap.y -= moveY;
-        //
-        // simple.sceneManager.getCamera().setLookAtPoint(lap);
-        //
-        // prevX = x;
-        // prevY = y;
-        //
-        // // Trigger redrawing
-        // simple.renderPanel.getCanvas().repaint();
+        int div = Math.min(simple.frameHeight, simple.frameWidth) / 100;
+        float x = e.getX() / div;
+        float y = e.getY() / div;
+
+        float moveX = prevX - x;
+        float moveY = prevY - y;
+
+        Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
+        lap.x -= moveX;
+        lap.y -= moveY;
+
+        simple.sceneManager.getCamera().setLookAtPoint(lap);
+
+        prevX = x;
+        prevY = y;
+
+        // Trigger redrawing
+        simple.renderPanel.getCanvas().repaint();
     }
 }
