@@ -13,6 +13,7 @@ import javax.vecmath.Vector3f;
  */
 public class SimpleMouseListener extends MouseAdapter {
     private final Simple simple;
+    private boolean noMouseMove = false;
 
     private Vector3f v0;
 
@@ -57,10 +58,18 @@ public class SimpleMouseListener extends MouseAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
         v0 = null;
+        noMouseMove = false;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        noMouseMove = true;
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        if (noMouseMove)
+            return;
         int div = Math.min(simple.frameHeight, simple.frameWidth) / 100;
         float x = e.getX() / div;
         float y = e.getY() / div;
