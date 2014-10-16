@@ -3,8 +3,6 @@ package simple;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import javax.vecmath.Vector3f;
-
 /**
  * A key listener for the main window. Use this to process key events. Currently
  * this provides the following controls: 's': stop animbbbation 'p': play
@@ -92,36 +90,37 @@ class SimpleKeyListener extends KeyAdapter {
     }
 
     private void moveForwards(boolean forwards) {
-        Vector3f cop = simple.sceneManager.getCamera().getCenterOfProjection();
-        Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
-        Vector3f d = new Vector3f();
-        d.sub(lap, cop);
-        d.scale(1 / d.length() * Simple.currentstep);
-        if (forwards) {
-            cop.add(d);
-            lap.add(d);
-        } else {
-            cop.sub(d);
-            lap.sub(d);
-        }
-        simple.sceneManager.getCamera().setCenterOfProjection(cop);
-        simple.sceneManager.getCamera().setLookAtPoint(lap);
+        // Vector3f cop =
+        // simple.sceneManager.getCamera().getCenterOfProjection();
+        // Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
+        // Vector3f d = new Vector3f();
+        // d.sub(lap, cop);
+        // d.scale(1 / d.length() * Simple.currentstep);
+        // if (forwards) {
+        // cop.add(d);
+        // lap.add(d);
+        // } else {
+        // cop.sub(d);
+        // lap.sub(d);
+        // }
+        // simple.sceneManager.getCamera().setCenterOfProjection(cop);
+        // simple.sceneManager.getCamera().setLookAtPoint(lap);
     }
 
     private void moveSideways(boolean left) {
-        Vector3f cop = simple.sceneManager.getCamera().getCenterOfProjection();
-        Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
-        Vector3f up = simple.sceneManager.getCamera().getUpVector();
-        Vector3f d = new Vector3f();
-        d.sub(lap, cop);
-        d.cross(d, up);
-        if (left)
-            d.negate();
-        d.scale(1 / d.length() * Simple.currentstep);
-        cop.add(d);
-        lap.add(d);
-        simple.sceneManager.getCamera().setCenterOfProjection(cop);
-        simple.sceneManager.getCamera().setLookAtPoint(lap);
-
+        // Vector3f cop =
+        // simple.sceneManager.getCamera().getCenterOfProjection();
+        // Vector3f lap = simple.sceneManager.getCamera().getLookAtPoint();
+        // Vector3f up = simple.sceneManager.getCamera().getUpVector();
+        // Vector3f d = new Vector3f();
+        // d.sub(lap, cop);
+        // d.cross(d, up);
+        // if (left)
+        // d.negate();
+        // d.scale(1 / d.length() * Simple.currentstep);
+        // cop.add(d);
+        // lap.add(d);
+        // simple.sceneManager.getCamera().setCenterOfProjection(cop);
+        // simple.sceneManager.getCamera().setLookAtPoint(lap);
     }
 }
