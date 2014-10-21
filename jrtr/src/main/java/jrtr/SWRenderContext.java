@@ -1,6 +1,8 @@
 package jrtr;
 
 import jrtr.RenderContext;
+import jrtr.VertexData.Semantic;
+import jrtr.VertexData.VertexElement;
 
 import java.awt.image.*;
 
@@ -77,6 +79,7 @@ public class SWRenderContext implements RenderContext {
 	 */
 	private void draw(RenderItem renderItem)
 	{
+	    VertexElement positions = renderItem.getShape().getVertexData().getElements().stream().filter(e -> e.getSemantic() == Semantic.POSITION).findFirst().get();
 	}
 	
 	/**
