@@ -17,7 +17,7 @@ import jrtr.SWRenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
-import model.Cube;
+import model.House;
 import model.Model;
 
 /**
@@ -117,7 +117,7 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
-            Model m = new Cube();
+            Model m = new House();
             shapes.add(m.createShape(renderContext));
 
             shapes.forEach(s -> sceneManager.addShape(s));
@@ -192,7 +192,7 @@ public class Simple {
     private RenderPanel createRenderPanel() {
         SimpleRenderPanel panel = new SimpleRenderPanel();
         // Add a mouse and key listener
-        SimpleMouseListener mouseListener = new SimpleMouseListener(this);
+        SimpleMouseListener mouseListener = new SimpleMouseListener(this, true);
         panel.getCanvas().addMouseListener(mouseListener);
         panel.getCanvas().addMouseMotionListener(mouseListener);
         panel.getCanvas().addKeyListener(new SimpleKeyListener(this));

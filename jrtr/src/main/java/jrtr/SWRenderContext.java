@@ -1,5 +1,8 @@
 package jrtr;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import javax.vecmath.Matrix4f;
@@ -66,9 +69,16 @@ public class SWRenderContext implements RenderContext {
      * Clear the framebuffer here.
      */
     private void beginFrame() {
+        // Code to clear the image from
+        // http://blog.keilly.com/2007/09/clear-bufferedimage-in-java.html
+        Graphics2D g2D = (Graphics2D) colorBuffer.getGraphics();
+        g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
+        Rectangle2D.Double rect = new Rectangle2D.Double(0, 0, colorBuffer.getWidth(), colorBuffer.getHeight());
+        g2D.fill(rect);
     }
 
     private void endFrame() {
+        colorBuffer.flush();
     }
 
     /**
@@ -80,7 +90,6 @@ public class SWRenderContext implements RenderContext {
                 .filter(e -> e.getSemantic() == Semantic.POSITION).findFirst().get();
         Matrix4f itemTransformation = new Matrix4f(renderItem.getT());
         Matrix4f camera = sceneManager.getCamera().getCameraMatrix();
-        camera.invert();
         Matrix4f projection = sceneManager.getFrustum().getProjectionMatrix();
 
         Matrix4f end = new Matrix4f();
@@ -88,29 +97,25 @@ public class SWRenderContext implements RenderContext {
         end.mul(camera);
         end.mul(itemTransformation);
         float[] data = positions.getData();
-        for (int i = 0; i < data.length / 3; i += 3) {
+        for (int i = 0; i < data.length; i += 3) {
             Vector4f p = new Vector4f(data[i], data[i + 1], data[i + 2], 1);
-            Matrix4f tmp = new Matrix4f();
-            tmp.setZero();
-            tmp.setColumn(0, p);
-            tmp.mul(end, tmp);
-            tmp.getColumn(0, p);
+            end.transform(p);
             p.scale(1 / p.w);
-            System.out.println(p);
-            if (p.x > 0 && p.y > 0) // check so it doesnt crash
+            if (p.x >= 0 && p.y >= 0 && p.x < colorBuffer.getWidth() && p.y < colorBuffer.getHeight())
                 colorBuffer.setRGB((int) p.x, (int) p.y, Integer.MAX_VALUE);
         }
     }
 
     private Matrix4f getViewpointTransformation(int width, int height) {
+        // lecture 3, page 56
         Matrix4f d = new Matrix4f();
         d.setIdentity();
-        d.m00 = (width) / 2;
-        d.m11 = (height) / 2;
-        d.m22 = (float) 1 / 2;
-        d.m03 = (width) / 2;
-        d.m13 = (height) / 2;
-        d.m23 = (float) 1 / 2;
+        d.m00 = width / 2F;
+        d.m11 = -height / 2F;
+        d.m22 = 1 / 2F;
+        d.m03 = width / 2F;
+        d.m13 = height / 2F;
+        d.m23 = 1 / 2F;
         return d;
     }
 
