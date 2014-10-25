@@ -4,12 +4,15 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
 
+import javax.vecmath.Color3f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector4f;
 
 import jrtr.VertexData.Semantic;
-import jrtr.VertexData.VertexElement;
 
 /**
  * A skeleton for a software renderer. It works in combination with
@@ -86,8 +89,7 @@ public class SWRenderContext implements RenderContext {
      * objects.
      */
     private void draw(RenderItem renderItem) {
-        VertexElement positions = renderItem.getShape().getVertexData().getElements().stream()
-                .filter(e -> e.getSemantic() == Semantic.POSITION).findFirst().get();
+        VertexData d = renderItem.getShape().getVertexData();
         Matrix4f itemTransformation = new Matrix4f(renderItem.getT());
         Matrix4f camera = sceneManager.getCamera().getCameraMatrix();
         Matrix4f projection = sceneManager.getFrustum().getProjectionMatrix();
@@ -96,14 +98,58 @@ public class SWRenderContext implements RenderContext {
         end.mul(viewportTransformation, projection);
         end.mul(camera);
         end.mul(itemTransformation);
-        float[] data = positions.getData();
-        for (int i = 0; i < data.length; i += 3) {
-            Vector4f p = new Vector4f(data[i], data[i + 1], data[i + 2], 1);
-            end.transform(p);
-            p.scale(1 / p.w);
-            if (p.x >= 0 && p.y >= 0 && p.x < colorBuffer.getWidth() && p.y < colorBuffer.getHeight())
-                colorBuffer.setRGB((int) p.x, (int) p.y, Integer.MAX_VALUE);
+        drawTriangles(renderItem.getShape().getVertexData(), end);
+    }
+
+    private void drawTriangles(VertexData data, Matrix4f transform) {
+        // Variable declarations
+        List<VertexData.VertexElement> vertexElements = data.getElements();
+        int indices[] = data.getIndices();
+        List<Vector4f> positions = new ArrayList<>(3);
+        List<Color3f> colors = new ArrayList<>(3);
+        List<Vector4f> normals = new ArrayList<>(3);
+        // Skeleton code to assemble triangle data
+        int k = 0; // index of triangle vertex, k is 0,1, or 2
+
+        // Loop over all vertex indices
+        for (int j = 0; j < indices.length; j++) {
+            int i = indices[j];
+            // Loop over all attributes of current vertex
+            ListIterator<VertexData.VertexElement> itr = vertexElements.listIterator(0);
+            while (itr.hasNext()) {
+                VertexData.VertexElement e = itr.next();
+                float[] d = e.getData();
+                if (e.getSemantic() == Semantic.POSITION) {
+                    Vector4f p = new Vector4f(d[i * 3], d[i * 3 + 1], d[i * 3 + 2], 1);
+                    transform.transform(p);
+                    positions.add(p);
+                } else if (e.getSemantic() == Semantic.COLOR) {
+                    Color3f c = new Color3f(d[i * 3], d[i * 3 + 1], d[i * 3 + 2]);
+                    colors.add(c);
+
+                } else if (e.getSemantic() == Semantic.NORMAL) {
+                    Vector4f n = new Vector4f(d[i * 3], d[i * 3 + 1], d[i * 3 + 2], 1);
+                    normals.add(n);
+                }
+
+            }
+            if (k == 2) {
+                // Draw the triangle with the collected three vertex
+                // positions, etc.
+                rasterizeTriangle(positions, colors, normals);
+                k = 0;
+                positions.clear();
+                colors.clear();
+            } else {
+                k++;
+            }
         }
+        System.out.println();
+    }
+
+    private void rasterizeTriangle(List<Vector4f> positions, List<Color3f> colors, List<Vector4f> normals) {
+        System.out.println(positions);
+
     }
 
     private Matrix4f getViewpointTransformation(int width, int height) {
