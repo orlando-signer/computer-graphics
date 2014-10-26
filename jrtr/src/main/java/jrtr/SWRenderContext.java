@@ -153,13 +153,14 @@ public class SWRenderContext implements RenderContext {
     }
 
     private void rasterizeTriangle(List<Vector4f> positions, List<Color3f> colors, List<Vector4f> normals) {
+        // rasterization, page 24
         Matrix3f coeff = new Matrix3f();
         for (int i = 0; i < 3; i++)
             coeff.setRow(i, positions.get(i).x, positions.get(i).y, positions.get(i).w);
         coeff.invert();
 
-        positions.forEach(p -> p.scale(1 / p.w));
         // Bounding box berechnen
+        positions.forEach(p -> p.scale(1 / p.w));
         int minX = Integer.MAX_VALUE;
         int maxX = Integer.MIN_VALUE;
         int minY = Integer.MAX_VALUE;
@@ -176,16 +177,17 @@ public class SWRenderContext implements RenderContext {
         maxY = Math.min(maxY, colorBuffer.getHeight());
 
         // System.out.println(minX + "/" + minY + " " + maxX + "/" + maxY);
-
+        System.out.println(positions);
         coeff.transpose();
         for (int x = minX; x < maxX; x++) {
             for (int y = minY; y < maxY; y++) {
+                // TODO think w should not be 1
                 Vector3f p = new Vector3f(x, y, 1);
                 coeff.transform(p);
-                if (p.x / p.z > 0 && p.y / p.z > 0 && p.z > 0) {
+                if (p.x > 0 && p.y > 0 && p.z > 0) {
                     if (zBuffer[x][y] < 1 / p.z) {
                         colorBuffer.setRGB(x, y, colors.get(0).get().getRGB());
-                        zBuffer[x][y] = -1 / p.z;
+                        zBuffer[x][y] = 1 / p.z;
                     }
                 }
             }

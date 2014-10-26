@@ -1,0 +1,52 @@
+package model;
+
+import jrtr.RenderContext;
+import jrtr.Shape;
+import jrtr.VertexData;
+
+/**
+ * @author Orlando Signer
+ *
+ */
+public class HalfCube implements Model {
+    @Override
+    public Shape createShape(RenderContext ctx) {
+        // Make a simple geometric object: a cube
+
+        // The vertex positions of the cube
+        float v[] = { -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1, // front face
+                -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, 1, -1, // left face
+                -1, -1, 1, -1, -1, -1, 1, -1, -1, 1, -1, 1 }; // bottom face
+
+        // The vertex normals
+        float n[] = { 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, // front face
+                -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, // left face
+                0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0 }; // bottom face
+
+        // The vertex colors
+        float c[] = { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, //
+                0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, //
+                0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1 };
+
+        // Texture coordinates
+        float uv[] = { 0, 0, 1, 0, 1, 1, 0, 1, //
+                0, 0, 1, 0, 1, 1, 0, 1, //
+                0, 0, 1, 0, 1, 1, 0, 1 };
+
+        // The triangles (three vertex indices for each triangle)
+        int indices[] = { 0, 2, 3, 0, 1, 2, // front face
+                4, 6, 7, 4, 5, 6, // left face
+                8, 10, 11, 8, 9, 10 }; // bottom face
+
+        // Construct a data structure that stores the vertices, their
+        // attributes, and the triangle mesh connectivity
+        VertexData vertexData = ctx.makeVertexData(12);
+        vertexData.addElement(c, VertexData.Semantic.COLOR, 3);
+        vertexData.addElement(v, VertexData.Semantic.POSITION, 3);
+        vertexData.addElement(n, VertexData.Semantic.NORMAL, 3);
+        vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
+        vertexData.addIndices(indices);
+
+        return new jrtr.Shape(vertexData);
+    }
+}

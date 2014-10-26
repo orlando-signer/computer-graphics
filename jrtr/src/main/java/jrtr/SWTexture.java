@@ -7,7 +7,8 @@ import java.io.IOException;
  */
 public class SWTexture implements Texture {
 
-	public void load(String fileName) throws IOException {
-	}
+    @Override
+    public void load(String fileName) throws IOException {
+    }
 
 }
