@@ -27,13 +27,13 @@ public class Camera {
     public Camera() {
         cameraMatrix = new Matrix4f();
         // first image
-        // centerOfProjection = new Vector3f(0, 0, 10);
-        // lookAtPoint = new Vector3f(0, 0, 0);
-        // upVector = new Vector3f(0, 1, 0);
-        // second image
-        centerOfProjection = new Vector3f(-10, 40, 40);
-        lookAtPoint = new Vector3f(-5, 0, 0);
+        centerOfProjection = new Vector3f(0, 0, 10);
+        lookAtPoint = new Vector3f(0, 0, 0);
         upVector = new Vector3f(0, 1, 0);
+        // second image
+        // centerOfProjection = new Vector3f(-10, 40, 40);
+        // lookAtPoint = new Vector3f(-5, 0, 0);
+        // upVector = new Vector3f(0, 1, 0);
 
         updateMatrix();
     }

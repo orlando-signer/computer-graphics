@@ -159,20 +159,23 @@ public class SWRenderContext implements RenderContext {
         coeff.invert();
 
         positions.forEach(p -> p.scale(1 / p.w));
+        // Bounding box berechnen
         int minX = Integer.MAX_VALUE;
         int maxX = Integer.MIN_VALUE;
         int minY = Integer.MAX_VALUE;
         int maxY = Integer.MIN_VALUE;
         for (Vector4f p : positions) {
-            minX = (int) (p.x < minX ? p.x : minX);
-            maxX = (int) (p.x > maxX ? p.x : maxX);
-            minY = (int) (p.y < minY ? p.y : minY);
-            maxY = (int) (p.y > maxY ? p.y : maxY);
+            minX = p.x < minX ? (int) p.x : minX;
+            maxX = p.x > maxX ? (int) p.x : maxX;
+            minY = p.y < minY ? (int) p.y : minY;
+            maxY = p.y > maxY ? (int) p.y : maxY;
         }
         minX = Math.max(0, minX);
         maxX = Math.min(maxX, colorBuffer.getWidth());
         minY = Math.max(0, minY);
         maxY = Math.min(maxY, colorBuffer.getHeight());
+
+        // System.out.println(minX + "/" + minY + " " + maxX + "/" + maxY);
 
         coeff.transpose();
         for (int x = minX; x < maxX; x++) {
@@ -181,8 +184,8 @@ public class SWRenderContext implements RenderContext {
                 coeff.transform(p);
                 if (p.x / p.z > 0 && p.y / p.z > 0 && p.z > 0) {
                     if (zBuffer[x][y] < 1 / p.z) {
-                        colorBuffer.setRGB(x, y, Integer.MAX_VALUE);
-                        zBuffer[x][y] = 1 / p.z;
+                        colorBuffer.setRGB(x, y, colors.get(0).get().getRGB());
+                        zBuffer[x][y] = -1 / p.z;
                     }
                 }
             }
