@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.ListIterator;
 
 import javax.vecmath.Color3f;
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import jrtr.VertexData.Semantic;
@@ -148,7 +150,38 @@ public class SWRenderContext implements RenderContext {
     }
 
     private void rasterizeTriangle(List<Vector4f> positions, List<Color3f> colors, List<Vector4f> normals) {
-        System.out.println(positions);
+        Matrix3f coeff = new Matrix3f();
+        for (int i = 0; i < 3; i++)
+            coeff.setRow(i, positions.get(i).x, positions.get(i).y, positions.get(i).w);
+        coeff.invert();
+
+        positions.forEach(p -> p.scale(1 / p.w));
+        int minX = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxY = Integer.MIN_VALUE;
+        for (Vector4f p : positions) {
+            minX = (int) (p.x < minX ? p.x : minX);
+            maxX = (int) (p.x > maxX ? p.x : maxX);
+            minY = (int) (p.y < minY ? p.y : minY);
+            maxY = (int) (p.y > maxY ? p.y : maxY);
+        }
+        minX = Math.max(0, minX);
+        maxX = Math.min(maxX, colorBuffer.getWidth());
+        minY = Math.max(0, minY);
+        maxY = Math.min(maxY, colorBuffer.getHeight());
+
+        coeff.transpose();
+        for (int x = minX; x < maxX; x++) {
+            for (int y = minY; y < maxY; y++) {
+                Vector3f p = new Vector3f(x, y, 1);
+                coeff.transform(p);
+                if (p.x / p.z > 0 && p.y / p.z > 0 && p.z > 0) {
+                    colorBuffer.setRGB(x, y, Integer.MAX_VALUE);
+
+                }
+            }
+        }
 
     }
 
