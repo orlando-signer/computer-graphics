@@ -1,6 +1,7 @@
 package jrtr;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -217,8 +218,47 @@ public class SWRenderContext implements RenderContext {
         point.scaleAdd(p.z, textureCoords.get(2), point);
         point.y = 1 - point.y;
         BufferedImage img = ((SWTexture) material.texture).getTexture();
-        point.x = Math.min(point.x * img.getWidth(), img.getWidth());
-        point.y = Math.min(point.y * img.getHeight(), img.getHeight());
+
+        // evaluate nearest neightbour
+        return nearestNeighbour(point, img);
+        // evaluate bilinear
+        // return bilinear(p, point, img);
+    }
+
+    private int bilinear(Vector3f p, Point2f point, BufferedImage img) {
+        point.x = Math.min(point.x * img.getWidth(), img.getWidth() - 2);
+        point.y = Math.min(point.y * img.getHeight(), img.getHeight() - 2);
+
+        Color3f[] colors = new Color3f[4];
+        colors[0] = new Color3f(new Color(img.getRGB((int) point.x, (int) point.y)));
+        colors[1] = new Color3f(new Color(img.getRGB((int) point.x + 1, (int) point.y)));
+        colors[2] = new Color3f(new Color(img.getRGB((int) point.x, (int) point.y + 1)));
+        colors[3] = new Color3f(new Color(img.getRGB((int) point.x + 1, (int) point.y + 1)));
+
+        float w = (point.x - (int) point.x);
+        Color3f c1 = new Color3f();
+        c1.scale(1 - w, colors[0]);
+        c1.scaleAdd(w, colors[1], c1);
+
+        Color3f c2 = new Color3f();
+        c2.scale(1 - w, colors[2]);
+        c2.scaleAdd(w, colors[3], c2);
+
+        w = (point.y - (int) point.y);
+        Color3f finalColor = new Color3f();
+        finalColor.scale(1 - w, c1);
+        finalColor.scaleAdd(w, c2, finalColor);
+
+        return finalColor.get().getRGB();
+    }
+
+    private int nearestNeighbour(Point2f point, BufferedImage img) {
+        point.x = Math.min(point.x * img.getWidth(), img.getWidth() - 1);
+        point.y = Math.min(point.y * img.getHeight(), img.getHeight() - 1);
+
+        point.x = Math.round(point.x);
+        point.y = Math.round(point.y);
+
         int rgb = img.getRGB((int) point.x, (int) point.y);
         return rgb;
     }
