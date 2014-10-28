@@ -11,6 +11,7 @@ import java.util.ListIterator;
 import javax.vecmath.Color3f;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Point2f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
@@ -103,17 +104,18 @@ public class SWRenderContext implements RenderContext {
         end.mul(viewportTransformation, projection);
         end.mul(camera);
         end.mul(itemTransformation);
-        drawTriangles(renderItem.getShape().getVertexData(), end);
+        drawTriangles(renderItem.getShape().getVertexData(), renderItem.getShape().getMaterial(), end);
+
     }
 
-    private void drawTriangles(VertexData data, Matrix4f transform) {
+    private void drawTriangles(VertexData data, Material material, Matrix4f transform) {
         // Variable declarations
         List<VertexData.VertexElement> vertexElements = data.getElements();
         int indices[] = data.getIndices();
         List<Vector4f> positions = new ArrayList<>(3);
         List<Color3f> colors = new ArrayList<>(3);
         List<Vector4f> normals = new ArrayList<>(3);
-        // Skeleton code to assemble triangle data
+        List<Point2f> textureCoords = new ArrayList<>(3);
         int k = 0; // index of triangle vertex, k is 0,1, or 2
 
         // Loop over all vertex indices
@@ -131,27 +133,32 @@ public class SWRenderContext implements RenderContext {
                 } else if (e.getSemantic() == Semantic.COLOR) {
                     Color3f c = new Color3f(d[i * 3], d[i * 3 + 1], d[i * 3 + 2]);
                     colors.add(c);
-
                 } else if (e.getSemantic() == Semantic.NORMAL) {
                     Vector4f n = new Vector4f(d[i * 3], d[i * 3 + 1], d[i * 3 + 2], 1);
                     normals.add(n);
+                } else if (e.getSemantic() == Semantic.TEXCOORD) {
+                    Point2f p = new Point2f(d[i * 2], d[i * 2 + 1]);
+                    textureCoords.add(p);
                 }
 
             }
             if (k == 2) {
                 // Draw the triangle with the collected three vertex
                 // positions, etc.
-                rasterizeTriangle(positions, colors, normals);
+                rasterizeTriangle(positions, colors, normals, textureCoords, material);
                 k = 0;
                 positions.clear();
                 colors.clear();
+                normals.clear();
+                textureCoords.clear();
             } else {
                 k++;
             }
         }
     }
 
-    private void rasterizeTriangle(List<Vector4f> positions, List<Color3f> colors, List<Vector4f> normals) {
+    private void rasterizeTriangle(List<Vector4f> positions, List<Color3f> colors, List<Vector4f> normals,
+            List<Point2f> textureCoords, Material material) {
         // rasterization, page 24
         Matrix3f edge = new Matrix3f();
         for (int i = 0; i < 3; i++)
@@ -177,6 +184,7 @@ public class SWRenderContext implements RenderContext {
 
         Matrix3f edgeTranspose = new Matrix3f(edge);
         edgeTranspose.transpose();
+
         for (int x = minX; x < maxX; x++) {
             for (int y = minY; y < maxY; y++) {
                 Vector3f v = new Vector3f(1, 1, 1);
@@ -184,23 +192,47 @@ public class SWRenderContext implements RenderContext {
                 float w = v.x * x + v.y * y + v.z;
                 Vector3f p = new Vector3f(x, y, 1);
                 edgeTranspose.transform(p);
+                p.scale(1 / (p.x + p.y + p.z));
+
                 if (p.x > 0 && p.y > 0 && p.z > 0) {
                     if (zBuffer[x][y] < w) {
-                        Color3f color = new Color3f();
-                        color.scaleAdd(p.x, colors.get(0), color);
-                        color.scaleAdd(p.y, colors.get(1), color);
-                        color.scaleAdd(p.z, colors.get(2), color);
-                        color.scale(10); // Scale colors so they are not as dark
-                        color.x = colorCheck(color.x);
-                        color.y = colorCheck(color.y);
-                        color.z = colorCheck(color.z);
-                        colorBuffer.setRGB(x, y, color.get().getRGB());
+                        int rgb;
+                        if (material != null && material.texture != null)
+                            rgb = getTextureColor(textureCoords, material, p);
+                        else
+                            rgb = getColor(colors, p).get().getRGB();
+
+                        colorBuffer.setRGB(x, y, rgb);
                         zBuffer[x][y] = w;
                     }
                 }
             }
         }
+    }
 
+    private int getTextureColor(List<Point2f> textureCoords, Material material, Vector3f p) {
+        Point2f point = new Point2f();
+        point.scaleAdd(p.x, textureCoords.get(0), point);
+        point.scaleAdd(p.y, textureCoords.get(1), point);
+        point.scaleAdd(p.z, textureCoords.get(2), point);
+        point.y = 1 - point.y;
+        BufferedImage img = ((SWTexture) material.texture).getTexture();
+        point.x = Math.min(point.x * img.getWidth(), img.getWidth());
+        point.y = Math.min(point.y * img.getHeight(), img.getHeight());
+        int rgb = img.getRGB((int) point.x, (int) point.y);
+        return rgb;
+    }
+
+    private Color3f getColor(List<Color3f> colors, Vector3f p) {
+        Color3f color = new Color3f();
+        color.scaleAdd(p.x, colors.get(0), color);
+        color.scaleAdd(p.y, colors.get(1), color);
+        color.scaleAdd(p.z, colors.get(2), color);
+        color.scale(10); // Scale colors so they are not as dark
+        color.x = colorCheck(color.x);
+        color.y = colorCheck(color.y);
+        color.z = colorCheck(color.z);
+        return color;
     }
 
     private float colorCheck(float c) {
