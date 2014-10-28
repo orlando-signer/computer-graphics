@@ -18,7 +18,7 @@ import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
 import model.Model;
-import model.Square;
+import model.Torus;
 
 /**
  * @author Orlando Signer
@@ -117,7 +117,7 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
-            Model m = new Square();
+            Model m = new Torus(20, 20, 3, 1);
             shapes.add(m.createShape(renderContext));
 
             shapes.forEach(s -> sceneManager.addShape(s));
@@ -140,7 +140,7 @@ public class Simple {
             material.shader = diffuseShader;
             material.texture = renderContext.makeTexture();
             try {
-                material.texture.load("../textures/plant.jpg");
+                material.texture.load("../textures/donut.jpg");
             } catch (Exception e) {
                 System.out.print("Could not load texture.\n");
                 System.out.print(e.getMessage());

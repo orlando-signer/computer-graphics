@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3d;
 
 import jrtr.RenderContext;
@@ -45,6 +46,7 @@ public class Torus implements Model {
         float tmpV = 0;
         int verticesCount = radiusSegments * ringRadiusSegments;
         List<Point3d> vertices = new ArrayList<>(verticesCount);
+        List<Point2f> textures = new ArrayList<>(verticesCount);
         for (int u = 0; u < radiusSegments; u++) {
             for (int v = 0; v < ringRadiusSegments; v++) {
                 tmpU = angle * u;
@@ -53,8 +55,8 @@ public class Torus implements Model {
                 y = (float) ((radius + ringRadius * Math.cos(tmpV)) * Math.sin(tmpU));
                 z = (float) (ringRadius * Math.sin(tmpV));
                 vertices.add(new Point3d(x, y, z));
+                textures.add(new Point2f(((float) u) / radiusSegments, ((float) v) / ringRadiusSegments));
             }
-
         }
 
         List<Integer> indices = new ArrayList<>(verticesCount);
@@ -88,6 +90,7 @@ public class Torus implements Model {
 
         VertexData vertexData = ctx.makeVertexData(verticesCount);
         vertexData.addElement(Utils.pointsToArray(vertices), VertexData.Semantic.POSITION, 3);
+        vertexData.addElement(Utils.points2fToArray(textures), VertexData.Semantic.TEXCOORD, 2);
         vertexData.addElement(Utils.colorToArray(colors), VertexData.Semantic.COLOR, 3);
         vertexData.addIndices(Ints.toArray(indices));
 

@@ -2,6 +2,7 @@ package util;
 
 import java.util.Collection;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3d;
 
 /**
@@ -17,6 +18,17 @@ public class Utils {
             f[i++] = (float) p.x;
             f[i++] = (float) p.y;
             f[i++] = (float) p.z;
+        }
+        return f;
+    }
+
+    public static float[] points2fToArray(Collection<Point2f> points) {
+        float[] f = new float[points.size() * 2];
+        int i = 0;
+
+        for (Point2f p : points) {
+            f[i++] = p.x;
+            f[i++] = p.y;
         }
         return f;
     }
