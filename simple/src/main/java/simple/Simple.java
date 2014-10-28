@@ -17,7 +17,7 @@ import jrtr.SWRenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
-import model.HalfCube;
+import model.Cube;
 import model.Model;
 
 /**
@@ -117,7 +117,7 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
-            Model m = new HalfCube();
+            Model m = new Cube();
             shapes.add(m.createShape(renderContext));
 
             shapes.forEach(s -> sceneManager.addShape(s));
@@ -130,7 +130,7 @@ public class Simple {
 
             initMaterial();
 
-            basicstep = 0.01f;
+            basicstep = 0.05f;
             currentstep = basicstep;
         }
 

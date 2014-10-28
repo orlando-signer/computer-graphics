@@ -149,15 +149,14 @@ public class SWRenderContext implements RenderContext {
                 k++;
             }
         }
-        System.out.println();
     }
 
     private void rasterizeTriangle(List<Vector4f> positions, List<Color3f> colors, List<Vector4f> normals) {
         // rasterization, page 24
-        Matrix3f coeff = new Matrix3f();
+        Matrix3f edge = new Matrix3f();
         for (int i = 0; i < 3; i++)
-            coeff.setRow(i, positions.get(i).x, positions.get(i).y, positions.get(i).w);
-        coeff.invert();
+            edge.setRow(i, positions.get(i).x, positions.get(i).y, positions.get(i).w);
+        edge.invert();
 
         // Bounding box berechnen
         positions.forEach(p -> p.scale(1 / p.w));
@@ -176,23 +175,36 @@ public class SWRenderContext implements RenderContext {
         minY = Math.max(0, minY);
         maxY = Math.min(maxY, colorBuffer.getHeight());
 
-        // System.out.println(minX + "/" + minY + " " + maxX + "/" + maxY);
-        System.out.println(positions);
-        coeff.transpose();
+        Matrix3f edgeTranspose = new Matrix3f(edge);
+        edgeTranspose.transpose();
         for (int x = minX; x < maxX; x++) {
             for (int y = minY; y < maxY; y++) {
-                // TODO think w should not be 1
+                Vector3f v = new Vector3f(1, 1, 1);
+                edge.transform(v);
+                float w = v.x * x + v.y * y + v.z;
                 Vector3f p = new Vector3f(x, y, 1);
-                coeff.transform(p);
+                edgeTranspose.transform(p);
                 if (p.x > 0 && p.y > 0 && p.z > 0) {
-                    if (zBuffer[x][y] < 1 / p.z) {
-                        colorBuffer.setRGB(x, y, colors.get(0).get().getRGB());
-                        zBuffer[x][y] = 1 / p.z;
+                    if (zBuffer[x][y] < w) {
+                        Color3f color = new Color3f();
+                        color.scaleAdd(p.x, colors.get(0), color);
+                        color.scaleAdd(p.y, colors.get(1), color);
+                        color.scaleAdd(p.z, colors.get(2), color);
+                        color.scale(10); // Scale colors so they are not as dark
+                        color.x = colorCheck(color.x);
+                        color.y = colorCheck(color.y);
+                        color.z = colorCheck(color.z);
+                        colorBuffer.setRGB(x, y, color.get().getRGB());
+                        zBuffer[x][y] = w;
                     }
                 }
             }
         }
 
+    }
+
+    private float colorCheck(float c) {
+        return (c < 0) ? 0 : ((c > 1) ? 1 : c);
     }
 
     private Matrix4f getViewpointTransformation(int width, int height) {
