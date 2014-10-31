@@ -2,7 +2,7 @@ package simple;
 
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentEvent;b
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -183,7 +183,6 @@ public class Simple {
     }
 
     void reload() {
-        System.out.println("reload");
         shapes = new ArrayList<>();
         jFrame.getContentPane().remove(renderPanel.getCanvas());
         jFrame.revalidate(); // show window
