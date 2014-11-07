@@ -220,9 +220,9 @@ public class SWRenderContext implements RenderContext {
         BufferedImage img = ((SWTexture) material.texture).getTexture();
 
         // evaluate nearest neightbour
-        return nearestNeighbour(point, img);
+//        return nearestNeighbour(point, img);
         // evaluate bilinear
-        // return bilinear(p, point, img);
+         return bilinear(p, point, img);
     }
 
     @SuppressWarnings("unused")

@@ -1,7 +1,8 @@
 package simple;
 
+import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentEvent;b
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -106,7 +107,7 @@ public class Simple {
     public final class SimpleRenderPanel extends GLRenderPanel {
 
         /**
-         * Initialization call-back. We initialize our renderer here.
+         * Initialization call-back. We inibtialize our renderer here.
          *
          * @param r
          *            the render context that is associated with this render
@@ -184,9 +185,17 @@ public class Simple {
     void reload() {
         shapes = new ArrayList<>();
         jFrame.getContentPane().remove(renderPanel.getCanvas());
+        jFrame.revalidate(); // show window
         renderPanel = createRenderPanel();
         jFrame.getContentPane().add(renderPanel.getCanvas());
-        jFrame.validate(); // show window
+        // for some reasons, its neccessary to change the size to achieve a repaint
+        Dimension size = jFrame.getSize();
+        size.height += 1;
+        size.width += 1;
+        jFrame.setSize(size);
+        jFrame.revalidate();
+        jFrame.requestFocus();
+        renderPanel.getCanvas().requestFocus();
     }
 
     private RenderPanel createRenderPanel() {
