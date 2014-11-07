@@ -2,7 +2,7 @@ package simple;
 
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;b
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -19,6 +19,7 @@ import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
 import model.Cube;
+import model.Cylinder;
 import model.Model;
 
 /**
@@ -118,7 +119,7 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
-            Model m = new Cube();
+            Model m = new Cylinder(10, 3, 5);
             shapes.add(m.createShape(renderContext));
 
             shapes.forEach(s -> sceneManager.addShape(s));
@@ -188,7 +189,8 @@ public class Simple {
         jFrame.revalidate(); // show window
         renderPanel = createRenderPanel();
         jFrame.getContentPane().add(renderPanel.getCanvas());
-        // for some reasons, its neccessary to change the size to achieve a repaint
+        // for some reasons, its neccessary to change the size to achieve a
+        // repaint
         Dimension size = jFrame.getSize();
         size.height += 1;
         size.width += 1;

@@ -89,7 +89,7 @@ public class Torus implements Model {
         }
 
         VertexData vertexData = ctx.makeVertexData(verticesCount);
-        vertexData.addElement(Utils.pointsToArray(vertices), VertexData.Semantic.POSITION, 3);
+        vertexData.addElement(Utils.tuple3dToArray(vertices), VertexData.Semantic.POSITION, 3);
         vertexData.addElement(Utils.points2fToArray(textures), VertexData.Semantic.TEXCOORD, 2);
         vertexData.addElement(Utils.colorToArray(colors), VertexData.Semantic.COLOR, 3);
         vertexData.addIndices(Ints.toArray(indices));

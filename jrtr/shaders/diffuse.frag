@@ -17,4 +17,3 @@ void main()
 	// The built-in GLSL function "texture" performs the texture lookup
 	frag_shaded = ndotl * texture(myTexture, frag_texcoord);
 }
-

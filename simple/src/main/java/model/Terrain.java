@@ -112,9 +112,9 @@ public class Terrain implements Model {
         List<Color> colors = colorize();
 
         VertexData vertexData = ctx.makeVertexData(size * size);
-        vertexData.addElement(Utils.pointsToArray(vertices), VertexData.Semantic.POSITION, 3);
+        vertexData.addElement(Utils.tuple3dToArray(vertices), VertexData.Semantic.POSITION, 3);
         vertexData.addElement(Utils.colorToArray(colors), VertexData.Semantic.COLOR, 3);
-        vertexData.addElement(Utils.pointsToArray(normals), VertexData.Semantic.NORMAL, 3);
+        vertexData.addElement(Utils.tuple3dToArray(normals), VertexData.Semantic.NORMAL, 3);
         // vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
         vertexData.addIndices(Ints.toArray(indices));
         return new Shape(vertexData);
