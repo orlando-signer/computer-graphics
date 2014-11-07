@@ -146,7 +146,7 @@ public class SWRenderContext implements RenderContext {
             if (k == 2) {
                 // Draw the triangle with the collected three vertex
                 // positions, etc.
-                rasterizeTriangle(positions, colors, normals, textureCoords, material);
+                rasterizeTriangle(positions, colors, textureCoords, material);
                 k = 0;
                 positions.clear();
                 colors.clear();
@@ -158,8 +158,8 @@ public class SWRenderContext implements RenderContext {
         }
     }
 
-    private void rasterizeTriangle(List<Vector4f> positions, List<Color3f> colors, List<Vector4f> normals,
-            List<Point2f> textureCoords, Material material) {
+    private void rasterizeTriangle(List<Vector4f> positions, List<Color3f> colors, List<Point2f> textureCoords,
+            Material material) {
         // rasterization, page 24
         Matrix3f edge = new Matrix3f();
         for (int i = 0; i < 3; i++)
@@ -225,6 +225,7 @@ public class SWRenderContext implements RenderContext {
         // return bilinear(p, point, img);
     }
 
+    @SuppressWarnings("unused")
     private int bilinear(Vector3f p, Point2f point, BufferedImage img) {
         point.x = Math.min(point.x * img.getWidth(), img.getWidth() - 2);
         point.y = Math.min(point.y * img.getHeight(), img.getHeight() - 2);

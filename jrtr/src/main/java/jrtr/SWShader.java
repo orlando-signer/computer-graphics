@@ -5,14 +5,14 @@ package jrtr;
  */
 public class SWShader implements Shader {
 
-	public void disable() {
-	}
+    public void disable() {
+    }
 
-	public void load(String vertexFileName, String fragmentFileName)
-			throws Exception {
-	}
+    @Override
+    public void load(String vertexFileName, String fragmentFileName) throws Exception {
+    }
 
-	public void use() {
-	}
+    public void use() {
+    }
 
 }

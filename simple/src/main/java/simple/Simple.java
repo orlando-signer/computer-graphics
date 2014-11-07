@@ -17,8 +17,8 @@ import jrtr.SWRenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
+import model.Cube;
 import model.Model;
-import model.Torus;
 
 /**
  * @author Orlando Signer
@@ -103,7 +103,7 @@ public class Simple {
      * a call-back function for initialization. Here we construct a simple 3D
      * scene and start a timer task to generate an animation.
      */
-    public final class SimpleRenderPanel extends SWRenderPanel {
+    public final class SimpleRenderPanel extends GLRenderPanel {
 
         /**
          * Initialization call-back. We initialize our renderer here.
@@ -117,7 +117,7 @@ public class Simple {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
 
-            Model m = new Torus(20, 20, 3, 1);
+            Model m = new Cube();
             shapes.add(m.createShape(renderContext));
 
             shapes.forEach(s -> sceneManager.addShape(s));
