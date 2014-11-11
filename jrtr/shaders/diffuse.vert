@@ -8,19 +8,22 @@
 // variants of glUniform*
 uniform mat4 projection;
 uniform mat4 modelview;
-uniform vec4[MAX_LIGHTS] lightPosition;
 
 uniform int nLights;
+uniform vec4[MAX_LIGHTS] lightPosition;
 
 // Input vertex attributes; passed in from host program to shader
 // via vertex buffer objects
 in vec3 normal;
 in vec4 position;
 in vec2 texcoord;
+in vec4 color; // diffuse reflectance
+
 
 // Output variables for fragment shader
 out float[MAX_LIGHTS] ndotl;
 out vec2 frag_texcoord;
+out vec4 frag_color;
 
 void main()
 {		
@@ -33,6 +36,8 @@ void main()
 		//ndotl += max(dot(modelview * vec4(normal,0), lightPosition[i]),0);
 		ndotl[i] = max(dot(modelview * vec4(normal,0),  lightPosition[i]), 0);
     }
+    
+    frag_color = color;
     
 	// Pass texture coordiantes to fragment shader, OpenGL automatically
 	// interpolates them to each pixel  (in a perspectively correct manner) 

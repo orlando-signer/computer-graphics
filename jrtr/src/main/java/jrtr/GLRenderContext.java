@@ -300,7 +300,6 @@ public class GLRenderContext implements RenderContext {
             // lightString + "\n");
             int nLights = 1;
 
-            String reflectionString;
             String lightColorString;
 
             // Iterate over all light sources in scene manager (overwriting the
@@ -323,13 +322,6 @@ public class GLRenderContext implements RenderContext {
                     // direction
                     else
                         System.out.print("Could not get location of uniform variable " + lightString + "\n");
-
-                    reflectionString = "reflectionCoefficient[" + nLights + "]";
-                    id = gl.glGetUniformLocation(activeShaderID, reflectionString);
-                    if (id != -1)
-                        gl.glUniform1f(id, 0.025F);
-                    else
-                        System.out.print("Could not get location of uniform variable " + reflectionString + "\n");
 
                     lightColorString = "lightColor[" + nLights + "]";
                     id = gl.glGetUniformLocation(activeShaderID, lightColorString);
