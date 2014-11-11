@@ -268,7 +268,7 @@ public class GLRenderContext implements RenderContext {
 
         // Set up the shader for the material, if it has one
         if (m != null && m.shader != null) {
-
+            System.out.println("works");
             // Identifier for shader variables
             int id;
 
@@ -300,6 +300,9 @@ public class GLRenderContext implements RenderContext {
             // lightString + "\n");
             int nLights = 1;
 
+            String reflectionString;
+            String lightColorString;
+
             // Iterate over all light sources in scene manager (overwriting the
             // default light source)
             Iterator<Light> iter = sceneManager.lightIterator();
@@ -312,14 +315,28 @@ public class GLRenderContext implements RenderContext {
 
                     // Pass light direction to shader, we assume the shader
                     // stores it in an array "lightDirection[]"
-                    lightString = "lightDirection[" + nLights + "]";
+                    lightString = "lightPosition[" + nLights + "]";
                     id = gl.glGetUniformLocation(activeShaderID, lightString);
                     if (id != -1)
-                        gl.glUniform4f(id, l.direction.x, l.direction.y, l.direction.z, 0.f); // Set
+                        gl.glUniform4f(id, l.position.x, l.position.y, l.position.z, 0.f); // Set
                     // light
                     // direction
                     else
                         System.out.print("Could not get location of uniform variable " + lightString + "\n");
+
+                    reflectionString = "reflectionCoefficient[" + nLights + "]";
+                    id = gl.glGetUniformLocation(activeShaderID, reflectionString);
+                    if (id != -1)
+                        gl.glUniform1f(id, 0.025F);
+                    else
+                        System.out.print("Could not get location of uniform variable " + reflectionString + "\n");
+
+                    lightColorString = "lightColor[" + nLights + "]";
+                    id = gl.glGetUniformLocation(activeShaderID, lightColorString);
+                    if (id != -1)
+                        gl.glUniform4f(id, l.diffuse.x, l.diffuse.y, l.diffuse.z, 0);
+                    else
+                        System.out.print("Could not get location of uniform variable " + lightColorString + "\n");
 
                     nLights++;
                 }

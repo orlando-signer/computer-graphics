@@ -9,6 +9,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import jrtr.GLRenderPanel;
@@ -21,8 +22,9 @@ import jrtr.SWRenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
+import model.Cube;
+import model.Cylinder;
 import model.Model;
-import model.Torus;
 
 /**
  * @author Orlando Signer
@@ -122,8 +124,17 @@ public class Simple {
             sceneManager = new SimpleSceneManager();
             addLights();
 
-            Model m = new Torus(5, 5, 3, 1.5F);
+            // Model m = new Torus(20, 20, 3, 1.5F);
+            Model m = new Cylinder(20, 3, 5);
             shapes.add(m.createShape(renderContext));
+
+            // Add a cube to the right of the cylinder
+            Shape cube = new Cube().createShape(renderContext);
+            Matrix4f t = new Matrix4f();
+            t.setIdentity();
+            t.m03 = 4;
+            cube.setTransformation(t);
+            shapes.add(cube);
 
             shapes.forEach(s -> sceneManager.addShape(s));
 
@@ -133,7 +144,7 @@ public class Simple {
             initShaders();
 
             initMaterial();
-            shapes.forEach(s -> s.setMaterial(material));
+            // shapes.forEach(s -> s.setMaterial(material));
             renderContext.useShader(diffuseShader);
 
             basicstep = 0.05f;
@@ -141,10 +152,26 @@ public class Simple {
         }
 
         private void addLights() {
-            Light l1 = new Light();
-            l1.type = Type.POINT;
-            l1.position = new Vector3f(50, 50, 50);
-            sceneManager.addLight(l1);
+            // White light from right
+            Light l = new Light();
+            l.type = Type.POINT;
+            l.position = new Vector3f(50, 0, 0);
+            l.diffuse = new Vector3f(1, 1, 1);
+            sceneManager.addLight(l);
+
+            // Blue light from top
+            l = new Light();
+            l.type = Type.POINT;
+            l.position = new Vector3f(0, 50, 0);
+            l.diffuse = new Vector3f(0, 0, 1);
+            sceneManager.addLight(l);
+
+            // Red light from left
+            l = new Light();
+            l.type = Type.POINT;
+            l.position = new Vector3f(-50, 0, 0);
+            l.diffuse = new Vector3f(1, 0, 0);
+            sceneManager.addLight(l);
         }
 
         private void initMaterial() {
@@ -152,12 +179,6 @@ public class Simple {
             material = new Material();
             material.shader = diffuseShader;
             material.texture = renderContext.makeTexture();
-            try {
-                material.texture.load("../textures/donut.jpg");
-            } catch (Exception e) {
-                System.out.print("Could not load texture.\n");
-                System.out.print(e.getMessage());
-            }
         }
 
         private void initShaders() {
