@@ -9,8 +9,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
+import javax.vecmath.Vector3f;
 
 import jrtr.GLRenderPanel;
+import jrtr.Light;
+import jrtr.Light.Type;
 import jrtr.Material;
 import jrtr.RenderContext;
 import jrtr.RenderPanel;
@@ -18,9 +21,8 @@ import jrtr.SWRenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
-import model.Cube;
-import model.Cylinder;
 import model.Model;
+import model.Torus;
 
 /**
  * @author Orlando Signer
@@ -34,7 +36,7 @@ public class Simple {
     RenderPanel renderPanel;
     RenderContext renderContext;
     Shader normalShader;
-    private Shader diffuseShader;
+    Shader diffuseShader;
     Material material;
     SimpleSceneManager sceneManager;
     List<Shape> shapes;
@@ -118,8 +120,9 @@ public class Simple {
         public void init(RenderContext r) {
             renderContext = r;
             sceneManager = new SimpleSceneManager();
+            addLights();
 
-            Model m = new Cylinder(10, 3, 5);
+            Model m = new Torus(5, 5, 3, 1.5F);
             shapes.add(m.createShape(renderContext));
 
             shapes.forEach(s -> sceneManager.addShape(s));
@@ -128,12 +131,20 @@ public class Simple {
             renderContext.setSceneManager(sceneManager);
 
             initShaders();
-            renderContext.useShader(normalShader);
 
             initMaterial();
+            shapes.forEach(s -> s.setMaterial(material));
+            renderContext.useShader(diffuseShader);
 
             basicstep = 0.05f;
             currentstep = basicstep;
+        }
+
+        private void addLights() {
+            Light l1 = new Light();
+            l1.type = Type.POINT;
+            l1.position = new Vector3f(50, 50, 50);
+            sceneManager.addLight(l1);
         }
 
         private void initMaterial() {

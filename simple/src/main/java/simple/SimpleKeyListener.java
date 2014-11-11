@@ -73,11 +73,13 @@ class SimpleKeyListener extends KeyAdapter {
         case 'm': {
             // Set a material for more complex shading of the shape
             simple.shapes.forEach(s -> {
-                if (s.getMaterial() == null)
+                if (s.getMaterial() == null) {
                     s.setMaterial(simple.material);
-                else
+                    simple.renderContext.useShader(simple.diffuseShader);
+                } else {
                     s.setMaterial(null);
-                simple.renderContext.useDefaultShader();
+                    simple.renderContext.useDefaultShader();
+                }
             });
             break;
         }

@@ -292,11 +292,12 @@ public class GLRenderContext implements RenderContext {
 
             // Pass a default light source to shader
             String lightString = "lightDirection[" + 0 + "]";
-            id = gl.glGetUniformLocation(activeShaderID, lightString);
-            if (id != -1)
-                gl.glUniform4f(id, 0, 0, 1, 0.f); // Set light direction
-            else
-                System.out.print("Could not get location of uniform variable " + lightString + "\n");
+            // id = gl.glGetUniformLocation(activeShaderID, lightString);
+            // if (id != -1)
+            // gl.glUniform4f(id, 0, 0, 1, 0.f); // Set light direction
+            // else
+            // System.out.print("Could not get location of uniform variable " +
+            // lightString + "\n");
             int nLights = 1;
 
             // Iterate over all light sources in scene manager (overwriting the

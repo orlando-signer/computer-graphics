@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3d;
+import javax.vecmath.Vector3d;
 
 import jrtr.RenderContext;
 import jrtr.Shape;
@@ -45,16 +46,23 @@ public class Torus implements Model {
         float tmpU = 0;
         float tmpV = 0;
         int verticesCount = radiusSegments * ringRadiusSegments;
-        List<Point3d> vertices = new ArrayList<>(verticesCount);
+        List<Vector3d> vertices = new ArrayList<>(verticesCount);
         List<Point2f> textures = new ArrayList<>(verticesCount);
+        List<Vector3d> normals = new ArrayList<>(verticesCount);
         for (int u = 0; u < radiusSegments; u++) {
+            tmpU = angle * u;
+            Vector3d center = new Vector3d(radius * Math.cos(u), radius * Math.sin(u), 0);
+            Vector3d normal = new Vector3d();
             for (int v = 0; v < ringRadiusSegments; v++) {
-                tmpU = angle * u;
                 tmpV = ringAngle * v;
                 x = (float) ((radius + ringRadius * Math.cos(tmpV)) * Math.cos(tmpU));
                 y = (float) ((radius + ringRadius * Math.cos(tmpV)) * Math.sin(tmpU));
                 z = (float) (ringRadius * Math.sin(tmpV));
-                vertices.add(new Point3d(x, y, z));
+                Vector3d pos = new Vector3d(x, y, z);
+                vertices.add(pos);
+                normal.sub(pos, center);
+                normal.normalize();
+                normals.add(normal);
                 textures.add(new Point2f(((float) u) / radiusSegments, ((float) v) / ringRadiusSegments));
             }
         }
@@ -92,6 +100,7 @@ public class Torus implements Model {
         vertexData.addElement(Utils.tuple3dToArray(vertices), VertexData.Semantic.POSITION, 3);
         vertexData.addElement(Utils.points2fToArray(textures), VertexData.Semantic.TEXCOORD, 2);
         vertexData.addElement(Utils.colorToArray(colors), VertexData.Semantic.COLOR, 3);
+        vertexData.addElement(Utils.tuple3dToArray(normals), VertexData.Semantic.NORMAL, 3);
         vertexData.addIndices(Ints.toArray(indices));
 
         return new Shape(vertexData);
