@@ -24,6 +24,8 @@ in vec4 color; // diffuse reflectance
 out float[MAX_LIGHTS] ndotl;
 out vec2 frag_texcoord;
 out vec4 frag_color;
+out vec4 frag_position;
+out vec3 frag_normal;
 
 void main()
 {		
@@ -33,11 +35,13 @@ void main()
 	// so we transform the normal to camera coordinates, and we don't transform
 	// the light direction, i.e., it stays in camera coordinates
 	for (int i = 0;i < nLights; i++) {
-		//ndotl += max(dot(modelview * vec4(normal,0), lightPosition[i]),0);
 		ndotl[i] = max(dot(modelview * vec4(normal,0),  lightPosition[i]), 0);
     }
     
     frag_color = color;
+    frag_position = position;
+    frag_normal = normal;
+    
     
 	// Pass texture coordiantes to fragment shader, OpenGL automatically
 	// interpolates them to each pixel  (in a perspectively correct manner) 

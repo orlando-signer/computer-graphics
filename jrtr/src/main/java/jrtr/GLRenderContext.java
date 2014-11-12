@@ -8,6 +8,7 @@ import java.util.ListIterator;
 import javax.media.opengl.GL3;
 import javax.media.opengl.GLAutoDrawable;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 
 /**
  * Implements a {@link RenderContext} (a renderer) using OpenGL version 3 (or
@@ -255,6 +256,12 @@ public class GLRenderContext implements RenderContext {
         gl.glUniformMatrix4fv(gl.glGetUniformLocation(activeShaderID, "projection"), 1, false,
                 transformationToFloat16(sceneManager.getFrustum().getProjectionMatrix()), 0);
 
+        int id = gl.glGetUniformLocation(activeShaderID, "camera");
+        if (id != -1) {
+            Vector3f cop = sceneManager.getCamera().getCenterOfProjection();
+            gl.glUniform4f(id, cop.x, cop.y, cop.z, 0);
+        } else
+            System.out.println("Could not get location of uniform variable camera");
     }
 
     /**
@@ -301,6 +308,18 @@ public class GLRenderContext implements RenderContext {
             int nLights = 1;
 
             String lightColorString;
+
+            id = gl.glGetUniformLocation(activeShaderID, "reflectionCoefficient");
+            if (id != -1)
+                gl.glUniform4f(id, m.specular.x, m.specular.y, m.specular.z, 0);
+            else
+                System.out.println("Could not get location of uniform variable reflectionCoefficient");
+
+            id = gl.glGetUniformLocation(activeShaderID, "shininess");
+            if (id != -1)
+                gl.glUniform1f(id, m.shininess);
+            else
+                System.out.println("Could not get location of uniform variable shininess");
 
             // Iterate over all light sources in scene manager (overwriting the
             // default light source)
