@@ -24,6 +24,7 @@ vec4 l;
 out float[MAX_LIGHTS] ndotl;
 out vec2 frag_texcoord;
 out vec4 frag_color;
+out float[MAX_LIGHTS] lDistance;
 
 void main()
 {		
@@ -34,7 +35,8 @@ void main()
 	// the light direction, i.e., it stays in camera coordinates
 	for (int i = 0;i < nLights; i++) {
 		//ndotl += max(dot(modelview * vec4(normal,0), lightPosition[i]),0);
-		l = (lightPosition[i] - position) / length(lightPosition[i] - position);
+		lDistance[i] = length(lightPosition[i] - position);
+		l = (lightPosition[i] - position) / lDistance[i];
 		ndotl[i] = max(dot(modelview * vec4(normal,0),  l), 0);
     }
     

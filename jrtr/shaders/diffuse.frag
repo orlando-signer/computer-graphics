@@ -14,6 +14,7 @@ uniform int nLights;
 in float[MAX_LIGHTS] ndotl;
 in vec2 frag_texcoord;
 in vec4 frag_color;
+in float[MAX_LIGHTS] lDistance;
 
 
 // Output variable, will be written to framebuffer automatically
@@ -24,6 +25,6 @@ void main()
 	// The built-in GLSL function "texture" performs the texture lookup
 	// frag_shaded = ndotl * texture(myTexture, frag_texcoord);
 	for (int i = 0; i < nLights; i++){
-	   frag_shaded +=  lightColor[i] * ndotl[i] * frag_color; 
+	   frag_shaded +=  lightColor[i] / (lDistance[i]*lDistance[i]) * ndotl[i] * frag_color * 50; 
 	}
 }

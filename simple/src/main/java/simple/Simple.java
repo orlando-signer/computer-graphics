@@ -155,21 +155,21 @@ public class Simple {
             // White light from right
             Light l = new Light();
             l.type = Type.POINT;
-            l.position = new Vector3f(50, 0, 0);
+            l.position = new Vector3f(5, 0, 0);
             l.diffuse = new Vector3f(1, 1, 1);
             sceneManager.addLight(l);
 
             // Blue light from top
             l = new Light();
             l.type = Type.POINT;
-            l.position = new Vector3f(0, 50, 0);
+            l.position = new Vector3f(0, 5, 0);
             l.diffuse = new Vector3f(0, 0, 1);
             sceneManager.addLight(l);
 
             // Red light from left
             l = new Light();
             l.type = Type.POINT;
-            l.position = new Vector3f(-50, 0, 0);
+            l.position = new Vector3f(-5, 0, 0);
             l.diffuse = new Vector3f(1, 0, 0);
             sceneManager.addLight(l);
         }
