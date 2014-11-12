@@ -19,6 +19,7 @@ uniform vec4 reflectionCoefficient;
 vec4 e;
 vec4 diffuse;
 vec4 specular;
+vec4 frag_out;
 
 // Variables passed in from the vertex shader
 in float[MAX_LIGHTS] ndotl;
@@ -38,11 +39,14 @@ void main()
 	// The built-in GLSL function "texture" performs the texture lookup
 	// frag_shaded = ndotl * texture(myTexture, frag_texcoord);
 	for (int i = 0; i < nLights; i++) {
-	   e = camera -   gl_FragCoord;
-	   diffuse = lightColor[i] * frag_color * ndotl[i] / (lDistance[i]*lDistance[i]) * 50 ;
-	   specular = reflectionCoefficient * pow(reflections[i] * e, vec4(shininess,shininess,shininess,shininess));
+	   e = camera - gl_FragCoord;
+	   e =  e * modelview ;
+	   diffuse = frag_color * ndotl[i] / (lDistance[i]*lDistance[i]) * 5000 ;
+	   specular = reflectionCoefficient * pow(dot(reflections[i], e),shininess);
+	   specular = min(max(specular, 0), 1);
 	   specular = clamp(specular, 0,1);
 	   
-	   frag_shaded +=  lightColor[i] * (diffuse + specular); 
+	   frag_out +=  lightColor[i] * (diffuse + specular); 
 	}
+	frag_shaded = frag_out;
 }

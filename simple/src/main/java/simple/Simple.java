@@ -144,14 +144,15 @@ public class Simple {
             Light l = new Light();
             l.type = Light.Type.POINT;
             l.position = new Vector3f(50, 0, 0);
+            l.diffuse = new Vector3f(1, 1, 1);
             sceneManager.addLight(l);
 
             // Blue light from top
-            // l = new Light();
-            // l.type = Light.Type.POINT;
-            // l.position = new Vector3f(50, 50, 0);
-            // l.diffuse = new Vector3f(0, 0, 1);
-            // sceneManager.addLight(l);
+            l = new Light();
+            l.type = Light.Type.POINT;
+            l.position = new Vector3f(5, 0, 5);
+            l.diffuse = new Vector3f(0, 0, 1);
+            sceneManager.addLight(l);
         }
 
         private void initMaterial() {
@@ -159,8 +160,8 @@ public class Simple {
             material = new Material();
             material.shader = diffuseShader;
             material.texture = renderContext.makeTexture();
-            material.specular = new Vector3f(0.1F, 0.1F, 0.1F);
-            material.shininess = 1000;
+            // material.specular = new Vector3f(0.1F, 0.1F, 0.1F);
+            material.shininess = 1;
         }
 
         private void initShaders() {

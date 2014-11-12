@@ -311,7 +311,7 @@ public class GLRenderContext implements RenderContext {
 
             id = gl.glGetUniformLocation(activeShaderID, "reflectionCoefficient");
             if (id != -1)
-                gl.glUniform4f(id, m.specular.x, m.specular.y, m.specular.z, 0);
+                gl.glUniform4f(id, m.specular.x, m.specular.y, m.specular.z, 1);
             else
                 System.out.println("Could not get location of uniform variable reflectionCoefficient");
 
