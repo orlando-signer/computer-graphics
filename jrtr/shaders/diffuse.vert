@@ -31,6 +31,7 @@ out vec2 frag_texcoord;
 out vec4 frag_color;
 out vec4 frag_position;
 out vec3 frag_normal;
+out float[MAX_LIGHTS] lDistance;
 
 void main()
 {		
@@ -40,9 +41,11 @@ void main()
 	// so we transform the normal to camera coordinates, and we don't transform
 	// the light direction, i.e., it stays in camera coordinates
 	for (int i = 0;i < nLights; i++) {
-	   l = (lightPosition[i] - position) / length(lightPosition[i] - position);
-	   ndotl[i] = max(dot(modelview * vec4(normal,0), l), 0);
-	   reflections[i] = clamp(reflect((lightPosition[i] - position), vec4(normal,0)), 0,1);
+		//ndotl += max(dot(modelview * vec4(normal,0), lightPosition[i]),0);
+		lDistance[i] = length(lightPosition[i] - position);
+		l = (lightPosition[i] - position) / lDistance[i];
+		ndotl[i] = max(dot(modelview * vec4(normal,0),  l), 0);
+		reflections[i] = clamp(reflect((lightPosition[i] - position), vec4(normal,0)), 0,1);
     }
     
     frag_color = color;

@@ -144,7 +144,6 @@ public class Simple {
             Light l = new Light();
             l.type = Light.Type.POINT;
             l.position = new Vector3f(50, 0, 0);
-            l.diffuse = new Vector3f(1, 1, 1);
             sceneManager.addLight(l);
 
             // Blue light from top

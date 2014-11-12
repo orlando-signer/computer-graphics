@@ -27,6 +27,8 @@ in vec2 frag_texcoord;
 in vec4 frag_color;
 in vec4 frag_position;
 in vec3 frag_normal;
+in float[MAX_LIGHTS] lDistance;
+
 
 // Output variable, will be written to framebuffer automatically
 out vec4 frag_shaded;
@@ -37,11 +39,10 @@ void main()
 	// frag_shaded = ndotl * texture(myTexture, frag_texcoord);
 	for (int i = 0; i < nLights; i++) {
 	   e = camera -   gl_FragCoord;
-	   diffuse = lightColor[i] * frag_color * ndotl[i] ;
+	   diffuse = lightColor[i] * frag_color * ndotl[i] / (lDistance[i]*lDistance[i]) * 50 ;
 	   specular = reflectionCoefficient * pow(reflections[i] * e, vec4(shininess,shininess,shininess,shininess));
 	   specular = clamp(specular, 0,1);
 	   
 	   frag_shaded +=  lightColor[i] * (diffuse + specular); 
-	   
 	}
 }
