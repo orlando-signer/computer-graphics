@@ -24,7 +24,8 @@ public class Teapot implements Model {
 
             List<Color> colors = new ArrayList<>(data.getNumberOfVertices());
             for (int i = 0; i < data.getNumberOfVertices(); i++)
-                colors.add(new Color(0.3F, 0.3F, 0.3F));
+                // colors.add(new Color(0.05F, 0.05F, 0.05F));
+                colors.add(Color.WHITE);
             data.addElement(Utils.colorToArray(colors), VertexData.Semantic.COLOR, 3);
 
             return new Shape(data);

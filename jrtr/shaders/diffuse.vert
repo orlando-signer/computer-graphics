@@ -11,6 +11,8 @@ uniform mat4 modelview;
 
 uniform int nLights;
 uniform vec4[MAX_LIGHTS] lightPosition;
+uniform vec4 camera;
+
 
 // Input vertex attributes; passed in from host program to shader
 // via vertex buffer objects
@@ -19,9 +21,12 @@ in vec4 position;
 in vec2 texcoord;
 in vec4 color; // diffuse reflectance
 
+vec4 l;
+
 
 // Output variables for fragment shader
 out float[MAX_LIGHTS] ndotl;
+out vec4[MAX_LIGHTS] reflections;
 out vec2 frag_texcoord;
 out vec4 frag_color;
 out vec4 frag_position;
@@ -35,11 +40,13 @@ void main()
 	// so we transform the normal to camera coordinates, and we don't transform
 	// the light direction, i.e., it stays in camera coordinates
 	for (int i = 0;i < nLights; i++) {
-		ndotl[i] = max(dot(modelview * vec4(normal,0),  lightPosition[i]), 0);
+	   l = (lightPosition[i] - position) / length(lightPosition[i] - position);
+	   ndotl[i] = max(dot(modelview * vec4(normal,0), l), 0);
+	   reflections[i] = clamp(reflect((lightPosition[i] - position), vec4(normal,0)), 0,1);
     }
     
     frag_color = color;
-    frag_position = position;
+    frag_position = modelview * position;
     frag_normal = normal;
     
     
