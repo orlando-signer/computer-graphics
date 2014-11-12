@@ -19,7 +19,7 @@ in vec4 position;
 in vec2 texcoord;
 in vec4 color; // diffuse reflectance
 
-
+vec4 l;
 // Output variables for fragment shader
 out float[MAX_LIGHTS] ndotl;
 out vec2 frag_texcoord;
@@ -34,7 +34,8 @@ void main()
 	// the light direction, i.e., it stays in camera coordinates
 	for (int i = 0;i < nLights; i++) {
 		//ndotl += max(dot(modelview * vec4(normal,0), lightPosition[i]),0);
-		ndotl[i] = max(dot(modelview * vec4(normal,0),  lightPosition[i]), 0);
+		l = (lightPosition[i] - position) / length(lightPosition[i] - position);
+		ndotl[i] = max(dot(modelview * vec4(normal,0),  l), 0);
     }
     
     frag_color = color;

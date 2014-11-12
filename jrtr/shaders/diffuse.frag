@@ -24,6 +24,6 @@ void main()
 	// The built-in GLSL function "texture" performs the texture lookup
 	// frag_shaded = ndotl * texture(myTexture, frag_texcoord);
 	for (int i = 0; i < nLights; i++){
-	   frag_shaded +=  lightColor[i] * ndotl[i] * 0.1 * frag_color; 
+	   frag_shaded +=  lightColor[i] * ndotl[i] * frag_color; 
 	}
 }
