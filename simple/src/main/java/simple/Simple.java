@@ -36,6 +36,7 @@ public class Simple {
     RenderContext renderContext;
     Shader normalShader;
     Shader diffuseShader;
+    Shader toonShader;
     Material material;
     SimpleSceneManager sceneManager;
     List<Shape> shapes;
@@ -143,7 +144,7 @@ public class Simple {
             // White light from right
             Light l = new Light();
             l.type = Light.Type.POINT;
-            l.position = new Vector3f(50, 0, 0);
+            l.position = new Vector3f(5, 5, 0);
             l.diffuse = new Vector3f(1, 1, 1);
             sceneManager.addLight(l);
 
@@ -151,14 +152,14 @@ public class Simple {
             l = new Light();
             l.type = Light.Type.POINT;
             l.position = new Vector3f(5, 0, 5);
-            l.diffuse = new Vector3f(0, 0, 1);
+            l.diffuse = new Vector3f(1, 1, 1);
             sceneManager.addLight(l);
         }
 
         private void initMaterial() {
             // Make a material that can be used for shading
             material = new Material();
-            material.shader = diffuseShader;
+            material.shader = toonShader;
             material.texture = renderContext.makeTexture();
             // material.specular = new Vector3f(0.1F, 0.1F, 0.1F);
             material.shininess = 1;
@@ -177,6 +178,14 @@ public class Simple {
             diffuseShader = renderContext.makeShader();
             try {
                 diffuseShader.load("../jrtr/shaders/diffuse.vert", "../jrtr/shaders/diffuse.frag");
+            } catch (Exception e) {
+                System.out.print("Problem with shader:\n");
+                System.out.print(e.getMessage());
+            }
+
+            toonShader = renderContext.makeShader();
+            try {
+                toonShader.load("../jrtr/shaders/toon.vert", "../jrtr/shaders/toon.frag");
             } catch (Exception e) {
                 System.out.print("Problem with shader:\n");
                 System.out.print(e.getMessage());
