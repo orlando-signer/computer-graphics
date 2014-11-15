@@ -1,8 +1,14 @@
-package jrtr;
+package jrtr.scenemanager;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+
+import jrtr.Camera;
+import jrtr.Frustum;
+import jrtr.Light;
+import jrtr.RenderItem;
+import jrtr.Shape;
 
 /**
  * A simple scene manager that stores objects and lights in linked lists.

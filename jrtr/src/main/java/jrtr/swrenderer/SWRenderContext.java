@@ -19,14 +19,14 @@ import javax.vecmath.Vector4f;
 import jrtr.Material;
 import jrtr.RenderContext;
 import jrtr.RenderItem;
-import jrtr.SceneManagerInterface;
-import jrtr.SceneManagerIterator;
 import jrtr.Shader;
 import jrtr.Texture;
 import jrtr.VertexData;
 import jrtr.VertexData.Semantic;
 import jrtr.VertexData.VertexElement;
 import jrtr.glrenderer.GLRenderPanel;
+import jrtr.scenemanager.SceneManagerInterface;
+import jrtr.scenemanager.SceneManagerIterator;
 
 /**
  * A skeleton for a software renderer. It works in combination with

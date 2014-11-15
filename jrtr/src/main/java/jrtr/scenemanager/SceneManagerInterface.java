@@ -1,6 +1,10 @@
-package jrtr;
+package jrtr.scenemanager;
 
 import java.util.Iterator;
+
+import jrtr.Camera;
+import jrtr.Frustum;
+import jrtr.Light;
 
 /**
  * An interface declaration for scene managers. Scene managers 

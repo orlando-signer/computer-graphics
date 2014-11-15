@@ -1,6 +1,7 @@
 package jrtr;
 
 import jrtr.glrenderer.GLRenderContext;
+import jrtr.scenemanager.SceneManagerInterface;
 import jrtr.swrenderer.SWRenderContext;
 
 /**

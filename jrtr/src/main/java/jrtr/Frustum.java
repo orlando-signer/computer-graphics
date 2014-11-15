@@ -2,6 +2,9 @@ package jrtr;
 
 import javax.vecmath.Matrix4f;
 
+import jrtr.scenemanager.SceneManagerInterface;
+import jrtr.scenemanager.SimpleSceneManager;
+
 /**
  * Stores the specification of a viewing frustum, or a viewing volume. The
  * viewing frustum is represented by a 4x4 projection matrix. You will extend

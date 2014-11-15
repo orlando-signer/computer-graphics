@@ -3,6 +3,9 @@ package jrtr;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
+import jrtr.scenemanager.SceneManagerInterface;
+import jrtr.scenemanager.SimpleSceneManager;
+
 /**
  * Stores the specification of a virtual camera. You will extend this class to
  * construct a 4x4 camera matrix, i.e., the world-to- camera transform from

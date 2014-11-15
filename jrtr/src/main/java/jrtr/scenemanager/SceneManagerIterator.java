@@ -1,4 +1,6 @@
-package jrtr;
+package jrtr.scenemanager;
+
+import jrtr.RenderItem;
 
 /**
  * An iterator to traverse scenes. It returns objects of type {@link RenderItem}, 
