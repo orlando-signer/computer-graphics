@@ -1,4 +1,4 @@
-package jrtr;
+package jrtr.glrenderer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -7,6 +7,8 @@ import java.nio.IntBuffer;
 
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL3;
+
+import jrtr.Texture;
 
 /**
  * Manages OpenGL textures. This class will be used in the

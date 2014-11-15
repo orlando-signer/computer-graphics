@@ -1,4 +1,4 @@
-package jrtr;
+package jrtr.glrenderer;
 
 import java.awt.Component;
 
@@ -7,6 +7,9 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
+
+import jrtr.RenderContext;
+import jrtr.RenderPanel;
 
 /**
  * Implementats the {@link RenderPanel} interface using OpenGL. Its purpose is

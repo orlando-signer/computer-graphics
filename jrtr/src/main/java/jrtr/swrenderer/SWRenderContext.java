@@ -1,4 +1,4 @@
-package jrtr;
+package jrtr.swrenderer;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -16,7 +16,17 @@ import javax.vecmath.Point2f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
+import jrtr.Material;
+import jrtr.RenderContext;
+import jrtr.RenderItem;
+import jrtr.SceneManagerInterface;
+import jrtr.SceneManagerIterator;
+import jrtr.Shader;
+import jrtr.Texture;
+import jrtr.VertexData;
 import jrtr.VertexData.Semantic;
+import jrtr.VertexData.VertexElement;
+import jrtr.glrenderer.GLRenderPanel;
 
 /**
  * A skeleton for a software renderer. It works in combination with

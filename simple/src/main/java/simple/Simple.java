@@ -11,15 +11,15 @@ import java.util.TimerTask;
 import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
-import jrtr.GLRenderPanel;
 import jrtr.Light;
 import jrtr.Material;
 import jrtr.RenderContext;
 import jrtr.RenderPanel;
-import jrtr.SWRenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.SimpleSceneManager;
+import jrtr.glrenderer.GLRenderPanel;
+import jrtr.swrenderer.SWRenderPanel;
 import model.Model;
 import model.Teapot;
 

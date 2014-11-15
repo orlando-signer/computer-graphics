@@ -1,10 +1,12 @@
-package jrtr;
+package jrtr.swrenderer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import jrtr.Texture;
 
 /**
  * Manages textures for the software renderer. Not implemented here.

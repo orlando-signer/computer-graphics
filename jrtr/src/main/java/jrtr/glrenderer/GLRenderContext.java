@@ -1,4 +1,4 @@
-package jrtr;
+package jrtr.glrenderer;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -9,6 +9,16 @@ import javax.media.opengl.GL3;
 import javax.media.opengl.GLAutoDrawable;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
+
+import jrtr.Light;
+import jrtr.Material;
+import jrtr.RenderContext;
+import jrtr.RenderItem;
+import jrtr.SceneManagerInterface;
+import jrtr.SceneManagerIterator;
+import jrtr.Shader;
+import jrtr.Texture;
+import jrtr.VertexData;
 
 /**
  * Implements a {@link RenderContext} (a renderer) using OpenGL version 3 (or
@@ -275,7 +285,6 @@ public class GLRenderContext implements RenderContext {
 
         // Set up the shader for the material, if it has one
         if (m != null && m.shader != null) {
-            System.out.println("works");
             // Identifier for shader variables
             int id;
 

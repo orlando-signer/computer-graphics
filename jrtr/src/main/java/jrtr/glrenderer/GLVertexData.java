@@ -1,4 +1,6 @@
-package jrtr;
+package jrtr.glrenderer;
+
+import jrtr.VertexData;
 
 /**
  * An implementation of {@link VertexData} which adds the handle to the OpenGL
