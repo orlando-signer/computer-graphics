@@ -40,7 +40,7 @@ void main()
 	// Note: here we assume "lightDirection" is specified in camera coordinates,
 	// so we transform the normal to camera coordinates, and we don't transform
 	// the light direction, i.e., it stays in camera coordinates
-	for (int i = 0;i < nLights; i++) {
+	for (int i = 0;i < MAX_LIGHTS; i++) {
 		lDistance[i] = length(lightPosition[i] - position);
 		l = (lightPosition[i] - position) / lDistance[i];
 		ndotl[i] = max(dot(modelview * vec4(normal,0),  l), 0);

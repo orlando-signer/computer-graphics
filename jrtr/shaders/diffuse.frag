@@ -38,7 +38,7 @@ void main()
 {		
 	// The built-in GLSL function "texture" performs the texture lookup
 	// frag_shaded = ndotl * texture(myTexture, frag_texcoord);
-	for (int i = 0; i < nLights; i++) {
+	for (int i = 0; i < MAX_LIGHTS; i++) {
 	   e = camera - gl_FragCoord;
 	   e =  e * modelview ;
 	   diffuse = frag_color * ndotl[i] / (lDistance[i]*lDistance[i]) * 5000 ;
