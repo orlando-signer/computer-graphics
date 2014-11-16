@@ -10,10 +10,12 @@ public class GraphSceneManager implements SceneManagerInterface {
 
     private Camera camera;
     private Frustum frustum;
+    private TransformGroup root;
 
     public GraphSceneManager() {
         camera = new Camera();
         frustum = new Frustum();
+        root = new TransformGroup();
     }
 
     @Override
@@ -28,6 +30,10 @@ public class GraphSceneManager implements SceneManagerInterface {
         return null;
     }
 
+    public TransformGroup getSceneRoot() {
+        return root;
+    }
+
     @Override
     public Camera getCamera() {
         return camera;
@@ -37,5 +43,4 @@ public class GraphSceneManager implements SceneManagerInterface {
     public Frustum getFrustum() {
         return frustum;
     }
-
 }
