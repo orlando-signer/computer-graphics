@@ -2,33 +2,31 @@ package jrtr.scenemanager;
 
 import javax.vecmath.Matrix4f;
 
-import jrtr.RenderItem;
+import jrtr.Shape;
 
 public class ShapeNode extends Leaf {
 
-    private Matrix4f trafo;
-    // The position relative to its parent
+    // The position relative to its parentb
     private Matrix4f position;
-    private final RenderItem item;
+    private final Shape item;
 
-    public ShapeNode(RenderItem item, Matrix4f position) {
-        this.item = item;
+    public ShapeNode(Shape shape, Matrix4f position) {
+        item = shape;
         this.position = position;
     }
 
     @Override
     public Matrix4f getTransformation() {
-        return trafo;
+        return position;
     }
 
     @Override
     public void setTransformation(Matrix4f t) {
-        trafo = t;
+        position = t;
     }
 
     @Override
-    public RenderItem getItem() {
+    public Shape getShape() {
         return item;
     }
-
 }

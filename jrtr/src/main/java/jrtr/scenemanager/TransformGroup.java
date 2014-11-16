@@ -2,7 +2,7 @@ package jrtr.scenemanager;
 
 import javax.vecmath.Matrix4f;
 
-import jrtr.RenderItem;
+import jrtr.Shape;
 
 public class TransformGroup extends Group {
 
@@ -19,7 +19,7 @@ public class TransformGroup extends Group {
     }
 
     @Override
-    public RenderItem getItem() {
+    public Shape getShape() {
         // TODO Auto-generated method stub
         return null;
     }

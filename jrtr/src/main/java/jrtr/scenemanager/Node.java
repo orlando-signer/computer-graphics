@@ -1,14 +1,18 @@
 package jrtr.scenemanager;
 
+import java.util.List;
+
 import javax.vecmath.Matrix4f;
 
-import jrtr.RenderItem;
+import jrtr.Shape;
 
 public interface Node {
     Matrix4f getTransformation();
 
     void setTransformation(Matrix4f t);
 
-    RenderItem getItem();
+    Shape getShape();
+
+    List<Node> getChildren();
 
 }

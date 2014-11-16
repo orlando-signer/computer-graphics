@@ -15,6 +15,7 @@ public abstract class Group implements Node {
         children.remove(child);
     }
 
+    @Override
     public List<Node> getChildren() {
         return children;
     }
