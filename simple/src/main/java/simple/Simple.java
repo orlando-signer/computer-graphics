@@ -18,6 +18,8 @@ import jrtr.RenderPanel;
 import jrtr.Shader;
 import jrtr.Shape;
 import jrtr.glrenderer.GLRenderPanel;
+import jrtr.scenemanager.GraphSceneManager;
+import jrtr.scenemanager.SceneManagerInterface;
 import jrtr.scenemanager.SimpleSceneManager;
 import jrtr.swrenderer.SWRenderPanel;
 import model.Model;
@@ -38,7 +40,7 @@ public class Simple {
     Shader diffuseShader;
     Shader toonShader;
     Material material;
-    SimpleSceneManager sceneManager;
+    SceneManagerInterface sceneManager;
     List<Shape> shapes;
     public static float currentstep, basicstep;
 
@@ -119,13 +121,7 @@ public class Simple {
         @Override
         public void init(RenderContext r) {
             renderContext = r;
-            sceneManager = new SimpleSceneManager();
-            addLights();
-
-            Model m = new Teapot();
-            shapes.add(m.createShape(renderContext));
-
-            shapes.forEach(s -> sceneManager.addShape(s));
+            createScene1();
 
             // Add the scene to the renderer
             renderContext.setSceneManager(sceneManager);
@@ -140,20 +136,34 @@ public class Simple {
             currentstep = basicstep;
         }
 
+        private void createScene1() {
+            sceneManager = new SimpleSceneManager();
+            addLights();
+
+            Model m = new Teapot();
+            shapes.add(m.createShape(renderContext));
+
+            shapes.forEach(s -> ((SimpleSceneManager) sceneManager).addShape(s));
+        }
+
+        private void createScene2() {
+            sceneManager = new GraphSceneManager();
+        }
+
         private void addLights() {
             // White light from right
             Light l = new Light();
             l.type = Light.Type.POINT;
             l.position = new Vector3f(5, 5, 0);
             l.diffuse = new Vector3f(1, 1, 1);
-            sceneManager.addLight(l);
+            ((SimpleSceneManager) sceneManager).addLight(l);
 
             // Blue light from top
             l = new Light();
             l.type = Light.Type.POINT;
             l.position = new Vector3f(5, 0, 5);
             l.diffuse = new Vector3f(1, 1, 1);
-            sceneManager.addLight(l);
+            ((SimpleSceneManager) sceneManager).addLight(l);
         }
 
         private void initMaterial() {
