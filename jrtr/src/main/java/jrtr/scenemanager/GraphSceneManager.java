@@ -59,11 +59,12 @@ public class GraphSceneManager implements SceneManagerInterface {
             stack.add(root);
             trafo = new Matrix4f();
             trafo.setIdentity();
+            dummy = new Matrix4f();
         }
 
         @Override
         public boolean hasNext() {
-            return stack.isEmpty();
+            return !stack.isEmpty();
         }
 
         @Override

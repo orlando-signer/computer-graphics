@@ -9,6 +9,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import jrtr.Light;
@@ -20,8 +21,11 @@ import jrtr.Shape;
 import jrtr.glrenderer.GLRenderPanel;
 import jrtr.scenemanager.GraphSceneManager;
 import jrtr.scenemanager.SceneManagerInterface;
+import jrtr.scenemanager.ShapeNode;
 import jrtr.scenemanager.SimpleSceneManager;
+import jrtr.scenemanager.TransformGroup;
 import jrtr.swrenderer.SWRenderPanel;
+import model.Cylinder;
 import model.Model;
 import model.Teapot;
 
@@ -121,7 +125,7 @@ public class Simple {
         @Override
         public void init(RenderContext r) {
             renderContext = r;
-            createScene1();
+            createScene2();
 
             // Add the scene to the renderer
             renderContext.setSceneManager(sceneManager);
@@ -148,6 +152,12 @@ public class Simple {
 
         private void createScene2() {
             sceneManager = new GraphSceneManager();
+            TransformGroup root = ((GraphSceneManager) sceneManager).getSceneRoot();
+
+            Matrix4f m = new Matrix4f();
+            m.setIdentity();
+            root.addChild(new ShapeNode(new Cylinder(10, 2, 4).createShape(renderContext), m));
+
         }
 
         private void addLights() {

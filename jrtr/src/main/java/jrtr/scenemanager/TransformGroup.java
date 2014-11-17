@@ -8,6 +8,11 @@ public class TransformGroup extends Group {
 
     private Matrix4f transformation;
 
+    public TransformGroup() {
+        transformation = new Matrix4f();
+        transformation.setIdentity();
+    }
+
     @Override
     public Matrix4f getTransformation() {
         return transformation;
