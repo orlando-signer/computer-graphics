@@ -9,7 +9,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import jrtr.Light;
@@ -21,12 +20,12 @@ import jrtr.Shape;
 import jrtr.glrenderer.GLRenderPanel;
 import jrtr.scenemanager.GraphSceneManager;
 import jrtr.scenemanager.SceneManagerInterface;
-import jrtr.scenemanager.ShapeNode;
+import jrtr.scenemanager.SceneManagerIterator;
 import jrtr.scenemanager.SimpleSceneManager;
 import jrtr.scenemanager.TransformGroup;
 import jrtr.swrenderer.SWRenderPanel;
-import model.Cylinder;
 import model.Model;
+import model.Robot;
 import model.Teapot;
 
 /**
@@ -47,6 +46,7 @@ public class Simple {
     SceneManagerInterface sceneManager;
     List<Shape> shapes;
     public static float currentstep, basicstep;
+    private Robot robot;
 
     private JFrame jFrame;
 
@@ -136,7 +136,7 @@ public class Simple {
             // shapes.forEach(s -> s.setMaterial(material));
             renderContext.useShader(diffuseShader);
 
-            basicstep = 0.05f;
+            basicstep = 0.01f;
             currentstep = basicstep;
         }
 
@@ -153,11 +153,15 @@ public class Simple {
         private void createScene2() {
             sceneManager = new GraphSceneManager();
             TransformGroup root = ((GraphSceneManager) sceneManager).getSceneRoot();
+            robot = new Robot(renderContext);
+            root.addChild(robot.getTransformGroup());
 
-            Matrix4f m = new Matrix4f();
-            m.setIdentity();
-            root.addChild(new ShapeNode(new Cylinder(10, 2, 4).createShape(renderContext), m));
+            SceneManagerIterator it = sceneManager.iterator();
+            while (it.hasNext())
+                shapes.add(it.next().getShape());
 
+            while (shapes.remove(null))
+                ;
         }
 
         private void addLights() {
@@ -222,6 +226,8 @@ public class Simple {
         public void run() {
             if (shapes == null || shapes.isEmpty())
                 return;
+
+            robot.animate(currentstep);
             // Trigger redrawing of the render window
             renderPanel.getCanvas().repaint();
         }

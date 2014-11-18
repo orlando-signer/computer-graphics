@@ -70,6 +70,11 @@ class SimpleKeyListener extends KeyAdapter {
             simple.renderContext.useDefaultShader();
             break;
         }
+        case 't': {
+            simple.shapes.forEach(s -> s.setMaterial(null));
+            simple.renderContext.useShader(simple.toonShader);
+            break;
+        }
         case 'm': {
             // Set a material for more complex shading of the shape
             simple.shapes.forEach(s -> {
