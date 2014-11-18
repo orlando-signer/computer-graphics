@@ -20,6 +20,6 @@ public interface Node {
     String getName();
 
     public enum NodeType {
-        GROUP, LEAF;
+        GROUP, LEAF, LIGHT;
     }
 }

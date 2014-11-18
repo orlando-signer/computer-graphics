@@ -1,9 +1,12 @@
 package jrtr.scenemanager;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Stack;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 
 import jrtr.Camera;
 import jrtr.Frustum;
@@ -30,8 +33,17 @@ public class GraphSceneManager implements SceneManagerInterface {
 
     @Override
     public Iterator<Light> lightIterator() {
-        // TODO Auto-generated method stub
-        return null;
+        List<Node> children = new ArrayList<>();
+        addChildren(root, children);
+        return children.stream().filter(c -> c.getType() == NodeType.LIGHT).map(c -> ((LightNode) c).getLight())
+                .iterator();
+    }
+
+    private void addChildren(Node n, List<Node> children) {
+        for (Node child : n.getChildren()) {
+            children.add(child);
+            addChildren(child, children);
+        }
     }
 
     public TransformGroup getSceneRoot() {
@@ -80,8 +92,13 @@ public class GraphSceneManager implements SceneManagerInterface {
                 stack.addAll(e.getChildren());
                 trafo.mul(trafos.peek(), e.getTransformation());
                 trafos.push(new Matrix4f(trafo));
-            } else {
+            } else if (e.getType() == NodeType.LEAF) {
                 trafo.mul(trafos.peek(), e.getTransformation());
+            } else if (e.getType() == NodeType.LIGHT) {
+                Light l = ((LightNode) e).getLight();
+                trafo.mul(trafos.peek(), e.getTransformation());
+                l.position = new Vector3f(trafo.m03, trafo.m13, trafo.m23);
+
             }
             if (childCount[depth] <= 0) {
                 depth--;

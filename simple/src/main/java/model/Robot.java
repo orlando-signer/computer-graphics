@@ -2,8 +2,10 @@ package model;
 
 import javax.vecmath.Matrix4f;
 
+import jrtr.Light;
 import jrtr.RenderContext;
 import jrtr.Shape;
+import jrtr.scenemanager.LightNode;
 import jrtr.scenemanager.Node;
 import jrtr.scenemanager.ShapeNode;
 import jrtr.scenemanager.TransformGroup;
@@ -27,7 +29,7 @@ public class Robot {
 
     private void init() {
         Matrix4f m = getIdentity();
-        // m.m03 = 5;
+        m.m03 = 5;
         body = new TransformGroup("BodyGroup");
         body.setTransformation(m);
         root.addChild(body);
@@ -53,7 +55,6 @@ public class Robot {
         mLowerLeftArm.rotX((float) (30F / 180F * Math.PI));
         mLowerLeftArm.m03 = 2.5F;
         mLowerLeftArm.m13 = 2F;
-        // mLowerLeftArm.m23 = 0.6F;
         arms.addChild(new ShapeNode(armShape, mLeftArm, "LeftArmNode"));
         arms.addChild(new ShapeNode(lowerArmShape, mLowerLeftArm, "LowerLeftArmNode"));
 
@@ -63,6 +64,16 @@ public class Robot {
         mLowerRightArm.m03 = -2.4F;
         arms.addChild(new ShapeNode(armShape, mRightArm, "RightArmNode"));
         arms.addChild(new ShapeNode(lowerArmShape, mLowerRightArm, "LowerRightArmNode"));
+
+        // Light
+        Light l = new Light();
+        l.type = Light.Type.POINT;
+        LightNode light = new LightNode(l, "LightNode");
+        Matrix4f mLight = getIdentity();
+        mLight.m03 = -2.4F;
+        mLight.m13 = 3.4F;
+        light.setTransformation(mLight);
+        arms.addChild(light);
 
         arms.getTransformation().m13 = 3.5F;
         body.addChild(arms);

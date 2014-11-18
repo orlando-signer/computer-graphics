@@ -2,34 +2,38 @@ package jrtr.scenemanager;
 
 import javax.vecmath.Matrix4f;
 
+import jrtr.Light;
 import jrtr.Shape;
 
-public class ShapeNode extends Leaf {
+public class LightNode extends Leaf {
 
-    // The position relative to its parentb
-    private Matrix4f position;
-    private final Shape item;
+    private Light light;
     private String name;
+    private Matrix4f trafo;
 
-    public ShapeNode(Shape shape, Matrix4f position, String name) {
-        item = shape;
-        this.position = position;
+    public LightNode(Light light, String name) {
+        this.light = light;
         this.name = name;
+    }
+
+    public Light getLight() {
+        return light;
     }
 
     @Override
     public Matrix4f getTransformation() {
-        return position;
+        return trafo;
     }
 
     @Override
     public void setTransformation(Matrix4f t) {
-        position = t;
+        trafo = t;
     }
 
     @Override
     public Shape getShape() {
-        return item;
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -44,6 +48,7 @@ public class ShapeNode extends Leaf {
 
     @Override
     public NodeType getType() {
-        return NodeType.LEAF;
+        return NodeType.LIGHT;
     }
+
 }

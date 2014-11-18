@@ -161,6 +161,7 @@ public class Simple {
 
             while (shapes.remove(null))
                 ;
+            shapes.forEach(s -> s.setMaterial(material));
         }
 
         private void addLights() {

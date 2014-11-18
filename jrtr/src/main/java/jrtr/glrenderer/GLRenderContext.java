@@ -319,18 +319,6 @@ public class GLRenderContext implements RenderContext {
 
             String lightColorString;
 
-            id = gl.glGetUniformLocation(activeShaderID, "reflectionCoefficient");
-            if (id != -1)
-                gl.glUniform4f(id, m.specular.x, m.specular.y, m.specular.z, 1);
-            else
-                System.out.println("Could not get location of uniform variable reflectionCoefficient");
-
-            id = gl.glGetUniformLocation(activeShaderID, "shininess");
-            if (id != -1)
-                gl.glUniform1f(id, m.shininess);
-            else
-                System.out.println("Could not get location of uniform variable shininess");
-
             // Iterate over all light sources in scene manager (overwriting the
             // default light source)
             Iterator<Light> iter = sceneManager.lightIterator();
@@ -340,6 +328,7 @@ public class GLRenderContext implements RenderContext {
                 nLights = 0;
                 while (iter.hasNext() && nLights < 8) {
                     l = iter.next();
+                    System.out.println(l.position);
 
                     // Pass light direction to shader, we assume the shader
                     // stores it in an array "lightDirection[]"
@@ -351,13 +340,6 @@ public class GLRenderContext implements RenderContext {
                     // direction
                     else
                         System.out.print("Could not get location of uniform variable " + lightString + "\n");
-
-                    lightColorString = "lightColor[" + nLights + "]";
-                    id = gl.glGetUniformLocation(activeShaderID, lightColorString);
-                    if (id != -1)
-                        gl.glUniform4f(id, l.diffuse.x, l.diffuse.y, l.diffuse.z, 0);
-                    else
-                        System.out.print("Could not get location of uniform variable " + lightColorString + "\n");
 
                     nLights++;
                 }
