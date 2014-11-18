@@ -270,8 +270,9 @@ public class GLRenderContext implements RenderContext {
         if (id != -1) {
             Vector3f cop = sceneManager.getCamera().getCenterOfProjection();
             gl.glUniform4f(id, cop.x, cop.y, cop.z, 0);
-        } else
-            System.out.println("Could not get location of uniform variable camera");
+        }
+        // } else
+        // System.out.println("Could not get location of uniform variable camera");
     }
 
     /**

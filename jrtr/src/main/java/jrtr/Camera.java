@@ -30,7 +30,7 @@ public class Camera {
     public Camera() {
         cameraMatrix = new Matrix4f();
         // first image
-        centerOfProjection = new Vector3f(0, 10, 10);
+        centerOfProjection = new Vector3f(0, 0, 10);
         lookAtPoint = new Vector3f(0, 0, 0);
         upVector = new Vector3f(0, 1, 0);
         // second image

@@ -43,8 +43,8 @@ public class Cylinder implements Model {
         for (int i = 0; i < segments; i++) {
             tmpX = (float) Math.sin(i * angle) * radius;
             tmpZ = (float) Math.cos(i * angle) * radius;
-            vertices.add(new Point3d(tmpX, height / -2, tmpZ));
-            vertices.add(new Point3d(tmpX, height / 2, tmpZ));
+            vertices.add(new Point3d(tmpX, 0, tmpZ));
+            vertices.add(new Point3d(tmpX, height, tmpZ));
             Vector3d normal = new Vector3d(tmpX, 0, tmpZ);
             normal.normalize();
             normals.add(normal);
@@ -54,8 +54,8 @@ public class Cylinder implements Model {
 
         }
         // Add bottom and top
-        vertices.add(new Point3d(0, height / -2, 0));
-        vertices.add(new Point3d(0, height / 2, 0));
+        vertices.add(new Point3d(0, 0, 0));
+        vertices.add(new Point3d(0, height, 0));
         normals.add(new Vector3d(0, -1, 0));
         normals.add(new Vector3d(0, 1, 0));
         textures.add(new Point2f(0.5F, 0.5F));
@@ -82,16 +82,16 @@ public class Cylinder implements Model {
         List<Color> colors = new ArrayList<>(segmentsTimesTwo + 2);
         for (int i = 0; i < segments; i++) {
             if (i % 2 == 0) {
-                colors.add(Color.BLUE);
-                colors.add(Color.BLUE);
+                colors.add(Color.GRAY);
+                colors.add(Color.GRAY);
             } else {
-                colors.add(Color.WHITE);
-                colors.add(Color.WHITE);
+                colors.add(Color.GRAY);
+                colors.add(Color.GRAY);
 
             }
         }
-        colors.add(Color.WHITE);
-        colors.add(Color.WHITE);
+        colors.add(Color.GRAY);
+        colors.add(Color.GRAY);
 
         // Construct a data structure that stores the vertices, their
         // attributes, and the triangle mesh connectivity

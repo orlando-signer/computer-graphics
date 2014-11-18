@@ -9,6 +9,8 @@ public abstract class Group implements Node {
 
     public void addChild(Node child) {
         children.add(child);
+        // Sort the children, first the groups, then the leafs.
+        children.sort((e1, e2) -> e1.getType().ordinal() - e2.getType().ordinal());
     }
 
     public void removeChild(Node child) {
@@ -18,5 +20,10 @@ public abstract class Group implements Node {
     @Override
     public List<Node> getChildren() {
         return children;
+    }
+
+    @Override
+    public final NodeType getType() {
+        return NodeType.GROUP;
     }
 }

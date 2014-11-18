@@ -1,8 +1,7 @@
 package jrtr.scenemanager;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Iterator;
+import java.util.Stack;
 
 import javax.vecmath.Matrix4f;
 
@@ -10,6 +9,7 @@ import jrtr.Camera;
 import jrtr.Frustum;
 import jrtr.Light;
 import jrtr.RenderItem;
+import jrtr.scenemanager.Node.NodeType;
 
 public class GraphSceneManager implements SceneManagerInterface {
 
@@ -20,7 +20,7 @@ public class GraphSceneManager implements SceneManagerInterface {
     public GraphSceneManager() {
         camera = new Camera();
         frustum = new Frustum();
-        root = new TransformGroup();
+        root = new TransformGroup("RootGroup");
     }
 
     @Override
@@ -50,16 +50,19 @@ public class GraphSceneManager implements SceneManagerInterface {
 
     private class GraphIterator implements SceneManagerIterator {
 
-        private final Deque<Node> stack;
+        private final Stack<Node> stack;
+        private final Stack<Matrix4f> trafos;
         private Matrix4f trafo;
-        private Matrix4f dummy;
+        private final int[] childCount;
+        private int depth = 0;
 
         public GraphIterator() {
-            stack = new ArrayDeque<>();
+            stack = new Stack<>();
             stack.add(root);
+            trafos = new Stack<>();
+            trafos.add(root.getTransformation());
             trafo = new Matrix4f();
-            trafo.setIdentity();
-            dummy = new Matrix4f();
+            childCount = new int[16];
         }
 
         @Override
@@ -70,15 +73,22 @@ public class GraphSceneManager implements SceneManagerInterface {
         @Override
         public RenderItem next() {
             Node e = stack.pop();
-            stack.addAll(e.getChildren());
-            if (e instanceof Group) {
-                trafo.mul(trafo, e.getTransformation());
-                dummy.set(trafo);
+            childCount[depth] = childCount[depth] - 1;
+            if (e.getType() == NodeType.GROUP) {
+                depth++;
+                childCount[depth] = e.getChildren().size();
+                stack.addAll(e.getChildren());
+                trafo.mul(trafos.peek(), e.getTransformation());
+                trafos.push(new Matrix4f(trafo));
             } else {
-                dummy.mul(trafo, e.getTransformation());
+                trafo.mul(trafos.peek(), e.getTransformation());
+            }
+            if (childCount[depth] <= 0) {
+                depth--;
+                trafos.pop();
             }
 
-            return new RenderItem(e.getShape(), dummy);
+            return new RenderItem(e.getShape(), trafo);
         }
     }
 }

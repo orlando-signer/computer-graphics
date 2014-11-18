@@ -7,10 +7,12 @@ import jrtr.Shape;
 public class TransformGroup extends Group {
 
     private Matrix4f transformation;
+    private final String name;
 
-    public TransformGroup() {
+    public TransformGroup(String name) {
         transformation = new Matrix4f();
         transformation.setIdentity();
+        this.name = name;
     }
 
     @Override
@@ -29,4 +31,13 @@ public class TransformGroup extends Group {
         return null;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

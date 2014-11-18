@@ -8,4 +8,9 @@ public abstract class Leaf implements Node {
     public final List<Node> getChildren() {
         return Collections.emptyList();
     }
+
+    @Override
+    public final NodeType getType() {
+        return NodeType.LEAF;
+    }
 }

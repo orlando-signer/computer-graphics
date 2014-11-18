@@ -10,13 +10,12 @@ import jrtr.scenemanager.TransformGroup;
 
 public class Robot {
     private final RenderContext ctx;
-    private Matrix4f mHead;
-    private Matrix4f mLeftArm;
     private TransformGroup root;
-    private Matrix4f mRightArm;
-    private Matrix4f mAntenna;
 
     private float rotate;
+    private TransformGroup arm;
+    private TransformGroup head;
+    private TransformGroup body;
 
     public Robot(TransformGroup root, RenderContext ctx) {
         this.root = root;
@@ -26,31 +25,42 @@ public class Robot {
 
     private void init() {
         Matrix4f m = getIdentity();
-        m.m03 = 8;
-        TransformGroup body = new TransformGroup();
+        m.m03 = 5;
+        body = new TransformGroup("BodyGroup");
         body.setTransformation(m);
         root.addChild(body);
-        body.addChild(new ShapeNode(new Cylinder(10, 2, 4).createShape(ctx), getIdentity()));
+        body.addChild(new ShapeNode(new Cylinder(10, 2F, 4).createShape(ctx), getIdentity(), "BodyNode"));
 
-        mHead = getIdentity();
-        mHead.m13 = 3;
-        TransformGroup head = new TransformGroup();
-        head.addChild(new ShapeNode(new Cube().createShape(ctx), mHead));
+        Matrix4f mHead = getIdentity();
+        mHead.m13 = 5;
+        head = new TransformGroup("HeadGroup");
+        head.addChild(new ShapeNode(new Cube().createShape(ctx), mHead, "HeadNode"));
+
+        Matrix4f mAntenna = getIdentity();
+        mAntenna.m13 = 6F;
+        head.addChild(new ShapeNode(new Cylinder(10, 0.1F, 1F).createShape(ctx), mAntenna, "AntennaNode"));
         body.addChild(head);
 
-        mAntenna = getIdentity();
-        mAntenna.m13 = 4.5F;
-        body.addChild(new ShapeNode(new Cylinder(10, 0.1F, 1F).createShape(ctx), mAntenna));
-
-        TransformGroup arm = new TransformGroup();
+        arm = new TransformGroup("ArmGroup");
         Shape armShape = new Cylinder(10, 0.8F, 2).createShape(ctx);
-        mLeftArm = getIdentity();
-        mLeftArm.m03 = 2.5F;
-        mLeftArm.m13 = 1F;
-        mRightArm = new Matrix4f(mLeftArm);
+        Shape lowerArmShape = new Cylinder(10, 0.6F, 1.5F).createShape(ctx);
+        Matrix4f mLeftArm = getIdentity();
+        mLeftArm.m03 = 2.4F;
+        Matrix4f mLowerLeftArm = getIdentity();
+        mLowerLeftArm.rotX((float) (30 * 180 / Math.PI));
+        mLowerLeftArm.m03 = 2.5F;
+        mLowerLeftArm.m13 = 3.3F;
+        mLowerLeftArm.m23 = 0.6F;
+        arm.addChild(new ShapeNode(armShape, mLeftArm, "LeftArmNode"));
+        arm.addChild(new ShapeNode(lowerArmShape, mLowerLeftArm, "LowerLeftArmNode"));
+        arm.getTransformation().m13 = 3.5F;
+
+        Matrix4f mRightArm = new Matrix4f(mLeftArm);
         mRightArm.m03 = -2.5F;
-        arm.addChild(new ShapeNode(armShape, mLeftArm));
-        arm.addChild(new ShapeNode(armShape, mRightArm));
+        Matrix4f mLowerRightArm = new Matrix4f(mLowerLeftArm);
+        mLowerRightArm.m03 = -2.4F;
+        arm.addChild(new ShapeNode(armShape, mRightArm, "RightArmNode"));
+        arm.addChild(new ShapeNode(lowerArmShape, mLowerRightArm, "LowerRightArmNode"));
 
         body.addChild(arm);
     }
@@ -61,8 +71,13 @@ public class Robot {
 
     public void animate(float currentstep) {
         Matrix4f m = root.getTransformation();
-        rotate += currentstep;
+        rotate += (currentstep / 10);
         m.rotY(rotate);
+
+        m = arm.getTransformation();
+        arm.getTransformation().m13 -= 3.5;
+        m.rotX(rotate * 10);
+        arm.getTransformation().m13 += 3.5;
     }
 
     private Matrix4f getIdentity() {

@@ -15,4 +15,11 @@ public interface Node {
 
     List<Node> getChildren();
 
+    NodeType getType();
+
+    String getName();
+
+    public enum NodeType {
+        GROUP, LEAF;
+    }
 }
