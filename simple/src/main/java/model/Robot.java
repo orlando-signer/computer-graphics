@@ -14,35 +14,45 @@ public class Robot {
     private Matrix4f mLeftArm;
     private TransformGroup root;
     private Matrix4f mRightArm;
+    private Matrix4f mAntenna;
 
-    public Robot(RenderContext ctx) {
+    private float rotate;
+
+    public Robot(TransformGroup root, RenderContext ctx) {
+        this.root = root;
         this.ctx = ctx;
         init();
     }
 
     private void init() {
-        root = new TransformGroup();
-        Matrix4f m = new Matrix4f();
-        m.setIdentity();
-        root.addChild(new ShapeNode(new Cylinder(10, 2, 4).createShape(ctx), m));
+        Matrix4f m = getIdentity();
+        m.m03 = 8;
+        TransformGroup body = new TransformGroup();
+        body.setTransformation(m);
+        root.addChild(body);
+        body.addChild(new ShapeNode(new Cylinder(10, 2, 4).createShape(ctx), getIdentity()));
 
-        mHead = new Matrix4f();
-        mHead.setIdentity();
+        mHead = getIdentity();
         mHead.m13 = 3;
-        root.addChild(new ShapeNode(new Cube().createShape(ctx), mHead));
+        TransformGroup head = new TransformGroup();
+        head.addChild(new ShapeNode(new Cube().createShape(ctx), mHead));
+        body.addChild(head);
+
+        mAntenna = getIdentity();
+        mAntenna.m13 = 4.5F;
+        body.addChild(new ShapeNode(new Cylinder(10, 0.1F, 1F).createShape(ctx), mAntenna));
 
         TransformGroup arm = new TransformGroup();
-        Shape armShape = new Cylinder(10, 1, 2).createShape(ctx);
-        mLeftArm = new Matrix4f();
-        mLeftArm.setIdentity();
-        mLeftArm.m03 = 2;
+        Shape armShape = new Cylinder(10, 0.8F, 2).createShape(ctx);
+        mLeftArm = getIdentity();
+        mLeftArm.m03 = 2.5F;
         mLeftArm.m13 = 1F;
         mRightArm = new Matrix4f(mLeftArm);
-        mRightArm.m03 = -2;
+        mRightArm.m03 = -2.5F;
         arm.addChild(new ShapeNode(armShape, mLeftArm));
         arm.addChild(new ShapeNode(armShape, mRightArm));
 
-        root.addChild(arm);
+        body.addChild(arm);
     }
 
     public Node getTransformGroup() {
@@ -51,7 +61,13 @@ public class Robot {
 
     public void animate(float currentstep) {
         Matrix4f m = root.getTransformation();
-        m.m23 += currentstep;
+        rotate += currentstep;
+        m.rotY(rotate);
+    }
 
+    private Matrix4f getIdentity() {
+        Matrix4f m = new Matrix4f();
+        m.setIdentity();
+        return m;
     }
 }

@@ -153,8 +153,7 @@ public class Simple {
         private void createScene2() {
             sceneManager = new GraphSceneManager();
             TransformGroup root = ((GraphSceneManager) sceneManager).getSceneRoot();
-            robot = new Robot(renderContext);
-            root.addChild(robot.getTransformGroup());
+            robot = new Robot(root, renderContext);
 
             SceneManagerIterator it = sceneManager.iterator();
             while (it.hasNext())
