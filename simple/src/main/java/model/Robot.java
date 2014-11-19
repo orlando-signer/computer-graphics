@@ -16,11 +16,11 @@ public class Robot {
 
     private float rotate;
     private TransformGroup rightArm;
+    private TransformGroup leftArm;
     private TransformGroup head;
     private TransformGroup body;
-    private TransformGroup leftLeg;
-    private TransformGroup rightLeg;
-    private TransformGroup leftArm;
+    private TransformGroup rightWheel;
+    private TransformGroup leftWheel;
 
     public Robot(TransformGroup root, RenderContext ctx) {
         this.root = root;
@@ -34,15 +34,15 @@ public class Robot {
         body = new TransformGroup("BodyGroup");
         body.setTransformation(m);
         root.addChild(body);
-        body.addChild(new ShapeNode(new Cylinder(10, 2F, 4).createShape(ctx), getIdentity(), "BodyNode"));
+        body.addChild(new ShapeNode(new Cylinder(10, 2F, 6).createShape(ctx), getIdentity(), "BodyNode"));
 
         Matrix4f mHead = getIdentity();
-        mHead.m13 = 5;
+        mHead.m13 = 7;
         head = new TransformGroup("HeadGroup");
         head.addChild(new ShapeNode(new Cube().createShape(ctx), mHead, "HeadNode"));
 
         Matrix4f mAntenna = getIdentity();
-        mAntenna.m13 = 6F;
+        mAntenna.m13 = 8F;
         head.addChild(new ShapeNode(new Cylinder(10, 0.1F, 1F).createShape(ctx), mAntenna, "AntennaNode"));
         body.addChild(head);
 
@@ -58,7 +58,7 @@ public class Robot {
         mLowerRightArm.m13 = 2F;
         rightArm.addChild(new ShapeNode(armShape, mRightArm, "LeftArmNode"));
         rightArm.addChild(new ShapeNode(lowerArmShape, mLowerRightArm, "LowerLeftArmNode"));
-        rightArm.getTransformation().m13 = 3.5F;
+        rightArm.getTransformation().m13 = 5.5F;
         body.addChild(rightArm);
 
         leftArm = new TransformGroup("RightArmGroup");
@@ -79,34 +79,33 @@ public class Robot {
         light.setTransformation(mLight);
         leftArm.addChild(light);
 
-        leftArm.getTransformation().m13 = 3.5F;
+        leftArm.getTransformation().m13 = 5.5F;
         body.addChild(leftArm);
 
-        // Legs
-        leftLeg = new TransformGroup("LeftLegGroup");
-        Shape legShape = new Cylinder(10, 0.8F, 4).createShape(ctx);
-        Shape footShape = new Cylinder(10, 0.5F, 1.5F).createShape(ctx);
-        Matrix4f mLeftLeg = getIdentity();
-        mLeftLeg.m03 = -0.9F;
-        Matrix4f mLeftFoot = getIdentity();
-        mLeftFoot.rotX((float) (90F / 180F * Math.PI));
-        mLeftFoot.m03 = -0.8F;
-        mLeftFoot.m13 = 0.25F;
-        mLeftFoot.m23 = -2F;
-        leftLeg.addChild(new ShapeNode(legShape, mLeftLeg, "LeftLegNode"));
-        leftLeg.addChild(new ShapeNode(footShape, mLeftFoot, "LeftFootNode"));
-        leftLeg.getTransformation().m13 = -4F;
-        body.addChild(leftLeg);
+        // Wheels
+        leftWheel = new TransformGroup("LeftWheel");
+        Shape wheelShape = new Torus(10, 10, 1.5F, 0.3F).createShape(ctx);
+        Shape crossingShasp = new Cylinder(10, 0.2F, 2.5F).createShape(ctx);
+        Matrix4f mWheel = getIdentity();
+        mWheel.rotY((float) (90F / 180 * Math.PI));
+        Matrix4f mVertCross = getIdentity();
+        mVertCross.m13 = -1.1F;
+        Matrix4f mHorCross = getIdentity();
+        mHorCross.rotX((float) (90F / 180 * Math.PI));
+        mHorCross.m23 = -1.1F;
+        leftWheel.addChild(new ShapeNode(wheelShape, mWheel, "LeftWheelNode"));
+        leftWheel.addChild(new ShapeNode(crossingShasp, mVertCross, "LeftVertCrossNode"));
+        leftWheel.addChild(new ShapeNode(crossingShasp, mHorCross, "LeftHorCrossNode"));
+        leftWheel.getTransformation().m03 = -2.2F;
+        body.addChild(leftWheel);
 
-        rightLeg = new TransformGroup("RightLegGroup");
-        Matrix4f mRightLeg = getIdentity();
-        mRightLeg.m03 = 0.9F;
-        Matrix4f mRightFoot = new Matrix4f(mLeftFoot);
-        mRightFoot.m03 = 0.8F;
-        rightLeg.addChild(new ShapeNode(legShape, mRightLeg, "RightLegNode"));
-        rightLeg.addChild(new ShapeNode(footShape, mRightFoot, "RightFootNode"));
-        rightLeg.getTransformation().m13 = -4F;
-        body.addChild(rightLeg);
+        rightWheel = new TransformGroup("rightWheel");
+        rightWheel.addChild(new ShapeNode(wheelShape, mWheel, "RightWheelNode"));
+        rightWheel.addChild(new ShapeNode(crossingShasp, mVertCross, "RightVertCrossNode"));
+        rightWheel.addChild(new ShapeNode(crossingShasp, mHorCross, "RightHorCrossNode"));
+        rightWheel.getTransformation().m03 = +2.2F;
+        body.addChild(rightWheel);
+
     }
 
     public Node getTransformGroup() {
@@ -116,18 +115,27 @@ public class Robot {
     public void animate(float currentstep) {
         Matrix4f m = root.getTransformation();
         rotate += (currentstep / 10);
-        // m.rotY(rotate);
+        m.rotY(rotate);
 
         m = rightArm.getTransformation();
-        m.m13 -= 3.5;
+        m.m13 -= 5.5;
         m.rotX(rotate * 10);
-        m.m13 += 3.5;
+        m.m13 += 5.5;
 
         m = leftArm.getTransformation();
-        m.m13 -= 3.5;
+        m.m13 -= 5.5;
         m.rotX(-rotate * 10);
-        m.m13 += 3.5;
+        m.m13 += 5.5;
 
+        m = leftWheel.getTransformation();
+        m.m03 = +2.2F;
+        m.rotX(-rotate * 10);
+        m.m03 = -2.2F;
+
+        m = rightWheel.getTransformation();
+        m.m03 = -2.2F;
+        m.rotX(-rotate * 10);
+        m.m03 = +2.2F;
     }
 
     private Matrix4f getIdentity() {
