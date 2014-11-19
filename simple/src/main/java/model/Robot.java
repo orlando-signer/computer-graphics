@@ -15,11 +15,12 @@ public class Robot {
     private TransformGroup root;
 
     private float rotate;
-    private TransformGroup arms;
+    private TransformGroup rightArm;
     private TransformGroup head;
     private TransformGroup body;
     private TransformGroup leftLeg;
     private TransformGroup rightLeg;
+    private TransformGroup leftArm;
 
     public Robot(TransformGroup root, RenderContext ctx) {
         this.root = root;
@@ -46,24 +47,27 @@ public class Robot {
         body.addChild(head);
 
         // Arms
-        arms = new TransformGroup("ArmGroup");
+        rightArm = new TransformGroup("LeftArmGroup");
         Shape armShape = new Cylinder(10, 0.8F, 2).createShape(ctx);
         Shape lowerArmShape = new Cylinder(10, 0.6F, 1.5F).createShape(ctx);
-        Matrix4f mLeftArm = getIdentity();
-        mLeftArm.m03 = 2.4F;
-        Matrix4f mLowerLeftArm = getIdentity();
-        mLowerLeftArm.rotX((float) (30F / 180F * Math.PI));
-        mLowerLeftArm.m03 = 2.5F;
-        mLowerLeftArm.m13 = 2F;
-        arms.addChild(new ShapeNode(armShape, mLeftArm, "LeftArmNode"));
-        arms.addChild(new ShapeNode(lowerArmShape, mLowerLeftArm, "LowerLeftArmNode"));
+        Matrix4f mRightArm = getIdentity();
+        mRightArm.m03 = 2.4F;
+        Matrix4f mLowerRightArm = getIdentity();
+        mLowerRightArm.rotX((float) (30F / 180F * Math.PI));
+        mLowerRightArm.m03 = 2.5F;
+        mLowerRightArm.m13 = 2F;
+        rightArm.addChild(new ShapeNode(armShape, mRightArm, "LeftArmNode"));
+        rightArm.addChild(new ShapeNode(lowerArmShape, mLowerRightArm, "LowerLeftArmNode"));
+        rightArm.getTransformation().m13 = 3.5F;
+        body.addChild(rightArm);
 
-        Matrix4f mRightArm = new Matrix4f(mLeftArm);
-        mRightArm.m03 = -2.5F;
-        Matrix4f mLowerRightArm = new Matrix4f(mLowerLeftArm);
-        mLowerRightArm.m03 = -2.4F;
-        arms.addChild(new ShapeNode(armShape, mRightArm, "RightArmNode"));
-        arms.addChild(new ShapeNode(lowerArmShape, mLowerRightArm, "LowerRightArmNode"));
+        leftArm = new TransformGroup("RightArmGroup");
+        Matrix4f mLeftArm = new Matrix4f(mRightArm);
+        mLeftArm.m03 = -2.5F;
+        Matrix4f mLowerLeftArm = new Matrix4f(mLowerRightArm);
+        mLowerLeftArm.m03 = -2.4F;
+        leftArm.addChild(new ShapeNode(armShape, mLeftArm, "RightArmNode"));
+        leftArm.addChild(new ShapeNode(lowerArmShape, mLowerLeftArm, "LowerRightArmNode"));
 
         // Light
         Light l = new Light();
@@ -73,10 +77,10 @@ public class Robot {
         mLight.m03 = -2.4F;
         mLight.m13 = 3.4F;
         light.setTransformation(mLight);
-        arms.addChild(light);
+        leftArm.addChild(light);
 
-        arms.getTransformation().m13 = 3.5F;
-        body.addChild(arms);
+        leftArm.getTransformation().m13 = 3.5F;
+        body.addChild(leftArm);
 
         // Legs
         leftLeg = new TransformGroup("LeftLegGroup");
@@ -114,15 +118,16 @@ public class Robot {
         rotate += (currentstep / 10);
         // m.rotY(rotate);
 
-        m = arms.getTransformation();
+        m = rightArm.getTransformation();
         m.m13 -= 3.5;
         m.rotX(rotate * 10);
         m.m13 += 3.5;
 
-        // m = rightLeg.getTransformation();
-        // // m.m13 += 4;
-        // m.rotX(rotate * 5);
-        // m.m13 -= 4;
+        m = leftArm.getTransformation();
+        m.m13 -= 3.5;
+        m.rotX(-rotate * 10);
+        m.m13 += 3.5;
+
     }
 
     private Matrix4f getIdentity() {

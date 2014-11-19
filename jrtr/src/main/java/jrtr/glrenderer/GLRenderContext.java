@@ -328,7 +328,6 @@ public class GLRenderContext implements RenderContext {
                 nLights = 0;
                 while (iter.hasNext() && nLights < 8) {
                     l = iter.next();
-                    System.out.println(l.position);
 
                     // Pass light direction to shader, we assume the shader
                     // stores it in an array "lightDirection[]"
