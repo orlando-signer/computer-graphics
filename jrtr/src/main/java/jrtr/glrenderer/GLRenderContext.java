@@ -130,7 +130,6 @@ public class GLRenderContext implements RenderContext {
      *            the object that needs to be drawn
      */
     private void draw(RenderItem renderItem) {
-
         // Set the material of the shape to be rendered
         setMaterial(renderItem.getShape().getMaterial());
 

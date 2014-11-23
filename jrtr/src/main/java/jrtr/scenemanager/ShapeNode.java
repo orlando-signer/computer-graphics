@@ -2,6 +2,7 @@ package jrtr.scenemanager;
 
 import javax.vecmath.Matrix4f;
 
+import jrtr.Frustum;
 import jrtr.Shape;
 
 public class ShapeNode extends Leaf {
@@ -45,5 +46,15 @@ public class ShapeNode extends Leaf {
     @Override
     public NodeType getType() {
         return NodeType.LEAF;
+    }
+
+    /**
+     * Checks if the Bounding sphere of this Shape is inside the frustum.
+     *
+     * @param frustum
+     * @return
+     */
+    public boolean checkBoundingSphere(Frustum frustum) {
+        return true;
     }
 }

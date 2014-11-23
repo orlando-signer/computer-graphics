@@ -93,7 +93,8 @@ public class GraphSceneManager implements SceneManagerInterface {
                 trafo.mul(trafos.peek(), e.getTransformation());
                 trafos.push(new Matrix4f(trafo));
             } else if (e.getType() == NodeType.LEAF) {
-                trafo.mul(trafos.peek(), e.getTransformation());
+                if (((ShapeNode) e).checkBoundingSphere(frustum))
+                    trafo.mul(trafos.peek(), e.getTransformation());
             } else if (e.getType() == NodeType.LIGHT) {
                 Light l = ((LightNode) e).getLight();
                 trafo.mul(trafos.peek(), e.getTransformation());
