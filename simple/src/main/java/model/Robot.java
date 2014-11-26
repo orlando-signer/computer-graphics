@@ -30,7 +30,7 @@ public class Robot {
 
     private void init() {
         Matrix4f m = getIdentity();
-        m.m03 = 5;
+        m.m03 = 50;
         body = new TransformGroup("BodyGroup");
         body.setTransformation(m);
         root.addChild(body);

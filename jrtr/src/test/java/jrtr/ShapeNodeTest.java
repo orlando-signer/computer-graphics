@@ -30,55 +30,55 @@ public class ShapeNodeTest {
     @Test
     public void boundingSphereFront() {
         ShapeNode shape = createShapeNode(new float[] { 0, 0, 0, 0, 0, 1 });
-        assertTrue(shape.checkBoundingSphere(frustum, camera, trafo));
+        assertTrue(shape.getShape().checkBoundingSphere(frustum, camera, trafo));
 
         shape = createShapeNode(new float[] { 0, 0, 0, 0, 0, -1 });
-        assertFalse(shape.checkBoundingSphere(frustum, camera, trafo));
+        assertFalse(shape.getShape().checkBoundingSphere(frustum, camera, trafo));
     }
 
     @Test
     public void boundingSphereBack() {
         ShapeNode shape = createShapeNode(new float[] { 0, 0, 100, 0, 0, 101 });
-        assertTrue(shape.checkBoundingSphere(frustum, camera, trafo));
+        assertTrue(shape.getShape().checkBoundingSphere(frustum, camera, trafo));
 
         shape = createShapeNode(new float[] { 0, 0, 101, 0, 0, 102 });
-        assertFalse(shape.checkBoundingSphere(frustum, camera, trafo));
+        assertFalse(shape.getShape().checkBoundingSphere(frustum, camera, trafo));
     }
 
     @Test
     public void boundingSphereTop() {
         ShapeNode shape = createShapeNode(new float[] { 0, 6.7735F, 10, 0, 5.7735F, 10 });
-        assertTrue(shape.checkBoundingSphere(frustum, camera, trafo));
+        assertTrue(shape.getShape().checkBoundingSphere(frustum, camera, trafo));
 
         shape = createShapeNode(new float[] { 0, 6.7735F, 10, 0, 6F, 10 });
-        assertFalse(shape.checkBoundingSphere(frustum, camera, trafo));
+        assertFalse(shape.getShape().checkBoundingSphere(frustum, camera, trafo));
     }
 
     @Test
     public void boundingSphereBottom() {
         ShapeNode shape = createShapeNode(new float[] { 0, -6.7735F, 10, 0, -5.7735F, 10 });
-        assertTrue(shape.checkBoundingSphere(frustum, camera, trafo));
+        assertTrue(shape.getShape().checkBoundingSphere(frustum, camera, trafo));
 
         shape = createShapeNode(new float[] { 0, -6.7735F, 10, 0, -6F, 10 });
-        assertFalse(shape.checkBoundingSphere(frustum, camera, trafo));
+        assertFalse(shape.getShape().checkBoundingSphere(frustum, camera, trafo));
     }
 
     @Test
     public void boundingSphereLeft() {
         ShapeNode shape = createShapeNode(new float[] { -6.7735F, 0, 10, -5.7735F, 0, 10 });
-        assertTrue(shape.checkBoundingSphere(frustum, camera, trafo));
+        assertTrue(shape.getShape().checkBoundingSphere(frustum, camera, trafo));
 
         shape = createShapeNode(new float[] { -6.7735F, 0, 10, -6F, 0, 10 });
-        assertFalse(shape.checkBoundingSphere(frustum, camera, trafo));
+        assertFalse(shape.getShape().checkBoundingSphere(frustum, camera, trafo));
     }
 
     @Test
     public void boundingSphereRight() {
         ShapeNode shape = createShapeNode(new float[] { 6.7735F, 0, 10, 5.7735F, 0, 10 });
-        assertTrue(shape.checkBoundingSphere(frustum, camera, trafo));
+        assertTrue(shape.getShape().checkBoundingSphere(frustum, camera, trafo));
 
         shape = createShapeNode(new float[] { 6.7735F, 0, 10, 6F, 0, 10 });
-        assertFalse(shape.checkBoundingSphere(frustum, camera, trafo));
+        assertFalse(shape.getShape().checkBoundingSphere(frustum, camera, trafo));
     }
 
     private ShapeNode createShapeNode(float[] positions) {

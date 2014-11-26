@@ -2,6 +2,7 @@ package jrtr;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Point4f;
+import javax.vecmath.Vector4f;
 
 import jrtr.VertexData.Semantic;
 import jrtr.VertexData.VertexElement;
@@ -110,10 +111,39 @@ public class Shape {
 
         center = new Point4f(x, y, z, 0);
         radius = (float) Math.sqrt(maxRadius);
-        System.out.println(center + " / " + radius);
     }
 
     private float square(float x) {
         return x * x;
+    }
+
+    /**
+     * Checks if the Bounding sphere of this Shape is inside the frustum.
+     *
+     * @param frustum
+     * @param camera
+     * @param trafo
+     * @return true if bounding sphere is inside (--> draw Shape)
+     */
+    public boolean checkBoundingSphere(Frustum frustum, Camera camera, Matrix4f trafo) {
+        Matrix4f m = new Matrix4f();
+        m.setIdentity();
+        m.mul(camera.getCameraMatrix());
+        m.mul(trafo);
+        // m.mul(camera.getCameraMatrix(), trafo);
+        // m.mul(m, item.getTransformation());
+        Vector4f center = new Vector4f(this.getCenter());
+        m.transform(center);
+        // boolean b = !frustum.getPlanes().stream().anyMatch(p ->
+        // p.getDistance(center) > item.getRadius());
+        boolean b = true;
+        for (Plane p : frustum.getPlanes()) {
+            if (p.getDistance(center) > this.getRadius()) {
+                b = false;
+                System.out.println("failing at : " + p);
+            }
+        }
+
+        return b;
     }
 }

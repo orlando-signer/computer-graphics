@@ -126,7 +126,7 @@ public class Simple {
         @Override
         public void init(RenderContext r) {
             renderContext = r;
-            createScene1();
+            createScene2();
 
             // Add the scene to the renderer
             renderContext.setSceneManager(sceneManager);

@@ -92,7 +92,8 @@ public class GLRenderContext implements RenderContext {
         SceneManagerIterator iterator = sceneManager.iterator();
         while (iterator.hasNext()) {
             RenderItem r = iterator.next();
-            if (r.getShape() != null) {
+            if (r.getShape() != null
+                    && r.getShape().checkBoundingSphere(sceneManager.getFrustum(), sceneManager.getCamera(), r.getT())) {
                 draw(r);
             }
         }
