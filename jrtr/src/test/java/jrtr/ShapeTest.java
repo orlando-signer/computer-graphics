@@ -2,7 +2,7 @@ package jrtr;
 
 import static org.junit.Assert.assertTrue;
 
-import javax.vecmath.Point3f;
+import javax.vecmath.Point4f;
 
 import jrtr.VertexData.Semantic;
 import jrtr.swrenderer.SWVertexData;
@@ -15,21 +15,21 @@ public class ShapeTest {
     @Test
     public void boundingSpherePos() {
         Shape shape = createShape(new float[] { 0, 0, 0, 1, 1, 1 });
-        assertEquals(new Point3f(0.5F, 0.5F, 0.5F), shape.getCenter());
+        assertEquals(new Point4f(0.5F, 0.5F, 0.5F, 0), shape.getCenter());
         assertEquals(0.8660254F, shape.getRadius());
     }
 
     @Test
     public void boundingSphereNeg() {
         Shape shape = createShape(new float[] { 0, 0, 0, -1, -1, -1 });
-        assertEquals(new Point3f(-0.5F, -0.5F, -0.5F), shape.getCenter());
+        assertEquals(new Point4f(-0.5F, -0.5F, -0.5F, 0), shape.getCenter());
         assertEquals(0.8660254F, shape.getRadius());
     }
 
     @Test
     public void boundingSpherePosNeg() {
         Shape shape = createShape(new float[] { 1, 1, 1, -1, -1, -1 });
-        assertEquals(new Point3f(0.0F, 0.0F, 0.0F), shape.getCenter());
+        assertEquals(new Point4f(0.0F, 0.0F, 0.0F, 0), shape.getCenter());
         assertEquals(1.7320508F, shape.getRadius());
     }
 
@@ -40,7 +40,7 @@ public class ShapeTest {
         return shape;
     }
 
-    private void assertEquals(Point3f expected, Point3f actual) {
+    private void assertEquals(Point4f expected, Point4f actual) {
         assertTrue("x-Value out of range: " + expected.x + "; was " + actual.x, expected.x - actual.x < EPSILON);
         assertTrue("y-Value out of range: " + expected.y + "; was " + actual.y, expected.y - actual.y < 0.0001F);
         assertTrue("z-Value out of range: " + expected.z + "; was " + actual.z, expected.z - actual.z < 0.0001F);

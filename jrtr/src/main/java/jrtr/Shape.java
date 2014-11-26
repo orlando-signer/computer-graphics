@@ -1,7 +1,7 @@
 package jrtr;
 
 import javax.vecmath.Matrix4f;
-import javax.vecmath.Point3f;
+import javax.vecmath.Point4f;
 
 import jrtr.VertexData.Semantic;
 import jrtr.VertexData.VertexElement;
@@ -17,7 +17,7 @@ public class Shape {
     private VertexData vertexData;
     private Matrix4f t;
     // for bounding sphere
-    private Point3f center;
+    private Point4f center;
     private float radius;
 
     /**
@@ -68,7 +68,7 @@ public class Shape {
         return material;
     }
 
-    public Point3f getCenter() {
+    public Point4f getCenter() {
         return center;
     }
 
@@ -108,8 +108,9 @@ public class Shape {
                 maxRadius = sum;
         }
 
-        center = new Point3f(x, y, z);
+        center = new Point4f(x, y, z, 0);
         radius = (float) Math.sqrt(maxRadius);
+        System.out.println(center + " / " + radius);
     }
 
     private float square(float x) {

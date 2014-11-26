@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import jrtr.scenemanager.SceneManagerInterface;
 import jrtr.scenemanager.SimpleSceneManager;
@@ -33,11 +33,11 @@ public class Frustum {
      */
     public Frustum() {
         projectionMatrix = new Matrix4f();
+        planes = new HashSet<>();
         setFov(60);
         aspect = 1F;
         near = 1F;
         far = 100F;
-        planes = new HashSet<>();
         update();
     }
 
@@ -92,6 +92,10 @@ public class Frustum {
         update();
     }
 
+    public Set<Plane> getPlanes() {
+        return planes;
+    }
+
     private void update() {
         // lecture 3 page 52
         projectionMatrix.setIdentity();
@@ -101,6 +105,7 @@ public class Frustum {
         projectionMatrix.m23 = (2 * near * far) / (near - far);
         projectionMatrix.m32 = -1;
         projectionMatrix.m33 = 0;
+        calculatePlanes();
     }
 
     private void calculatePlanes() {
@@ -112,52 +117,58 @@ public class Frustum {
         float left = -right;
 
         // bottom plane:
-        Vector3f p = new Vector3f(0, bottom, near);
-        Vector3f n = new Vector3f();
+        Vector4f p = new Vector4f(0, bottom, near, 0);
+        Vector4f n = new Vector4f();
         n.x = 0;
-        n.y = (float) ((Math.sqrt(p.y * p.y + 4 * p.z * p.z) + p.y) / (2 * p.z));
-        n.z = -p.y / p.z * n.y;
+        n.y = (float) (-p.z / Math.sqrt(p.y * p.y + p.z * p.z));
+        n.z = (float) (p.y / Math.sqrt(p.y * p.y + p.z * p.z));
+        n.normalize();
         float d = p.dot(n);
-        planes.add(new Plane(d, n));
+        planes.add(new Plane(d, n, "bottom"));
 
         // top plane
-        p = new Vector3f(0, top, near);
-        n = new Vector3f();
+        p = new Vector4f(0, top, near, 0);
+        n = new Vector4f();
         n.x = 0;
-        n.y = (float) ((-Math.sqrt(p.y * p.y + 4 * p.z * p.z) + p.y) / (2 * p.z));
-        n.z = -p.y / p.z * n.y;
+        n.y = (float) (p.z / Math.sqrt(p.y * p.y + p.z * p.z));
+        n.z = (float) (-p.y / Math.sqrt(p.y * p.y + p.z * p.z));
+        n.normalize();
         d = p.dot(n);
-        planes.add(new Plane(d, n));
+        planes.add(new Plane(d, n, "top"));
 
         // left plane
-        p = new Vector3f(left, 0, near);
-        n = new Vector3f();
-        n.x = (float) ((Math.sqrt(p.x * p.x + 4 * p.z * p.z) + p.x) / (2 * p.z));
+        p = new Vector4f(left, 0, near, 0);
+        n = new Vector4f();
+        n.x = (float) (-p.z / Math.sqrt(p.x * p.x + p.z * p.z));
         n.y = 0;
-        n.z = -p.x / p.z * n.x;
+        n.z = (float) (p.x / Math.sqrt(p.x * p.x + p.z * p.z));
+        n.normalize();
         d = p.dot(n);
-        planes.add(new Plane(d, n));
+        planes.add(new Plane(d, n, "left"));
 
         // right plane
-        p = new Vector3f(left, 0, near);
-        n = new Vector3f();
-        n.x = (float) ((-Math.sqrt(p.x * p.x + 4 * p.z * p.z) + p.x) / (2 * p.z));
+        p = new Vector4f(right, 0, near, 0);
+        n = new Vector4f();
+        n.x = (float) (p.z / Math.sqrt(p.x * p.x + p.z * p.z));
         n.y = 0;
-        n.z = -p.x / p.z * n.x;
+        n.z = (float) (-p.x / Math.sqrt(p.x * p.x + p.z * p.z));
+        n.normalize();
         d = p.dot(n);
-        planes.add(new Plane(d, n));
+        planes.add(new Plane(d, n, "right"));
 
         // front plane
-        p = new Vector3f(0, 0, near);
-        n = new Vector3f(0, 0, -near);
+        p = new Vector4f(0, 0, near, 0);
+        n = new Vector4f(0, 0, -near, 0);
+        n.normalize();
         d = p.dot(n);
-        planes.add(new Plane(d, n));
+        planes.add(new Plane(d, n, "front"));
 
         // back plane
-        p = new Vector3f(0, 0, far);
-        n = new Vector3f(0, 0, far);
+        p = new Vector4f(0, 0, far, 0);
+        n = new Vector4f(0, 0, far, 0);
+        n.normalize();
         d = p.dot(n);
-        planes.add(new Plane(d, n));
+        planes.add(new Plane(d, n, "back"));
 
     }
 }
