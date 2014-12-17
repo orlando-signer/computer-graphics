@@ -140,7 +140,7 @@ public class Simple {
 
             initMaterial();
             // shapes.forEach(s -> s.setMaterial(material));
-            renderContext.useShader(diffuseShader);
+            renderContext.useDefaultShader();
 
             basicstep = 0.05f;
             currentstep = basicstep;
