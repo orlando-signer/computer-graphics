@@ -10,6 +10,7 @@ import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
 import jrtr.Light;
@@ -26,6 +27,7 @@ import jrtr.scenemanager.ShapeNode;
 import jrtr.scenemanager.SimpleSceneManager;
 import jrtr.scenemanager.TransformGroup;
 import jrtr.swrenderer.SWRenderPanel;
+import model.BezierBody;
 import model.Robot;
 import model.Teapot;
 
@@ -126,7 +128,7 @@ public class Simple {
         @Override
         public void init(RenderContext r) {
             renderContext = r;
-            createScene2();
+            createScene3();
 
             // Add the scene to the renderer
             renderContext.setSceneManager(sceneManager);
@@ -170,6 +172,30 @@ public class Simple {
             while (shapes.remove(null))
                 ;
             shapes.forEach(s -> s.setMaterial(material));
+        }
+
+        private void createScene3() {
+            SimpleSceneManager sm = new SimpleSceneManager();
+            ArrayList<Point3d> points = new ArrayList<>();
+            points.add(new Point3d());
+            points.add(new Point3d(1, 0, 0));
+            points.add(new Point3d(2, 1, 0));
+            points.add(new Point3d(2, 2, 0));
+
+            points.add(new Point3d(1.5, 2.5, 0));
+            points.add(new Point3d(0.5, 3, 0));
+            points.add(new Point3d(1, 3.5, 0));
+
+            Shape bezier = new BezierBody(points, 20, 20).createShape(renderContext);
+            sm.addShape(bezier);
+            sceneManager = sm;
+
+            SceneManagerIterator it = sceneManager.iterator();
+            while (it.hasNext())
+                shapes.add(it.next().getShape());
+
+            while (shapes.remove(null))
+                ;
         }
 
         private void addLights() {

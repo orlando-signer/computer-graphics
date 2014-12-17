@@ -126,6 +126,10 @@ public class Shape {
      * @return true if bounding sphere is inside (--> draw Shape)
      */
     public boolean checkBoundingSphere(Frustum frustum, Camera camera, Matrix4f trafo) {
+        // TODO OSI: fix bounding sphere
+        if (true)
+            return true;
+
         Matrix4f m = new Matrix4f();
         m.setIdentity();
         m.mul(camera.getCameraMatrix());
@@ -143,7 +147,6 @@ public class Shape {
                 System.out.println("failing at : " + p);
             }
         }
-
         return b;
     }
 }
