@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3d;
 
 import jrtr.RenderContext;
@@ -42,10 +43,22 @@ public class BezierBody implements Model {
     public Shape createShape(RenderContext ctx) {
         List<Point3d> points = getBezierCurve();
         points = rotate(points);
+
         VertexData data = ctx.makeVertexData(segments * evaluatePoints * rotationSegments);
         data.addElement(Utils.tuple3dToArray(points), Semantic.POSITION, 3);
+        data.addElement(getTexturCoords(), Semantic.TEXCOORD, 2);
         data.addIndices(getIndices());
         return new Shape(data);
+    }
+
+    private float[] getTexturCoords() {
+        List<Point2f> coords = new ArrayList<>(pointsOnCurve * rotationSegments);
+        for (int i = 1; i <= rotationSegments; i++) {
+            for (int j = 1; j <= pointsOnCurve; j++) {
+                coords.add(new Point2f(1F / i, 1F / j));
+            }
+        }
+        return Utils.points2fToArray(coords);
     }
 
     private List<Point3d> rotate(List<Point3d> points) {
