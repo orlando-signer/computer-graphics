@@ -15,6 +15,7 @@ import javax.vecmath.Vector3f;
 
 import jrtr.Light;
 import jrtr.Material;
+import jrtr.MeshData;
 import jrtr.RenderContext;
 import jrtr.RenderPanel;
 import jrtr.Shader;
@@ -29,6 +30,7 @@ import jrtr.scenemanager.TransformGroup;
 import jrtr.swrenderer.SWRenderPanel;
 import model.BezierBody;
 import model.Robot;
+import model.SpikedQuad;
 import model.Teapot;
 
 /**
@@ -54,6 +56,7 @@ public class Simple {
     private JFrame jFrame;
 
     private final boolean isDebug;
+    private MeshData mesh;
 
     public static void main(String[] args) {
         Simple s = new Simple();
@@ -128,7 +131,7 @@ public class Simple {
         @Override
         public void init(RenderContext r) {
             renderContext = r;
-            createScene3();
+            createScene4();
 
             // Add the scene to the renderer
             renderContext.setSceneManager(sceneManager);
@@ -189,6 +192,22 @@ public class Simple {
             Shape bezier = new BezierBody(points, 20, 20).createShape(renderContext);
             sm.addShape(bezier);
             sceneManager = sm;
+
+            SceneManagerIterator it = sceneManager.iterator();
+            while (it.hasNext())
+                shapes.add(it.next().getShape());
+
+            while (shapes.remove(null))
+                ;
+        }
+
+        private void createScene4() {
+            SimpleSceneManager sm = new SimpleSceneManager();
+            Shape sp = new SpikedQuad().createShape(renderContext);
+            sm.addShape(sp);
+            sceneManager = sm;
+
+            mesh = new MeshData(sp.getVertexData());
 
             SceneManagerIterator it = sceneManager.iterator();
             while (it.hasNext())
@@ -294,5 +313,14 @@ public class Simple {
         panel.getCanvas().addKeyListener(new SimpleKeyListener(this));
         panel.getCanvas().setFocusable(true);
         return panel;
+    }
+
+    public void doSubdivision() {
+        ((SimpleSceneManager) sceneManager).removeShape(shapes.get(0));
+        mesh.loop();
+        Shape shape = new Shape(mesh.getVertexData());
+        ((SimpleSceneManager) sceneManager).addShape(shape);
+        shapes.clear();
+        shapes.add(shape);
     }
 }

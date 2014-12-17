@@ -38,6 +38,10 @@ class SimpleKeyListener extends KeyAdapter {
             moveSideways(false);
             break;
         }
+        case 'q': {
+            simple.doSubdivision();
+            break;
+        }
         case 'h': {
             // Stop animation
             Simple.currentstep = 0;
