@@ -84,6 +84,7 @@ public class GLRenderContext implements RenderContext {
 
         // Get reference to the OpenGL rendering context
         gl = drawable.getGL().getGL3();
+        gl.glPolygonMode(GL3.GL_FRONT_AND_BACK, GL3.GL_POINT);
 
         // Do some processing at the beginning of the frame
         beginFrame();
